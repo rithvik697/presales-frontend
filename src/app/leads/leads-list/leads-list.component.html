@@ -1,0 +1,139 @@
+<div class="leads-list-container">
+  <!-- Top Toolbar: Title + Actions -->
+  <div class="top-toolbar">
+    <!-- Title -->
+    <h2>Leads Management</h2>
+
+    <!-- Right Actions -->
+    <div class="toolbar-actions">
+      <!-- Search Input -->
+      <div class="search-container">
+        <input type="text" placeholder="Search by name or phone..." [(ngModel)]="filterText" />
+      </div>
+
+      <!-- Filter Toggle Button -->
+      <button class="action-btn filter-toggle-btn" [class.active]="showFilterView" (click)="toggleFilterView()">
+        <span class="icon">🔍</span> LEAD-FILTER VIEW
+      </button>
+
+      <!-- Create Lead Button -->
+      <button class="action-btn create-new-btn" (click)="goToCreate()">
+        + CREATE LEAD
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Panel (Collapsible) -->
+  <div class="filter-panel" *ngIf="showFilterView">
+    <form [formGroup]="filterForm" class="filter-form">
+
+      <!-- Row 1: 5 Columns -->
+      <div class="filter-row row-five">
+        <!-- Customer Name -->
+        <div class="filter-group">
+          <label>CUSTOMER NAME</label>
+          <input type="text" formControlName="customerName" placeholder="Search name...">
+        </div>
+
+        <!-- Mobile Number -->
+        <div class="filter-group">
+          <label>MOBILE NUMBER</label>
+          <input type="text" formControlName="mobileNumber" placeholder="Search phone...">
+        </div>
+
+        <!-- Source -->
+        <div class="filter-group">
+          <label>SOURCE</label>
+          <select formControlName="source">
+            <option value="">All</option>
+            <option *ngFor="let s of sourceOptions" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+
+        <!-- Project -->
+        <div class="filter-group">
+          <label>PROJECT</label>
+          <select formControlName="project">
+            <option value="">All</option>
+            <option *ngFor="let p of projectOptions" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+
+        <!-- Activity/Status -->
+        <div class="filter-group">
+          <label>ACTIVITY / STATUS</label>
+          <select formControlName="status">
+            <option value="">All</option>
+            <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 2: 2 Columns + Actions -->
+      <div class="filter-row row-two-actions">
+
+        <div class="row-two-inputs">
+          <!-- Assigned Employee -->
+          <div class="filter-group">
+            <label>ASSIGNED EMPLOYEE</label>
+            <select formControlName="assignedEmployee">
+              <option value="">All</option>
+              <option *ngFor="let e of employeeOptions" [value]="e">{{ e }}</option>
+            </select>
+          </div>
+
+          <!-- Scheduled Date -->
+          <div class="filter-group">
+            <label>SCHEDULED DATE</label>
+            <input type="date" formControlName="scheduledDate">
+          </div>
+        </div>
+
+        <!-- Action Buttons (Right Aligned) -->
+        <div class="filter-action-buttons">
+          <button type="button" class="apply-btn" (click)="applyFilters()">APPLY FILTERS</button>
+          <button type="button" class="clear-btn" (click)="clearFilters()">CLEAR FILTERS</button>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Leads Count Info -->
+  <div class="leads-info">
+    <mat-icon class="chart-icon">bar_chart</mat-icon>
+    <span class="info-text">Showing <strong>{{ filteredLeads.length }}</strong> of <strong>{{ allLeads.length
+        }}</strong> Leads</span>
+  </div>
+
+  <!-- Table -->
+  <table class="leads-table">
+    <thead>
+      <tr>
+        <th>Lead ID</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Project</th>
+        <th>Source</th>
+        <th>Assigned To</th>
+        <th style="text-align:center;">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let lead of filteredLeads | filterBy: filterText">
+        <td>{{ lead.id }}</td>
+        <td>{{ lead.name }}</td>
+        <td>{{ lead.phone }}</td>
+        <td>{{ lead.project }}</td>
+        <td>{{ lead.source }}</td>
+        <td>{{ lead.assignedTo }}</td>
+        <td style="text-align:center;" class="action-buttons">
+          <button class="edit-btn" (click)="edit(lead)">Edit</button>
+          <button class="delete-btn" (click)="delete(lead)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

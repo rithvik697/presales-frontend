@@ -1,0 +1,68 @@
+.lead-create-container {
+  max-width: 95%;
+  /* Increased from 800px to fill more space */
+  margin: 40px auto;
+  padding: 30px;
+  /* Increased padding */
+  background: #fff;
+  border-radius: 12px;
+}
+
+.lead-create-container h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3f51b5;
+  margin: 0;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  /* Align icon and text group */
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 13px;
+  margin: 4px 0 0 0;
+}
+
+.divider {
+  height: 2px;
+  background-color: #3f51b5;
+  width: 100%;
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+
+.back-btn {
+  color: #555;
+  border: none !important;
+  /* Ensure no border */
+  background: transparent !important;
+  /* Ensure no background box */
+  margin-right: 10px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-field {
+  flex: 1;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

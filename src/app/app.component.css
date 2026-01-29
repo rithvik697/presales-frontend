@@ -1,0 +1,550 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  } 
+/* Global styles.css or component styles */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.crm {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #dbfcfa; 
+
+}
+
+mat-toolbar {
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.sidenav-container {
+  flex: 1;
+  display: flex;
+  height: calc(100vh - 100px); /* Remaining height after toolbar */
+  overflow: hidden; 
+
+}
+
+.sidenav {
+  width: 100px;
+  background-color: #007c7c;
+  color: white;  
+  padding-top: 30px;  
+
+
+
+ 
+}
+
+
+
+mat-sidenav-content {
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #ebe9e9; 
+
+}
+
+  
+  .mat-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;  
+  
+   
+  }  
+
+
+  .spacer {
+    flex: 1; /* Pushes elements to the right */
+  }
+  
+  .search-bar {
+    width: 300px;
+    margin-right: 16px;
+    height: 10px;
+    padding: 2px;
+   
+    
+  }
+  .search-container {
+    flex: 2;
+    display: flex;
+    justify-content: right;
+    margin-bottom: 35px;
+    border-color: aqua;
+    border-left: 85px;
+   
+   
+  }
+  
+  .icon {
+    font-size: 24px;
+    margin: 0 10px;
+    cursor: pointer;
+    margin-right: 30px; 
+  
+  }
+  
+  .profile {
+    display: flex;
+    align-items: center;
+    
+  }
+  
+  .username {
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  
+  .role {
+    color: gray;
+    margin-right: 16px;
+  }
+  .imageprofile {
+    height: 50px;
+    border-radius: 50%; /* If you want a circular profile */
+    cursor: pointer;
+  }
+ 
+  .mobile-menu {
+    display: none;
+  }
+  
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .profile-section {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Pushes the profile section to the right */
+    font-size: small;
+  }
+  .profile-text{
+    font-size: medium;
+    margin-right: 15px;
+  }
+
+.sidenav-container {
+
+    display: flex;
+    /* border: 1px red solid; */     
+    /* border: 1px red solid; */
+  }
+  
+  .sidenav {
+    width: 300px;
+    height: auto;
+    background-color: #b4d5e5;  
+
+ 
+  
+  
+   
+    /* border: 1px red solid; */
+  }  
+
+  
+  .content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  .sidebarbg{
+    height: auto;
+  }
+  
+  mat-list-item {
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    color: white;  
+  
+
+  }
+  
+  mat-list-item:hover {
+    cursor: pointer; 
+  
+  }
+
+::ng-deep mat-list-item, 
+::ng-deep mat-list-item span, 
+::ng-deep mat-list-item .mat-list-item-content {
+  color: white !important;
+}
+  .active-item {
+ 
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;   
+
+  }
+new-icon{
+
+  margin-top: 10px;
+}
+.menu-item-wrapper {
+  padding: 6px 0; 
+
+    margin-left: 0px; 
+      margin-left:0px;  
+    
+      padding-left: 50px;
+
+}
+
+.menu-item-content {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: 30px 0 0 30px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-icon {
+  font-size: 24px;
+  margin-right: 12px;
+
+
+}
+
+.menu-label {
+  font-size: 16px;
+  color: white;
+  font-weight: 500;  
+
+
+
+}
+
+/* Active item with orange background and rounded left */
+.active-item .menu-item-content {
+  background-color:  #3f51b5 !important;
+  font-weight: bold;
+  border-radius: 30px 0 0 30px;
+  color: white;  
+
+
+}
+
+/* Optional: hover effect for better UX */
+.menu-item-wrapper:hover .menu-item-content {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 30px 0 0 30px;
+}
+
+
+  /* Mobile View */
+  @media (max-width: 768px) {
+    .mobile-menu {
+      display: block;
+    }
+    .search-container {
+      flex: 2;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 35px;
+      display: none;
+    }
+    .icon {
+      font-size: 24px;
+      margin: 0 10px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    
+    .profile-text{
+      font-size: medium;
+      display: none;
+    }
+    .imageprofile {
+      height: 20px;
+      border-radius: 50%; /* If you want a circular profile */
+      cursor: pointer;
+      margin: 8px;
+    }
+    
+   
+  }
+  mat-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    height: 64px;
+  }
+  
+  .logo {
+    margin-left: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+     /* Match current header color */
+    height: 60px;
+  }
+  
+  .logo {
+    height: 40px;
+    width: auto;
+  }
+  .spacer {
+    flex: 1;
+  }
+  
+  .search-bar {
+    width: 250px;
+    margin-right: 16px;
+    height: 10px;
+  }
+  .logout-dropdown {
+  position: absolute;
+  top: 70px;
+  right: 0;
+  background-color: #ff4d4d;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.logout-dropdown:hover {
+  background-color: #e60000;
+}
+/* .active-item {
+  background-color: orangered !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 4px;
+  border: 1px red solid;
+} */
+/* Notification Styles */
+
+
+
+
+
+
+/*  Notification Wrapper */
+.notification-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  width: auto;   
+
+}
+
+/*  Bell Icon */
+.notification-icon {
+  font-size: 24px;
+  color: #111827;
+  transition: color 0.2s ease; 
+
+}
+
+.notification-icon:hover {
+  color: #0ea5e9;
+}
+
+/*  Notification Count Badge */
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px white;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1; 
+
+}
+
+/*  Notification Dropdown */
+.notification-dropdown {
+  position: absolute;
+  top: 110%; /* positions dropdown just below the icon */
+  right: 0;
+  width: 280px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;  
+    width: auto;   
+    
+  
+}
+
+/*  Notification Text */
+.notification-item {
+  font-size: 14px;
+  color: #374151;
+  padding: 10px 0;
+
+
+}
+
+.notification-item:last-child {
+  border-bottom: none; 
+ 
+}
+
+/*  Empty State */
+.no-data {
+  text-align: center;
+  font-style: italic;
+  color: #6b7280;
+  font-size: 14px; 
+
+}
+
+/*  Mark All Read Button */
+.mark-read-btn {
+  width: 30%;
+  margin-top: 12px;
+  background-color: #2b999a !important;
+  color: white !important;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 28px;
+  padding: 0px 0;
+  text-transform: none; 
+  margin: 0 auto;  
+  text-align: center; 
+
+
+  
+
+
+}
+
+/*  Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}   
+
+
+/* dashboard css */
+.dashboard-container {
+  padding: 20px;
+}
+
+.header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #0052d4, #4364f7, #6fb1fc);
+  border-radius: 16px;
+  color: white;
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+.header-text h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header-img img {
+  height: 100px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border-radius: 12px;
+  color: white;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.orange { background: linear-gradient(135deg, #ff9a00, #ff6f00); }
+.green { background: linear-gradient(135deg, #00c853, #009624); }
+.purple { background: linear-gradient(135deg, #8e24aa, #6a1b9a); }
+.blue { background: linear-gradient(135deg, #2196f3, #0d47a1); }
+.pink { background: linear-gradient(135deg, #ec407a, #d81b60); }
+.red { background: linear-gradient(135deg, #f44336, #b71c1c); }
+  
+/* 
+leads css */ 
+.leads-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tab {
+  background: #e0e0e0;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab.active {
+  background: #4b5563;
+  color: white;
+}
+
+.table-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.action-btn {
+  border: none;
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+p-table {
+  width: 100%;
+  font-size: 14px;
+}
+

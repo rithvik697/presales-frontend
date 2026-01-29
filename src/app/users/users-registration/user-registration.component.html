@@ -1,0 +1,97 @@
+<div class="form-page">
+
+  <div class="form-card">
+    <h2>User Registration</h2>
+    <p class="subtitle">Create a new employee user with complete information</p>
+
+    <form (ngSubmit)="submit()" #userForm="ngForm">
+
+      <div class="form-grid">
+
+        <!-- Employee ID -->
+        <div class="form-group">
+          <input
+            type="text"
+            name="emp_id"
+            [(ngModel)]="user.emp_id"
+            placeholder="Employee ID **"
+            required
+          />
+        </div>
+
+        <!-- Role -->
+        <div class="form-group">
+          <select
+            name="role_id"
+            [(ngModel)]="user.role_id"
+            required
+          >
+            <option value="">Role **</option>
+            <option value="Admin">Admin</option>
+            <option value="Sales Executive">Sales Executive</option>
+            <option value="Sales Manager">Sales Manager</option>
+          </select>
+        </div>
+
+        <!-- First Name -->
+        <div class="form-group">
+          <input
+            type="text"
+            name="emp_first_name"
+            [(ngModel)]="user.emp_first_name"
+            placeholder="First Name **"
+            required
+          />
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+          <input
+            type="text"
+            name="emp_last_name"
+            [(ngModel)]="user.emp_last_name"
+            placeholder="Last Name **"
+            required
+          />
+        </div>
+
+        <!-- Middle Name -->
+        <div class="form-group">
+          <input
+            type="text"
+            name="emp_middle_name"
+            [(ngModel)]="user.emp_middle_name"
+            placeholder="Middle Name"
+          />
+        </div>
+
+        <!-- Status -->
+        <div class="form-group">
+          <select
+            name="emp_status"
+            [(ngModel)]="user.emp_status"
+            required
+          >
+            <option value="">Status **</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="submit" class="primary-btn">
+          Create User
+        </button>
+
+        <button type="button" class="secondary-btn" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>

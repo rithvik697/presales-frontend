@@ -1,0 +1,84 @@
+<div class="lead-create-container mat-elevation-z4">
+  <div class="header-row">
+    <button mat-icon-button (click)="cancel()" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="title-group">
+      <h2>New Lead</h2>
+      <p class="subtitle">Create a new lead entry with complete information</p>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <form (ngSubmit)="submit()" #leadForm="ngForm">
+
+    <!-- Row 1: First Name, Last Name -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>First Name **</mat-label>
+        <input matInput name="firstName" required [(ngModel)]="model.firstName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Last Name **</mat-label>
+        <input matInput name="lastName" required [(ngModel)]="model.lastName" />
+      </mat-form-field>
+    </div>
+
+    <!-- Row 2: Phone, Email -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Phone Number **</mat-label>
+        <input matInput name="phone" required [(ngModel)]="model.phone" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Email</mat-label>
+        <input matInput name="email" type="email" [(ngModel)]="model.email" />
+      </mat-form-field>
+    </div>
+
+    <!-- Row 3: Alternate Number, Project -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Alternate Number</mat-label>
+        <input matInput name="alternatePhone" [(ngModel)]="model.alternatePhone" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Project **</mat-label>
+        <mat-select name="project" required [(ngModel)]="model.project">
+          <mat-option *ngFor="let p of projects" [value]="p">{{ p }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Row 4: Lead Source, Profession -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Lead Source **</mat-label>
+        <mat-select name="source" required [(ngModel)]="model.source">
+          <mat-option *ngFor="let s of sources" [value]="s">{{ s }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Profession</mat-label>
+        <input matInput name="profession" [(ngModel)]="model.profession" />
+      </mat-form-field>
+    </div>
+
+    <!-- Row 5: Description -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Description</mat-label>
+        <textarea matInput name="description" rows="3" [(ngModel)]="model.description"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row buttons">
+      <button mat-flat-button color="primary" type="submit">Submit</button>
+      <button mat-stroked-button color="warn" type="button" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>

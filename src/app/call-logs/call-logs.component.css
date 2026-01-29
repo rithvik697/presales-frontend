@@ -1,0 +1,97 @@
+.call-logs-container {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #f9f9f9;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  font-family: 'Poppins', sans-serif;
+}
+
+.call-logs-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 600;
+  color: #009688;
+}
+
+.call-logs-card {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Table */
+.call-logs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.call-logs-table th,
+.call-logs-table td {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 15px;
+}
+
+/* Header */
+.call-logs-table thead {
+  background-color: #009688;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Rows */
+.call-logs-table tbody tr {
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.call-logs-table tbody tr:nth-child(even) {
+  background-color: #f1f8f7;
+}
+
+.call-logs-table tbody tr:hover {
+  background-color: #e0f2f1;
+  transform: scale(1.01);
+}
+
+/* Status pills */
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.status-pill.answered {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-pill.missed {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.status-pill.rejected {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .call-logs-container {
+    padding: 20px;
+  }
+
+  .call-logs-table th,
+  .call-logs-table td {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
