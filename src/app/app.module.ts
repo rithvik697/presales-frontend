@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CommonModule } from '@angular/common';
 
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 import { FormsModule } from '@angular/forms';
 
@@ -113,6 +114,8 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
     DialogModule,
     InputNumberModule,
     PanelModule,
+
+    BreadcrumbModule,
 
     ToastrModule.forRoot({
       positionClass: 'toast-top-center', // Change position here

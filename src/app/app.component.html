@@ -2,41 +2,76 @@
 <ng-container *ngIf="!isLoginPage && !isChangePasswordPage">
   <div class="crm" (mouseleave)="showLogout = false">
 
-    <mat-toolbar style="background-color: white; display: flex; align-items: center; height: 100px;">
+    <!-- ===================== TOOLBAR ===================== -->
+    <mat-toolbar
+      style="
+        background-color: white;
+        display: flex;
+        align-items: center;
+        height: 100px;
+      "
+    >
+      <!-- 🍔 HAMBURGER BUTTON -->
+      <button
+        mat-icon-button
+        class="menu-toggle"
+        (click)="toggleSidebar(sidenav)"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
 
-      <img src="assets/tagfinal-logo.png" alt="Logo" class="logo" style="height: 50px;" />
+      <!-- LOGO -->
+      <img
+        src="assets/tagfinal-logo.png"
+        alt="Logo"
+        class="logo"
+        style="height: 50px;"
+      />
+
       <span class="spacer"></span>
 
-      <div class="search-container" style="display: none;">
-        <mat-form-field appearance="outline" class="search-bar">
-          <mat-label>Search</mat-label>
-          <input matInput type="text" />
-          <button mat-icon-button matSuffix>
-            <mat-icon>search</mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
-
-      <div class="notification-wrapper" (click)="showNotificationDropdown = !showNotificationDropdown">
+      <!-- NOTIFICATIONS -->
+      <div
+        class="notification-wrapper"
+        (click)="showNotificationDropdown = !showNotificationDropdown"
+      >
         <mat-icon class="notification-icon">notifications</mat-icon>
-        <span class="notification-badge" *ngIf="unreadCount">{{ unreadCount }}</span>
+        <span class="notification-badge" *ngIf="unreadCount">
+          {{ unreadCount }}
+        </span>
 
-        <div class="notification-dropdown" *ngIf="showNotificationDropdown">
+        <div
+          class="notification-dropdown"
+          *ngIf="showNotificationDropdown"
+        >
           <div *ngIf="notifications.length; else noNotification">
-            <div *ngFor="let note of notifications" class="notification-item">
+            <div
+              *ngFor="let note of notifications"
+              class="notification-item"
+            >
               {{ note.message }}
             </div>
-            <button mat-flat-button class="mark-read-btn" (click)="markAllAsRead()">Mark all as read</button>
+            <button
+              mat-flat-button
+              class="mark-read-btn"
+              (click)="markAllAsRead()"
+            >
+              Mark all as read
+            </button>
           </div>
+
           <ng-template #noNotification>
-            <div class="notification-item no-data">No new notifications</div>
+            <div class="notification-item no-data">
+              No new notifications
+            </div>
           </ng-template>
         </div>
       </div>
 
+      <!-- SETTINGS -->
       <mat-icon class="icon">settings</mat-icon>
 
-      <!-- ✅ Profile & Logout only shown when username is present -->
+      <!-- PROFILE -->
       <div
         *ngIf="username"
         class="profile-container"
@@ -45,29 +80,39 @@
       >
         <div class="profile-section">
           <span class="profile-text">{{ username }}</span>
-          <img src="assets/profile.avif" alt="Profile" class="imageprofile" />
+          <img
+            src="assets/profile.avif"
+            alt="Profile"
+            class="imageprofile"
+          />
         </div>
 
-        <!-- ✅ Show logout ONLY when user is logged in AND hovering -->
-        <div *ngIf="showLogout" class="logout-dropdown" (click)="logout()">
+        <div
+          *ngIf="showLogout"
+          class="logout-dropdown"
+          (click)="logout()"
+        >
           Logout
         </div>
       </div>
-
-      <button mat-icon-button (click)="toggleSidebar(sidenav)" class="mobile-menu">
-        <mat-icon>menu</mat-icon>
-      </button>
-
     </mat-toolbar>
 
+    <!-- ===================== SIDENAV LAYOUT ===================== -->
     <mat-sidenav-container class="sidenav-container">
-      <mat-sidenav #sidenav [mode]="isDesktop ? 'side' : 'over'" [opened]="isDesktop" class="sidenav">
+
+      <!-- SIDEBAR -->
+      <mat-sidenav
+        #sidenav
+        [mode]="isDesktop ? 'side' : 'over'"
+        [opened]="isDesktop"
+        class="sidenav"
+      >
         <mat-nav-list class="sidebarbg">
-          <mat-list-item 
-            *ngFor="let item of menuItems" 
-            [routerLink]="item.route" 
+          <mat-list-item
+            *ngFor="let item of menuItems"
+            [routerLink]="item.route"
             (click)="selectItem(item.label)"
-            [ngClass]="{'active-item': selectedItem === item.label}"
+            [ngClass]="{ 'active-item': selectedItem === item.label }"
             class="menu-item-wrapper"
           >
             <div class="menu-item-content">
@@ -78,15 +123,27 @@
         </mat-nav-list>
       </mat-sidenav>
 
+      <!-- ===================== MAIN CONTENT ===================== -->
       <mat-sidenav-content class="content">
-        <router-outlet></router-outlet>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
 
+        <!-- ✅ GLOBAL BREADCRUMB (PrimeNG) -->
+        <div class="breadcrumb-wrapper" *ngIf="breadcrumbs?.length">
+          <p-breadcrumb
+            [model]="breadcrumbs"
+            [home]="{ icon: 'pi pi-home', routerLink: '/dashboard' }"
+          ></p-breadcrumb>
+        </div>
+
+        <!-- PAGE CONTENT -->
+        <router-outlet></router-outlet>
+
+      </mat-sidenav-content>
+
+    </mat-sidenav-container>
   </div>
 </ng-container>
 
-<!-- Show only login or change-password content -->
+<!-- ===================== LOGIN / CHANGE PASSWORD ===================== -->
 <ng-container *ngIf="isLoginPage || isChangePasswordPage">
   <router-outlet></router-outlet>
 </ng-container>

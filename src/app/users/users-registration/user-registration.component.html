@@ -1,9 +1,33 @@
 <div class="form-page">
-
   <div class="form-card">
-    <h2>User Registration</h2>
-    <p class="subtitle">Create a new employee user with complete information</p>
 
+    <!-- ================= HEADER ================= -->
+    <div class="form-header">
+
+      <!-- Back Arrow -->
+      <button
+        mat-icon-button
+        class="back-btn"
+        (click)="goBack()"
+        aria-label="Back to Users"
+      >
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <!-- Centered Title -->
+      <div class="title-wrapper">
+        <h2>User Registration</h2>
+        <p class="subtitle">
+          Create a new employee user with complete information
+        </p>
+      </div>
+
+      <!-- Spacer (balances flex layout) -->
+      <div class="header-spacer"></div>
+
+    </div>
+
+    <!-- ================= FORM ================= -->
     <form (ngSubmit)="submit()" #userForm="ngForm">
 
       <div class="form-grid">
@@ -27,9 +51,9 @@
             required
           >
             <option value="">Role **</option>
-            <option value="Admin">Admin</option>
-            <option value="Sales Executive">Sales Executive</option>
-            <option value="Sales Manager">Sales Manager</option>
+            <option value="ADMIN">Admin</option>
+            <option value="SALES_EXEC">Sales Executive</option>
+            <option value="SALES_MGR">Sales Manager</option>
           </select>
         </div>
 
@@ -80,18 +104,21 @@
 
       </div>
 
-      <!-- Actions -->
+      <!-- ================= ACTIONS ================= -->
       <div class="form-actions">
         <button type="submit" class="primary-btn">
           Create User
         </button>
 
-        <button type="button" class="secondary-btn" (click)="cancel()">
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="cancel()"
+        >
           Cancel
         </button>
       </div>
 
     </form>
   </div>
-
 </div>

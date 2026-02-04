@@ -100,3 +100,35 @@
 .secondary-btn:hover {
   background-color: #d2d2d2;
 }
+
+.form-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* Back button stays left */
+.back-btn {
+  justify-self: start;
+  color: #3f51b5;
+}
+
+/* Title stays perfectly centered */
+.title-wrapper {
+  text-align: center;
+}
+
+.title-wrapper h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  color: #3f51b5;
+}
+
+.title-wrapper .subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
