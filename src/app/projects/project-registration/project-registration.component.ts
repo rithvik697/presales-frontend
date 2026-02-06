@@ -49,5 +49,8 @@ export class ProjectRegistrationComponent {
         this.isSubmitting = false;
       }
     });
+    
   }
+  
 }
+

@@ -26,6 +26,8 @@ import { NgChartsModule } from 'ng2-charts';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { TagModule } from 'primeng/tag';
+import { ToolbarModule } from 'primeng/toolbar';
 
 import { ToastrModule } from 'ngx-toastr';
 
@@ -50,6 +52,7 @@ import { UsersListEmpComponent } from './users/users-list-emp/users-list-emp.com
 import { UserRegistrationComponent } from './users/users-registration/user-registration.component';
 import { UsersComponent } from './users/users.component';
 
+import { LoginComponent } from './auth/login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 import { ConfigureComponent } from './configure/configure.component';
@@ -63,6 +66,7 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
 
 @NgModule({
   declarations: [
+    LoginComponent,
     AppComponent,
     UsersComponent,
     UsersListEmpComponent,
@@ -98,6 +102,8 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
     NgChartsModule,
     TableModule,
     ButtonModule,
+    TagModule,
+    ToolbarModule,
     InputTextModule,
     DropdownModule,
     CalendarModule,

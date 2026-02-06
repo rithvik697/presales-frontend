@@ -36,4 +36,17 @@ export class ProjectListComponent implements OnInit {
   goToRegister() {
     this.router.navigate(['/projects/register']);
   }
+  getStatusSeverity(status: string) {
+  switch (status) {
+    case 'Active':
+      return 'success';
+    case 'Pre-Launch':
+      return 'warning';
+    case 'Inactive':
+      return 'danger';
+    default:
+      return 'info';
+  }
 }
+}
+

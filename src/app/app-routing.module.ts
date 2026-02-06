@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './auth/login/login.component';
 import { UsersComponent } from './users/users.component';
 import { UsersListEmpComponent } from './users/users-list-emp/users-list-emp.component';
 import { UserRegistrationComponent } from './users/users-registration/user-registration.component';
@@ -14,7 +15,8 @@ import { ProjectRegistrationComponent } from './projects/project-registration/pr
 import { CallLogsComponent } from './call-logs/call-logs.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   {
     path: 'users',
