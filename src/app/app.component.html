@@ -4,12 +4,7 @@
 
     <!-- ===================== TOOLBAR ===================== -->
     <mat-toolbar
-      style="
-        background-color: white;
-        display: flex;
-        align-items: center;
-        height: 100px;
-      "
+      class="app-toolbar"
     >
       <!-- 🍔 HAMBURGER BUTTON -->
       <button
@@ -25,7 +20,6 @@
         src="assets/tagfinal-logo.png"
         alt="Logo"
         class="logo"
-        style="height: 50px;"
       />
 
       <span class="spacer"></span>
@@ -40,10 +34,7 @@
           {{ unreadCount }}
         </span>
 
-        <div
-          class="notification-dropdown"
-          *ngIf="showNotificationDropdown"
-        >
+        <div class="notification-dropdown" *ngIf="showNotificationDropdown">
           <div *ngIf="notifications.length; else noNotification">
             <div
               *ngFor="let note of notifications"
@@ -116,8 +107,12 @@
             class="menu-item-wrapper"
           >
             <div class="menu-item-content">
-              <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>
-              <span class="menu-label">{{ item.label }}</span>
+              <mat-icon class="menu-icon">
+                {{ item.icon }}
+              </mat-icon>
+              <span class="menu-label">
+                {{ item.label }}
+              </span>
             </div>
           </mat-list-item>
         </mat-nav-list>
@@ -126,11 +121,11 @@
       <!-- ===================== MAIN CONTENT ===================== -->
       <mat-sidenav-content class="content">
 
-        <!-- ✅ GLOBAL BREADCRUMB (PrimeNG) -->
+        <!-- 🌐 GLOBAL BREADCRUMB -->
         <div class="breadcrumb-wrapper" *ngIf="breadcrumbs?.length">
           <p-breadcrumb
             [model]="breadcrumbs"
-            [home]="{ icon: 'pi pi-home', routerLink: '/dashboard' }"
+            [home]="home"
           ></p-breadcrumb>
         </div>
 
@@ -138,7 +133,6 @@
         <router-outlet></router-outlet>
 
       </mat-sidenav-content>
-
     </mat-sidenav-container>
   </div>
 </ng-container>

@@ -1,11 +1,11 @@
-/* Page container */
+/* ================= PAGE CONTAINER ================= */
 .form-page {
   display: flex;
   justify-content: center;
   padding: 40px 20px;
 }
 
-/* Card */
+/* ================= CARD ================= */
 .form-card {
   width: 100%;
   max-width: 900px;
@@ -15,92 +15,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Header */
-.form-card h2 {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 600;
-  color: #3f51b5;
-}
-
-.subtitle {
-  margin-top: 6px;
-  margin-bottom: 28px;
-  color: #666;
-  font-size: 14px;
-}
-
-/* Grid */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 28px;
-  row-gap: 22px;
-}
-
-/* Form controls */
-.form-group input,
-.form-group select {
-  width: 100%;
-  height: 48px;
-  padding: 0 16px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #d0d0d0;
-  background-color: #fff;
-  box-sizing: border-box;
-}
-
-/* Placeholder & select text alignment */
-.form-group input::placeholder {
-  color: #9a9a9a;
-}
-
-/* Focus state */
-.form-group input:focus,
-.form-group select:focus {
-  border-color: #3f51b5;
-  outline: none;
-}
-
-/* Action buttons */
-.form-actions {
-  margin-top: 32px;
-  display: flex;
-  gap: 16px;
-}
-
-/* Primary button */
-.primary-btn {
-  background-color: #3f51b5;
-  color: #fff;
-  border: none;
-  padding: 12px 28px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.primary-btn:hover {
-  background-color: #2f3fa4;
-}
-
-/* Secondary button */
-.secondary-btn {
-  background-color: #e0e0e0;
-  color: #333;
-  border: none;
-  padding: 12px 28px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.secondary-btn:hover {
-  background-color: #d2d2d2;
-}
-
+/* ================= HEADER ================= */
 .form-header {
   display: grid;
   grid-template-columns: 40px 1fr 40px;
@@ -108,13 +23,13 @@
   margin-bottom: 24px;
 }
 
-/* Back button stays left */
+/* Back button */
 .back-btn {
   justify-self: start;
   color: #3f51b5;
 }
 
-/* Title stays perfectly centered */
+/* Title wrapper */
 .title-wrapper {
   text-align: center;
 }
@@ -130,5 +45,112 @@
   margin-top: 6px;
   font-size: 14px;
   color: #666;
+}
+
+/* ================= GRID ================= */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
+  row-gap: 22px;
+}
+
+/* ================= FORM CONTROLS ================= */
+.form-group input,
+.form-group select {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+/* Placeholder */
+.form-group input::placeholder {
+  color: #9a9a9a;
+}
+
+/* Focus */
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #3f51b5;
+  outline: none;
+}
+
+/* ================= READ-ONLY / DISABLED (EDIT MODE) ================= */
+.form-group input:disabled,
+.form-group select:disabled {
+  background-color: #f2f3f5;
+  color: #6b6b6b;
+  border: 1px solid #d6d6d6;
+  cursor: not-allowed;
+  opacity: 1; /* keep text readable */
+}
+
+/* Subtle inset for disabled fields */
+.form-group input:disabled {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* ================= ACTION BUTTONS ================= */
+.form-actions {
+  margin-top: 32px;
+  display: flex;
+  gap: 16px;
+}
+
+/* Primary */
+.primary-btn {
+  background-color: #3f51b5;
+  color: #ffffff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background-color: #2f3fa4;
+}
+
+/* Secondary */
+.secondary-btn {
+  background-color: #e0e0e0;
+  color: #333333;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background-color: #d2d2d2;
+}
+
+/* ================= LABELS ================= */
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Required star */
+.form-group .required {
+  color: #d32f2f;
+  margin-left: 2px;
+}
+
+/* Better spacing between label & input */
+.form-group input,
+.form-group select {
+  margin-top: 2px;
 }
 

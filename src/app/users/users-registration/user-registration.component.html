@@ -16,15 +16,17 @@
 
       <!-- Centered Title -->
       <div class="title-wrapper">
-        <h2>User Registration</h2>
+        <h2>{{ isEditMode ? 'Edit User' : 'User Registration' }}</h2>
         <p class="subtitle">
-          Create a new employee user with complete information
+          {{
+            isEditMode
+              ? 'Update employee user information'
+              : 'Create a new employee user with complete information'
+          }}
         </p>
       </div>
 
-      <!-- Spacer (balances flex layout) -->
-      <div class="header-spacer"></div>
-
+      <div></div>
     </div>
 
     <!-- ================= FORM ================= -->
@@ -34,23 +36,29 @@
 
         <!-- Employee ID -->
         <div class="form-group">
+          <label>
+            Employee ID <span class="required">*</span>
+          </label>
           <input
             type="text"
             name="emp_id"
             [(ngModel)]="user.emp_id"
-            placeholder="Employee ID **"
             required
+            [disabled]="isEditMode"
           />
         </div>
 
         <!-- Role -->
         <div class="form-group">
+          <label>
+            Role <span class="required">*</span>
+          </label>
           <select
             name="role_id"
             [(ngModel)]="user.role_id"
             required
           >
-            <option value="">Role **</option>
+            <option value="">Select Role</option>
             <option value="ADMIN">Admin</option>
             <option value="SALES_EXEC">Sales Executive</option>
             <option value="SALES_MGR">Sales Manager</option>
@@ -59,44 +67,51 @@
 
         <!-- First Name -->
         <div class="form-group">
+          <label>
+            First Name <span class="required">*</span>
+          </label>
           <input
             type="text"
             name="emp_first_name"
             [(ngModel)]="user.emp_first_name"
-            placeholder="First Name **"
             required
           />
         </div>
 
         <!-- Last Name -->
         <div class="form-group">
+          <label>
+            Last Name <span class="required">*</span>
+          </label>
           <input
             type="text"
             name="emp_last_name"
             [(ngModel)]="user.emp_last_name"
-            placeholder="Last Name **"
             required
           />
         </div>
 
         <!-- Middle Name -->
         <div class="form-group">
+          <label>Middle Name</label>
           <input
             type="text"
             name="emp_middle_name"
             [(ngModel)]="user.emp_middle_name"
-            placeholder="Middle Name"
           />
         </div>
 
         <!-- Status -->
         <div class="form-group">
+          <label>
+            Status <span class="required">*</span>
+          </label>
           <select
             name="emp_status"
             [(ngModel)]="user.emp_status"
             required
           >
-            <option value="">Status **</option>
+            <option value="">Select Status</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
           </select>
@@ -107,7 +122,7 @@
       <!-- ================= ACTIONS ================= -->
       <div class="form-actions">
         <button type="submit" class="primary-btn">
-          Create User
+          {{ isEditMode ? 'Update User' : 'Create User' }}
         </button>
 
         <button

@@ -35,6 +35,8 @@ export class AppComponent implements OnInit, OnDestroy {
   menuItems: any[] = [];
   breadcrumbs: MenuItem[] = []; // ✅ ADD
 
+  home = { icon: 'pi pi-home', routerLink: '/' }; // ✅ ADD 
+
   private routerSub!: Subscription;
 
   private allMenuItems = [
