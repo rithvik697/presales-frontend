@@ -17,13 +17,16 @@ export class UsersListEmpComponent implements OnInit {
     private regService: RegistrationService,
     private toastr: ToastrService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.regService.getUsers().subscribe({
       next: (res: any) => {
-        if (res.success) this.users = res.data;
-        else this.toastr.error('Failed to fetch users');
+        if (res.success) {
+          this.users = res.data;
+        } else {
+          this.toastr.error('Failed to fetch users');
+        }
         this.loading = false;
       },
       error: (err: any) => {
@@ -36,5 +39,13 @@ export class UsersListEmpComponent implements OnInit {
 
   addUser() {
     this.router.navigate(['users/register']);
+  }
+
+  // ✅ ADD THIS METHOD
+  editUser(empId: string) {
+    this.router.navigate(
+      ['users/register'],
+      { queryParams: { id: empId } }
+    );
   }
 }

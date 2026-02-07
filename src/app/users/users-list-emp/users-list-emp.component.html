@@ -11,51 +11,178 @@
 
   <!-- Table -->
   <div class="table-wrapper">
-    <table class="users-table">
-      <thead>
-        <tr>
-          <th>Employee ID</th>
-          <th>First Name</th>
-          <th>Middle Name</th>
-          <th>Last Name</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th>Created By</th>
-          <th>Created On</th>
-          <th>Modified By</th>
-          <th>Modified On</th>
-        </tr>
-      </thead>
 
-      <tbody>
-        <tr *ngFor="let user of users">
+    <p-table
+      #dt
+      [value]="users"
+      [paginator]="true"
+      [rows]="5"
+      [scrollable]="true"
+      scrollDirection="horizontal"
+      sortMode="multiple"
+      class="users-table"
+    >
+
+      <!-- HEADER + FILTER ROW -->
+      <ng-template pTemplate="header">
+
+        <!-- COLUMN HEADERS -->
+        <tr>
+          <!-- # COLUMN (UI SORT ONLY) -->
+          <th pSortableColumn>
+            #
+            <p-sortIcon></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="emp_id">
+            Employee ID
+            <p-sortIcon field="emp_id"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="emp_first_name">
+            First Name
+            <p-sortIcon field="emp_first_name"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="emp_middle_name">
+            Middle Name
+            <p-sortIcon field="emp_middle_name"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="emp_last_name">
+            Last Name
+            <p-sortIcon field="emp_last_name"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="role_id">
+            Role
+            <p-sortIcon field="role_id"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="emp_status">
+            Status
+            <p-sortIcon field="emp_status"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="created_by">
+            Created By
+            <p-sortIcon field="created_by"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="created_on">
+            Created On
+            <p-sortIcon field="created_on"></p-sortIcon>
+          </th>
+
+          <th pSortableColumn="modified_on">
+            Modified On
+            <p-sortIcon field="modified_on"></p-sortIcon>
+          </th>
+
+          <th>Action</th>
+        </tr>
+
+        <!-- 🔍 FILTER INPUTS -->
+        <tr>
+          <!-- # FILTER (UI only) -->
+          <th>
+            <input
+              pInputText
+              disabled
+              style="width: 40px; opacity: 0.6;" />
+          </th>
+
+          <th>
+            <input pInputText #empId
+              (input)="dt.filter(empId.value, 'emp_id', 'contains')" />
+          </th>
+
+          <th>
+            <input pInputText #firstName
+              (input)="dt.filter(firstName.value, 'emp_first_name', 'contains')" />
+          </th>
+
+          <th>
+            <input pInputText #middleName
+              (input)="dt.filter(middleName.value, 'emp_middle_name', 'contains')" />
+          </th>
+
+          <th>
+            <input pInputText #lastName
+              (input)="dt.filter(lastName.value, 'emp_last_name', 'contains')" />
+          </th>
+
+          <th>
+            <input pInputText #role
+              (input)="dt.filter(role.value, 'role_id', 'contains')" />
+          </th>
+
+          <th>
+            <input pInputText #status
+              (input)="dt.filter(status.value, 'emp_status', 'contains')" />
+          </th>
+
+          <th>
+            <input pInputText #createdBy
+              (input)="dt.filter(createdBy.value, 'created_by', 'contains')" />
+          </th>
+
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+
+      </ng-template>
+
+      <!-- TABLE BODY -->
+      <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+        <tr>
+          <!-- # VALUE -->
+          <td>
+            {{ dt.first + rowIndex + 1 }}
+          </td>
+
           <td>{{ user.emp_id }}</td>
           <td>{{ user.emp_first_name }}</td>
           <td>{{ user.emp_middle_name || '-' }}</td>
           <td>{{ user.emp_last_name }}</td>
           <td>{{ user.role_id }}</td>
+
           <td>
             <span
               [class.active]="user.emp_status === 'Active'"
-              [class.inactive]="user.emp_status !== 'Active'"
-            >
+              [class.inactive]="user.emp_status !== 'Active'">
               {{ user.emp_status }}
             </span>
           </td>
-          <td>{{ user.created_by }}</td>
-          <td>{{ user.created_on | date: 'dd-MMM-yyyy' }}</td>
-          <td>{{ user.modified_by }}</td>
-          <td>{{ user.modified_on | date: 'dd-MMM-yyyy' }}</td>
-        </tr>
 
-        <!-- Empty State -->
-        <tr *ngIf="!loading && users.length === 0">
-          <td colspan="10" class="empty-state">
+          <td>{{ user.created_by }}</td>
+          <td>{{ user.created_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
+          <td>{{ user.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
+
+          <td>
+            <p-button
+              icon="pi pi-pencil"
+              class="p-button-text p-button-primary p-button-sm"
+              pTooltip="Edit User"
+              tooltipPosition="top"
+              (onClick)="editUser(user.emp_id)">
+            </p-button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- EMPTY STATE -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="12" class="empty-state">
             No employee records available
           </td>
         </tr>
-      </tbody>
-    </table>
+      </ng-template>
+
+    </p-table>
+
   </div>
 
 </div>
