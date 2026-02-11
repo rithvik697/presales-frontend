@@ -1,144 +1,139 @@
-<div class="users-list-container">
+<div class="page-container">
 
-  <!-- ================= BREADCRUMB ================= -->
-  <div class="breadcrumb-container">
-    <i class="pi pi-home"></i>
-    <span class="separator">›</span>
-    <span class="current">Projects</span>
-  </div>
+  <!-- Breadcrumb -->
+  <p-breadcrumb
+    [model]="breadcrumbItems"
+    [home]="home"
+    class="mb-3">
+  </p-breadcrumb>
 
-  <!-- ================= HEADER ================= -->
-  <div class="users-header">
-    <h2>Projects</h2>
+  <!-- Toolbar -->
+  <p-toolbar class="mb-3">
+    <div class="p-toolbar-group-left">
+      <h2 class="m-0">Projects</h2>
+    </div>
 
-    <button class="add-user-btn" (click)="goToRegister()">
-      + Register Project
-    </button>
-  </div>
+    <div class="p-toolbar-group-right">
+      <button
+        pButton
+        label="Register Project"
+        icon="pi pi-plus"
+        class="p-button-primary"
+        (click)="goToRegister()">
+      </button>
+    </div>
+  </p-toolbar>
 
-  <!-- ================= TABLE ================= -->
-  <div class="table-wrapper">
+  <!-- Projects Table -->
+  <p-table
+    #dt
+    *ngIf="!loading"
+    [value]="projects"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5,10,20]"
+    responsiveLayout="scroll"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} projects"
+    styleClass="crm-table"
+  >
 
-    <p-table
-      #dt
-      [value]="projects"
-      [paginator]="true"
-      [rows]="5"
-      [scrollable]="true"
-      scrollDirection="horizontal"
-      sortMode="multiple"
-      responsiveLayout="scroll"
-      class="users-table"
-    >
-
-      <!-- ================= HEADER ================= -->
-      <ng-template pTemplate="header">
-        <tr>
-
-          <th class="serial-col">
-            #
-          </th>
-
-          <th pSortableColumn="project_name">
+    <!-- HEADER -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="project_name">
+          <div class="header-content">
             Project Name
             <p-sortIcon field="project_name"></p-sortIcon>
-          </th>
+          </div>
+        </th>
 
-          <th pSortableColumn="project_type">
+        <th pSortableColumn="project_type">
+          <div class="header-content">
             Type
             <p-sortIcon field="project_type"></p-sortIcon>
-          </th>
+          </div>
+        </th>
 
-          <th pSortableColumn="status">
-            Status
-            <p-sortIcon field="status"></p-sortIcon>
-          </th>
+        <th>Status</th>
 
-          <th pSortableColumn="city">
+        <th pSortableColumn="city">
+          <div class="header-content">
             City
             <p-sortIcon field="city"></p-sortIcon>
-          </th>
+          </div>
+        </th>
 
-          <th pSortableColumn="created_on">
+        <th pSortableColumn="created_on">
+          <div class="header-content">
             Created On
             <p-sortIcon field="created_on"></p-sortIcon>
-          </th>
+          </div>
+        </th>
 
-        </tr>
+        <th style="width: 100px">Actions</th>
+      </tr>
 
-        <!-- ================= FILTER ROW ================= -->
-        <tr>
+      <!-- FILTER ROW -->
+      <tr class="filter-row">
+        <th>
+          <input pInputText type="text"
+            placeholder="Search name"
+            (input)="dt.filter($any($event.target).value, 'project_name', 'contains')" />
+        </th>
+        <th>
+          <input pInputText type="text"
+            placeholder="Search type"
+            (input)="dt.filter($any($event.target).value, 'project_type', 'contains')" />
+        </th>
+        <th>
+          <input pInputText type="text"
+            placeholder="Search status"
+            (input)="dt.filter($any($event.target).value, 'status', 'contains')" />
+        </th>
+        <th>
+          <input pInputText type="text"
+            placeholder="Search city"
+            (input)="dt.filter($any($event.target).value, 'city', 'contains')" />
+        </th>
+        <th></th>
+        <th></th>
+      </tr>
+    </ng-template>
 
-          <th class="serial-col"></th>
+    <!-- BODY -->
+    <ng-template pTemplate="body" let-project>
+      <tr>
+        <td>{{ project.project_name }}</td>
+        <td>{{ project.project_type }}</td>
+        <td>
+          <p-tag
+            [value]="project.status"
+            [severity]="getStatusSeverity(project.status)">
+          </p-tag>
+        </td>
+        <td>{{ project.city }}</td>
+        <td>{{ project.created_on | date:'dd MMM yyyy' }}</td>
+        <td class="text-center">
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-text p-button-primary"
+            (click)="openEditDialog(project)">
+          </button>
+        </td>
+      </tr>
+    </ng-template>
 
-          <th>
-            <input pInputText
-                   #projectName
-                   (input)="dt.filter(projectName.value, 'project_name', 'contains')" />
-          </th>
+    <!-- EMPTY -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="text-center">
+          No projects registered yet.
+        </td>
+      </tr>
+    </ng-template>
 
-          <th>
-            <input pInputText
-                   #type
-                   (input)="dt.filter(type.value, 'project_type', 'contains')" />
-          </th>
-
-          <th>
-            <input pInputText
-                   #status
-                   (input)="dt.filter(status.value, 'status', 'contains')" />
-          </th>
-
-          <th>
-            <input pInputText
-                   #city
-                   (input)="dt.filter(city.value, 'city', 'contains')" />
-          </th>
-
-          <th></th>
-
-        </tr>
-      </ng-template>
-
-      <!-- ================= BODY ================= -->
-      <ng-template pTemplate="body" let-project let-rowIndex="rowIndex">
-        <tr>
-
-          <td class="serial-col">
-            {{ rowIndex + 1 }}
-          </td>
-
-          <td>{{ project.project_name }}</td>
-          <td>{{ project.project_type }}</td>
-
-          <td>
-            <span
-              [class.active]="project.status === 'Active'"
-              [class.inactive]="project.status !== 'Active'">
-              {{ project.status }}
-            </span>
-          </td>
-
-          <td>{{ project.city }}</td>
-
-          <td>
-            {{ project.created_on | date:'dd-MMM-yyyy' }}
-          </td>
-
-        </tr>
-      </ng-template>
-
-      <!-- ================= EMPTY ================= -->
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="6" class="empty-state">
-            No projects registered yet.
-          </td>
-        </tr>
-      </ng-template>
-
-    </p-table>
-
-  </div>
+  </p-table>
 
 </div>
