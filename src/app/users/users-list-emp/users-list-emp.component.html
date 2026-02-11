@@ -23,16 +23,11 @@
       class="users-table"
     >
 
-      <!-- HEADER + FILTER ROW -->
+      <!-- ================= HEADER ================= -->
       <ng-template pTemplate="header">
 
-        <!-- COLUMN HEADERS -->
         <tr>
-          <!-- # COLUMN (UI SORT ONLY) -->
-          <th pSortableColumn>
-            #
-            <p-sortIcon></p-sortIcon>
-          </th>
+          <th>#</th>
 
           <th pSortableColumn="emp_id">
             Employee ID
@@ -82,14 +77,10 @@
           <th>Action</th>
         </tr>
 
-        <!-- 🔍 FILTER INPUTS -->
+        <!-- 🔍 FILTER ROW -->
         <tr>
-          <!-- # FILTER (UI only) -->
           <th>
-            <input
-              pInputText
-              disabled
-              style="width: 40px; opacity: 0.6;" />
+            <input pInputText disabled style="width: 40px; opacity: 0.6;" />
           </th>
 
           <th>
@@ -134,10 +125,10 @@
 
       </ng-template>
 
-      <!-- TABLE BODY -->
+      <!-- ================= BODY ================= -->
       <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
         <tr>
-          <!-- # VALUE -->
+
           <td>
             {{ dt.first + rowIndex + 1 }}
           </td>
@@ -148,12 +139,20 @@
           <td>{{ user.emp_last_name }}</td>
           <td>{{ user.role_id }}</td>
 
+          <!-- ✅ PROFESSIONAL STATUS TOGGLE -->
           <td>
-            <span
+            <div
+              class="status-toggle"
               [class.active]="user.emp_status === 'Active'"
-              [class.inactive]="user.emp_status !== 'Active'">
-              {{ user.emp_status }}
-            </span>
+              (click)="toggleUserStatus(user)">
+
+              <div class="toggle-knob"></div>
+
+              <span class="status-text">
+                {{ user.emp_status }}
+              </span>
+
+            </div>
           </td>
 
           <td>{{ user.created_by }}</td>
@@ -169,10 +168,11 @@
               (onClick)="editUser(user.emp_id)">
             </p-button>
           </td>
+
         </tr>
       </ng-template>
 
-      <!-- EMPTY STATE -->
+      <!-- ================= EMPTY STATE ================= -->
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="12" class="empty-state">

@@ -1,10 +1,30 @@
 <div class="page-container">
-  <div class="page-header">
-    <h2>Project Registration</h2>
-    <span class="subtitle">Create projects to run ads and capture leads</span>
+
+  <!-- ================= BREADCRUMB ================= -->
+  <div class="breadcrumb-container">
+    <i class="pi pi-home"></i>
+    <span class="separator">›</span>
+    <span>Projects</span>
+    <span class="separator">›</span>
+    <span class="current">Register Project</span>
   </div>
 
-  <div class="card">
+  <!-- ================= BIG CENTERED CARD ================= -->
+  <div class="registration-card">
+
+    <!-- Header INSIDE card (like Users) -->
+    <div class="registration-header">
+
+      <button class="back-btn" (click)="goBack()">←</button>
+
+      <div class="title-wrapper">
+        <h2>Project Registration</h2>
+        <p>Create projects to run ads and capture leads</p>
+      </div>
+
+    </div>
+
+    <!-- ================= FORM ================= -->
     <form (ngSubmit)="submitProject()" #projectForm="ngForm">
 
       <!-- BASIC DETAILS -->
@@ -14,21 +34,17 @@
         <div class="grid">
           <div class="form-row">
             <label>Project Name</label>
-            <input
-              type="text"
-              [(ngModel)]="projectData.project_name"
-              name="project_name"
-              required
-            />
+            <input type="text"
+                   [(ngModel)]="projectData.project_name"
+                   name="project_name"
+                   required />
           </div>
 
           <div class="form-row">
             <label>Project Type</label>
-            <select
-              [(ngModel)]="projectData.project_type"
-              name="project_type"
-              required
-            >
+            <select [(ngModel)]="projectData.project_type"
+                    name="project_type"
+                    required>
               <option value="">Select Type</option>
               <option *ngFor="let type of projectTypes" [value]="type">
                 {{ type }}
@@ -38,11 +54,9 @@
 
           <div class="form-row">
             <label>Project Status</label>
-            <select
-              [(ngModel)]="projectData.status"
-              name="status"
-              required
-            >
+            <select [(ngModel)]="projectData.status"
+                    name="status"
+                    required>
               <option value="">Select Status</option>
               <option *ngFor="let status of projectStatuses" [value]="status">
                 {{ status }}
@@ -52,11 +66,9 @@
 
           <div class="form-row">
             <label>RERA Number</label>
-            <input
-              type="text"
-              [(ngModel)]="projectData.rera_number"
-              name="rera_number"
-            />
+            <input type="text"
+                   [(ngModel)]="projectData.rera_number"
+                   name="rera_number" />
           </div>
         </div>
       </div>
@@ -68,39 +80,31 @@
         <div class="grid">
           <div class="form-row full">
             <label>Address</label>
-            <input
-              type="text"
-              [(ngModel)]="projectData.address_line_1"
-              name="address_line_1"
-            />
+            <input type="text"
+                   [(ngModel)]="projectData.address_line_1"
+                   name="address_line_1" />
           </div>
 
           <div class="form-row">
             <label>City</label>
-            <input
-              type="text"
-              [(ngModel)]="projectData.city"
-              name="city"
-            />
+            <input type="text"
+                   [(ngModel)]="projectData.city"
+                   name="city" />
           </div>
 
           <div class="form-row">
             <label>State</label>
-            <input
-              type="text"
-              [(ngModel)]="projectData.state"
-              name="state"
-            />
+            <input type="text"
+                   [(ngModel)]="projectData.state"
+                   name="state" />
           </div>
 
           <div class="form-row">
             <label>Pincode</label>
-            <input
-              type="text"
-              maxlength="6"
-              [(ngModel)]="projectData.pincode"
-              name="pincode"
-            />
+            <input type="text"
+                   maxlength="6"
+                   [(ngModel)]="projectData.pincode"
+                   name="pincode" />
           </div>
         </div>
       </div>
@@ -112,20 +116,16 @@
         <div class="grid">
           <div class="form-row">
             <label>Total Area (sq ft)</label>
-            <input
-              type="number"
-              [(ngModel)]="projectData.total_area"
-              name="total_area"
-            />
+            <input type="number"
+                   [(ngModel)]="projectData.total_area"
+                   name="total_area" />
           </div>
 
           <div class="form-row">
             <label>Number of Units</label>
-            <input
-              type="number"
-              [(ngModel)]="projectData.number_of_units"
-              name="number_of_units"
-            />
+            <input type="number"
+                   [(ngModel)]="projectData.number_of_units"
+                   name="number_of_units" />
           </div>
         </div>
       </div>
@@ -137,14 +137,175 @@
 
       <!-- ACTIONS -->
       <div class="form-actions">
-        <button
-          type="submit"
-          [disabled]="isSubmitting || projectForm.invalid"
-        >
+        <button type="submit"
+                [disabled]="isSubmitting || projectForm.invalid">
           {{ isSubmitting ? 'Saving...' : 'Create Project' }}
         </button>
       </div>
 
     </form>
+
+  </div>
+</div>
+<div class="page-container">
+
+  <!-- ================= BREADCRUMB ================= -->
+  <div class="breadcrumb-container">
+
+    <!-- Home -->
+    <a routerLink="/dashboard" class="breadcrumb-link">
+      <i class="pi pi-home"></i>
+    </a>
+
+    <span class="separator">›</span>
+
+    <!-- Projects -->
+    <a routerLink="/projects" class="breadcrumb-link">
+      Projects
+    </a>
+
+    <span class="separator">›</span>
+
+    <!-- Current Page -->
+    <span class="current">Register Project</span>
+
+  </div>
+
+  <!-- ================= BIG CENTERED CARD ================= -->
+  <div class="registration-card">
+
+    <!-- Header INSIDE card (like Users) -->
+    <div class="registration-header">
+
+      <button class="back-btn" (click)="goBack()">←</button>
+
+      <div class="title-wrapper">
+        <h2>Project Registration</h2>
+        <p>Create projects to run ads and capture leads</p>
+      </div>
+
+    </div>
+
+    <!-- ================= FORM ================= -->
+    <form (ngSubmit)="submitProject()" #projectForm="ngForm">
+
+      <!-- BASIC DETAILS -->
+      <div class="section">
+        <h3>Basic Details</h3>
+
+        <div class="grid">
+          <div class="form-row">
+            <label>Project Name</label>
+            <input type="text"
+                   [(ngModel)]="projectData.project_name"
+                   name="project_name"
+                   required />
+          </div>
+
+          <div class="form-row">
+            <label>Project Type</label>
+            <select [(ngModel)]="projectData.project_type"
+                    name="project_type"
+                    required>
+              <option value="">Select Type</option>
+              <option *ngFor="let type of projectTypes" [value]="type">
+                {{ type }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>Project Status</label>
+            <select [(ngModel)]="projectData.status"
+                    name="status"
+                    required>
+              <option value="">Select Status</option>
+              <option *ngFor="let status of projectStatuses" [value]="status">
+                {{ status }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>RERA Number</label>
+            <input type="text"
+                   [(ngModel)]="projectData.rera_number"
+                   name="rera_number" />
+          </div>
+        </div>
+      </div>
+
+      <!-- LOCATION -->
+      <div class="section">
+        <h3>Location</h3>
+
+        <div class="grid">
+          <div class="form-row full">
+            <label>Address</label>
+            <input type="text"
+                   [(ngModel)]="projectData.address_line_1"
+                   name="address_line_1" />
+          </div>
+
+          <div class="form-row">
+            <label>City</label>
+            <input type="text"
+                   [(ngModel)]="projectData.city"
+                   name="city" />
+          </div>
+
+          <div class="form-row">
+            <label>State</label>
+            <input type="text"
+                   [(ngModel)]="projectData.state"
+                   name="state" />
+          </div>
+
+          <div class="form-row">
+            <label>Pincode</label>
+            <input type="text"
+                   maxlength="6"
+                   [(ngModel)]="projectData.pincode"
+                   name="pincode" />
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT SIZE -->
+      <div class="section">
+        <h3>Project Size</h3>
+
+        <div class="grid">
+          <div class="form-row">
+            <label>Total Area (sq ft)</label>
+            <input type="number"
+                   [(ngModel)]="projectData.total_area"
+                   name="total_area" />
+          </div>
+
+          <div class="form-row">
+            <label>Number of Units</label>
+            <input type="number"
+                   [(ngModel)]="projectData.number_of_units"
+                   name="number_of_units" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ERRORS -->
+      <div class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="form-actions">
+        <button type="submit"
+                [disabled]="isSubmitting || projectForm.invalid">
+          {{ isSubmitting ? 'Saving...' : 'Create Project' }}
+        </button>
+      </div>
+
+    </form>
+
   </div>
 </div>

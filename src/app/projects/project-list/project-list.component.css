@@ -1,76 +1,161 @@
-.page-container {
-  padding: 24px;
-  max-width: 1200px;
+/* =========================================
+   MATCH USERS PAGE STYLE EXACTLY
+========================================= */
+
+.users-list-container {
+  padding: 30px;
 }
 
-.page-header {
+/* ---------- HEADER ---------- */
+.users-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
-.page-header h2 {
+.users-header h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
 }
 
-.page-header button {
-  padding: 8px 16px;
-  background-color: #2563eb;
-  color: white;
+/* Register Button (same as Add User) */
+.add-user-btn {
+  background-color: #3f51b5;
+  color: #ffffff;
   border: none;
+  padding: 8px 14px;
   border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
 }
 
-.card {
-  background: #fff;
-  padding: 16px;
-  border-radius: 6px;
+.add-user-btn:hover {
+  background-color: #2f3fa4;
 }
 
-table {
+/* ---------- TABLE WRAPPER ---------- */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 14px;
+}
+
+/* ---------- SERIAL COLUMN ---------- */
+.serial-col {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  text-align: center;
+}
+
+/* ---------- HEADER ROW (BLUE) ---------- */
+:host ::ng-deep .users-table .p-datatable-thead > tr:first-child > th {
+  background-color: #3f51b5;
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  padding: 14px 16px;
+  white-space: nowrap;
+  text-align: left;
+}
+
+/* ---------- FILTER ROW ---------- */
+:host ::ng-deep .users-table .p-datatable-thead > tr:nth-child(2) > th {
+  background-color: #e8ecff;
+  border: none;
+  padding: 10px;
+}
+
+/* ---------- FILTER INPUTS ---------- */
+:host ::ng-deep .users-table .p-datatable-thead input {
   width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid #c5cfff;
+  padding: 6px 10px;
   font-size: 14px;
 }
 
-th {
-  text-align: left;
+/* ---------- BODY ROWS ---------- */
+:host ::ng-deep .users-table .p-datatable-tbody > tr {
+  background-color: #ffffff;
+}
+
+:host ::ng-deep .users-table .p-datatable-tbody > tr:nth-child(even) {
+  background-color: #f2f6fc;
+}
+
+:host ::ng-deep .users-table .p-datatable-tbody > tr:hover {
+  background-color: #eef4ff;
+}
+
+/* ---------- CELL SPACING ---------- */
+:host ::ng-deep .users-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* ---------- STATUS BADGES ---------- */
+:host ::ng-deep .users-table td span.active {
+  min-width: 80px;
+  display: inline-block;
+  padding: 4px 10px;
+  text-align: center;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+:host ::ng-deep .users-table td span.inactive {
+  min-width: 80px;
+  display: inline-block;
+  padding: 4px 10px;
+  text-align: center;
+  background-color: #ffebee;
+  color: #c62828;
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+/* ---------- EMPTY STATE ---------- */
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  font-size: 15px;
+  color: #777;
+  font-style: italic;
+}
+
+/* ---------- PAGINATOR ---------- */
+:host ::ng-deep .p-paginator {
+  border: none;
+  margin-top: 10px;
+}
+
+
+/* Breadcrumb */
+.breadcrumb-container {
+  background: #f3f4f6;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breadcrumb-container .separator {
+  color: #9ca3af;
+}
+
+.breadcrumb-container .current {
+  font-weight: 500;
   color: #374151;
 }
 
-.status {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status.Active {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status.Inactive {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.status.Pre-Launch {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.empty {
-  text-align: center;
-  padding: 30px;
-  color: #6b7280;
-}

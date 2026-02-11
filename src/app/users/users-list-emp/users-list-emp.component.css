@@ -300,3 +300,84 @@
 .table-wrapper {
   overflow-x: auto;
 }
+
+/* ===============================
+   STATUS TOGGLE BUTTON
+=================================*/
+
+.status-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f3f4f6; /* default grey */
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+}
+
+/* Toggle knob */
+.status-toggle .toggle-knob {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #000;
+  transition: all 0.3s ease;
+}
+
+/* Active State */
+.status-toggle.active {
+  background-color: #d9f99d; /* light green/yellow like screenshot */
+  color: #166534;
+}
+
+/* Move knob to right when active */
+.status-toggle.active .toggle-knob {
+  transform: translateX(4px);
+}
+
+
+
+
+
+
+
+
+
+/* ===== STATUS TOGGLE PILL ===== */
+
+.status-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #e5e7eb;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 90px;
+  justify-content: center;
+}
+
+.status-toggle .toggle-knob {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #000;
+  transition: all 0.3s ease;
+}
+
+.status-toggle.active {
+  background-color: #d9f99d;
+  color: #166534;
+}
+
+.status-toggle.active .toggle-knob {
+  transform: translateX(2px);
+}
+

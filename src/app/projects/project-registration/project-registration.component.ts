@@ -35,6 +35,12 @@ export class ProjectRegistrationComponent {
     private router: Router
   ) {}
 
+  // ✅ Back Button (like User Registration)
+  goBack(): void {
+    this.router.navigate(['/projects']);
+  }
+
+  // ✅ Submit Project
   submitProject() {
     this.isSubmitting = true;
     this.errorMessage = '';
