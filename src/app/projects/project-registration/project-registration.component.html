@@ -1,9 +1,14 @@
 <div class="page-container">
-  <div class="page-header">
-    <h2>Project Registration</h2>
-  </div>
+  <p-breadcrumb
+  [model]="breadcrumbItems"
+  [home]="home"
+  class="mb-3">
+</p-breadcrumb>
 
   <div class="card">
+     <div class="page-header">
+    <h2>Project Registration</h2>
+  </div>
     <form (ngSubmit)="submitProject()" #projectForm="ngForm">
 
       <!-- BASIC DETAILS -->

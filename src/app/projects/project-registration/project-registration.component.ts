@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../services/project-registration.service';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-project-registration',
@@ -8,7 +9,18 @@ import { ProjectService } from '../../services/project-registration.service';
   styleUrls: ['./project-registration.component.css']
 })
 export class ProjectRegistrationComponent {
+  
+  breadcrumbItems!: MenuItem[];
+  home!: MenuItem;
 
+  ngOnInit(): void {
+  this.home = { icon: 'pi pi-home', routerLink: '/dashboard' };
+
+  this.breadcrumbItems = [
+    { label: 'Project', routerLink: '/projects' },
+    { label: 'Register Project' }
+  ];
+}
   projectData = {
     project_name: '',
     project_type: '',

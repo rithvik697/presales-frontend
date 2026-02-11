@@ -1,76 +1,87 @@
-.page-container {
-  padding: 24px;
-  max-width: 1200px;
+/* ===============================
+   CRM TABLE – PROFESSIONAL STYLE
+=============================== */
+
+/* Table container */
+:host ::ng-deep .crm-table.p-datatable {
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.page-header h2 {
-  margin: 0;
-  font-size: 22px;
+/* Header row (blue) */
+:host ::ng-deep .crm-table .p-datatable-thead > tr:first-child > th {
+  background-color: #4c5db6;
+  color: #ffffff;
   font-weight: 600;
-}
-
-.page-header button {
-  padding: 8px 16px;
-  background-color: #2563eb;
-  color: white;
+  padding: 14px;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-.card {
-  background: #fff;
-  padding: 16px;
-  border-radius: 6px;
+/* Keep sort icon inline */
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-table {
+/* Filter row */
+:host ::ng-deep .crm-table .filter-row th {
+  background-color: #dfe3f3;
+  padding: 10px;
+  border: none;
+}
+
+/* Filter input */
+:host ::ng-deep .crm-table .filter-row input {
   width: 100%;
-  border-collapse: collapse;
+  border-radius: 6px;
+  border: 1px solid #c5c9e6;
+  padding: 6px 10px;
+  font-size: 13px;
 }
 
-th, td {
-  padding: 12px;
+/* Body rows */
+:host ::ng-deep .crm-table .p-datatable-tbody > tr {
+  transition: background 0.2s ease;
+  background: #f7f8fc;
+}
+
+:host ::ng-deep .crm-table .p-datatable-tbody > tr:hover {
+  background: #eef2ff;
+}
+
+/* Body cells */
+:host ::ng-deep .crm-table .p-datatable-tbody > tr > td {
+  padding: 12px 14px;
   border-bottom: 1px solid #e5e7eb;
-  font-size: 14px;
+  vertical-align: middle;
 }
 
-th {
-  text-align: left;
-  color: #374151;
+/* Center action column */
+:host ::ng-deep .crm-table td.text-center {
+  text-align: center;
 }
 
-.status {
+/* Pagination */
+:host ::ng-deep .crm-table .p-paginator {
+  border-top: 1px solid #eee;
+  padding: 10px;
+}
+
+/* Tag styling */
+:host ::ng-deep .crm-table .p-tag {
+  font-size: 12px;
   padding: 4px 10px;
   border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
 }
-
-.status.Active {
-  background: #dcfce7;
-  color: #166534;
+/* Rounded outer table container */
+:host ::ng-deep .crm-table.p-datatable {
+  border-radius: 16px;   /* increase roundness */
+  overflow: hidden;      /* important for clipping corners */
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
-
-.status.Inactive {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.status.Pre-Launch {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.empty {
-  text-align: center;
-  padding: 30px;
-  color: #6b7280;
+:host ::ng-deep .crm-table.p-datatable {
+  border: 1px solid #e6e9f2;
 }
