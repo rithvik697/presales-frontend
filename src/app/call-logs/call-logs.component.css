@@ -1,97 +1,72 @@
-.call-logs-container {
-  max-width: 1100px;
-  margin: 50px auto;
-  padding: 30px;
-  background: #f9f9f9;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  font-family: 'Poppins', sans-serif;
+.page-container {
+  padding: 16px;
 }
 
-.call-logs-title {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 32px;
-  font-weight: 600;
-  color: #009688;
-}
+/* ===============================
+   CRM TABLE STYLE (MATCH PROJECTS)
+=============================== */
 
-.call-logs-card {
+/* Rounded card container */
+:host ::ng-deep .crm-table.p-datatable {
+  border-radius: 16px;
+  overflow: hidden;
   background: #ffffff;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-/* Table */
-.call-logs-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.call-logs-table th,
-.call-logs-table td {
-  padding: 14px 18px;
-  text-align: left;
-  font-size: 15px;
-}
-
-/* Header */
-.call-logs-table thead {
-  background-color: #009688;
+/* Blue header */
+:host ::ng-deep .crm-table .p-datatable-thead > tr:first-child > th {
+  background-color: #4c5db6;
   color: #ffffff;
-  text-transform: uppercase;
   font-weight: 600;
+  padding: 14px;
+  border: none;
 }
 
-/* Rows */
-.call-logs-table tbody tr {
-  background-color: #ffffff;
-  transition: all 0.3s ease;
+/* Keep sort icon inline */
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
 
-.call-logs-table tbody tr:nth-child(even) {
-  background-color: #f1f8f7;
+/* Filter row */
+:host ::ng-deep .crm-table .filter-row th {
+  background-color: #dfe3f3;
+  padding: 10px;
+  border: none;
 }
 
-.call-logs-table tbody tr:hover {
-  background-color: #e0f2f1;
-  transform: scale(1.01);
-}
-
-/* Status pills */
-.status-pill {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-weight: 600;
+/* Filter input */
+:host ::ng-deep .crm-table .filter-row input {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #c5c9e6;
+  padding: 6px 10px;
   font-size: 13px;
 }
 
-.status-pill.answered {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+/* Body rows */
+:host ::ng-deep .crm-table .p-datatable-tbody > tr {
+  background: #f7f8fc;
+  transition: background 0.2s ease;
 }
 
-.status-pill.missed {
-  background-color: #ffebee;
-  color: #d32f2f;
+:host ::ng-deep .crm-table .p-datatable-tbody > tr:hover {
+  background: #eef2ff;
 }
 
-.status-pill.rejected {
-  background-color: #fff3e0;
-  color: #ef6c00;
+/* Body cells */
+:host ::ng-deep .crm-table .p-datatable-tbody > tr > td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
 }
 
-/* Responsive */
-@media screen and (max-width: 768px) {
-  .call-logs-container {
-    padding: 20px;
-  }
-
-  .call-logs-table th,
-  .call-logs-table td {
-    padding: 10px;
-    font-size: 14px;
-  }
+/* Status tags */
+:host ::ng-deep .crm-table .p-tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
 }

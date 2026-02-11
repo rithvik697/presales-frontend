@@ -12,6 +12,6 @@ export class CallLogsService {
   constructor(private http: HttpClient) {}
 
   getCallLogs(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/logs`);
+    return this.http.get<any[]>(`${this.baseUrl}/ui`);
   }
 }

@@ -1,84 +1,141 @@
-<div class="call-logs-container">
-  <h2>Call Logs</h2>
+<div class="page-container">
 
-  <table mat-table [dataSource]="dataSource" class="call-logs-table mat-elevation-z2">
+  <!-- Breadcrumb -->
+  <p-breadcrumb
+    [model]="breadcrumbItems"
+    [home]="home"
+    class="mb-3">
+  </p-breadcrumb>
 
-    <!-- User -->
-    <ng-container matColumnDef="userName">
-      <th mat-header-cell *matHeaderCellDef>User</th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.userName || row.emp_id }}
-      </td>
-    </ng-container>
+  <h2 class="mb-3">Call Logs</h2>
 
-    <!-- Lead -->
-    <ng-container matColumnDef="leadName">
-      <th mat-header-cell *matHeaderCellDef>Lead</th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.leadName || row.lead_id }}
-      </td>
-    </ng-container>
+  <p-table
+    #dt
+    [value]="callLogs"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5,10,20]"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} call logs"
+    styleClass="crm-table"
+  >
 
-    <!-- Phone -->
-    <ng-container matColumnDef="phoneNumber">
-      <th mat-header-cell *matHeaderCellDef>Phone</th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.phoneNumber || '-' }}
-      </td>
-    </ng-container>
+    <!-- HEADER -->
+    <ng-template pTemplate="header">
+      <tr>
 
-    <!-- Call Type -->
-    <ng-container matColumnDef="callType">
-      <th mat-header-cell *matHeaderCellDef>Type</th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.callType || row.call_source }}
-      </td>
-    </ng-container>
+        <th pSortableColumn="userName">
+          <div class="header-content">
+            User
+            <p-sortIcon field="userName"></p-sortIcon>
+          </div>
+        </th>
 
-    <!-- Status -->
-    <ng-container matColumnDef="callStatus">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let row">
-        <span
-          class="status-pill"
-          [ngClass]="{
-            answered: row.callStatus === 'Connected' || row.call_status === 'Connected',
-            missed: row.callStatus === 'Missed',
-            completed: row.callStatus === 'Completed' || row.call_status === 'Completed'
-          }"
-        >
-          {{ row.callStatus || row.call_status }}
-        </span>
-      </td>
-    </ng-container>
+        <th pSortableColumn="leadName">
+          <div class="header-content">
+            Lead
+            <p-sortIcon field="leadName"></p-sortIcon>
+          </div>
+        </th>
 
-    <!-- Duration -->
-    <ng-container matColumnDef="callDuration">
-      <th mat-header-cell *matHeaderCellDef>Duration</th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.callDuration || (row.call_duration ? row.call_duration + 's' : '-') }}
-      </td>
-    </ng-container>
+        <th>Phone</th>
 
-    <!-- Call Time -->
-    <ng-container matColumnDef="callTime">
-      <th mat-header-cell *matHeaderCellDef>Call Time</th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.callTime || row.call_time }}
-      </td>
-    </ng-container>
+        <th pSortableColumn="callType">
+          <div class="header-content">
+            Type
+            <p-sortIcon field="callType"></p-sortIcon>
+          </div>
+        </th>
 
-    <!-- Remarks -->
-    <ng-container matColumnDef="remarks">
-      <th mat-header-cell *matHeaderCellDef>Remarks</th>
-      <td mat-cell *matCellDef="let row">
-        {{ row.remarks || '-' }}
-      </td>
-    </ng-container>
+        <th>Status</th>
 
-    <!-- Header + Rows -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <th>Duration</th>
 
-  </table>
+        <th pSortableColumn="callTime">
+          <div class="header-content">
+            Call Time
+            <p-sortIcon field="callTime"></p-sortIcon>
+          </div>
+        </th>
+
+        <th>Remarks</th>
+
+      </tr>
+
+      <!-- FILTER ROW -->
+      <tr class="filter-row">
+
+        <th>
+          <input pInputText type="text"
+            placeholder="Search user"
+            (input)="dt.filter($any($event.target).value, 'userName', 'contains')" />
+        </th>
+
+        <th>
+          <input pInputText type="text"
+            placeholder="Search lead"
+            (input)="dt.filter($any($event.target).value, 'leadName', 'contains')" />
+        </th>
+
+        <th></th>
+
+        <th>
+          <input pInputText type="text"
+            placeholder="Search type"
+            (input)="dt.filter($any($event.target).value, 'callType', 'contains')" />
+        </th>
+
+        <th>
+          <input pInputText type="text"
+            placeholder="Search status"
+            (input)="dt.filter($any($event.target).value, 'callStatus', 'contains')" />
+        </th>
+
+        <th></th>
+
+        <th>
+          <input pInputText type="text"
+            placeholder="Search time"
+            (input)="dt.filter($any($event.target).value, 'callTime', 'contains')" />
+        </th>
+
+        <th></th>
+
+      </tr>
+    </ng-template>
+
+    <!-- BODY -->
+    <ng-template pTemplate="body" let-log>
+      <tr>
+        <td>{{ log.userName || '-' }}</td>
+        <td>{{ log.leadName || '-' }}</td>
+        <td>{{ log.phoneNumber || '-' }}</td>
+        <td>{{ log.callType }}</td>
+
+        <td>
+          <p-tag
+            [value]="log.callStatus"
+            [severity]="getStatusSeverity(log.callStatus)">
+          </p-tag>
+        </td>
+
+        <td>{{ log.callDuration }}</td>
+        <td>{{ log.callTime | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
+        <td>{{ log.remarks || '-' }}</td>
+      </tr>
+    </ng-template>
+
+    <!-- EMPTY STATE -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center">
+          No call logs found.
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+
 </div>
