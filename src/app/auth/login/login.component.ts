@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         localStorage.setItem('access_token', res.access_token);
         this.router.navigate(['/dashboard']);
       },

@@ -20,6 +20,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 /* ------------------ PrimeNG ------------------ */
+
+import { PaginatorModule } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
@@ -130,4 +132,4 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

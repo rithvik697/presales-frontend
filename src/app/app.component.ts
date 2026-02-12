@@ -37,7 +37,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   home = { icon: 'pi pi-home', routerLink: '/' }; // ✅ ADD 
 
+  private pollingInterval: any;
   private routerSub!: Subscription;
+
 
   private allMenuItems = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
@@ -47,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Call Logs', icon: 'call', route: '/call-logs' },
   ];
 
-  constructor(private router: Router, private toastr: ToastrService) {}
+  constructor(private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.menuItems = this.allMenuItems;
@@ -86,7 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
       ];
-    } 
+    }
     else if (url === '/users/register') {
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
@@ -114,6 +116,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    console.log('Logout clicked');
     this.username = null;
     this.router.navigate(['/login']);
   }

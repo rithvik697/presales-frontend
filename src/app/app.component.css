@@ -548,3 +548,8 @@ p-table {
   font-size: 14px;
 }
 
+/* Pagination Styles */
+.p-paginator {  
+  justify-content: center;
+  margin-top: 15px;
+}   

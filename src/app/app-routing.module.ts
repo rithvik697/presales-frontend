@@ -30,7 +30,8 @@ const routes: Routes = [
   { path: 'configure', component: ConfigureComponent },
   { path: 'leads', component: LeadsListComponent },
   { path: 'leads/create', component: LeadCreateComponent },
-  {path: 'projects', component: ProjectListComponent},
+  { path: 'leads/edit/:id', component: LeadCreateComponent },
+  { path: 'projects', component: ProjectListComponent },
   { path: 'projects/register', component: ProjectRegistrationComponent },
   { path: 'call-logs', component: CallLogsComponent },
 ];

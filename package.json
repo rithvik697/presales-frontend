@@ -25,6 +25,7 @@
     "ng2-charts": "^4.1.0",
     "ngx-filter-pipe": "^3.0.1",
     "ngx-toastr": "^19.1.0",
+    "primeflex": "^4.0.0",
     "primeicons": "^6.0.1",
     "primeng": "^16.9.1",
     "rxjs": "~7.8.0",

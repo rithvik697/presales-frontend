@@ -3,32 +3,19 @@
   <div class="crm" (mouseleave)="showLogout = false">
 
     <!-- ===================== TOOLBAR ===================== -->
-    <mat-toolbar
-      class="app-toolbar"
-    >
+    <mat-toolbar class="app-toolbar">
       <!-- 🍔 HAMBURGER BUTTON -->
-      <button
-        mat-icon-button
-        class="menu-toggle"
-        (click)="toggleSidebar(sidenav)"
-      >
+      <button mat-icon-button class="menu-toggle" (click)="toggleSidebar(sidenav)">
         <mat-icon>menu</mat-icon>
       </button>
 
       <!-- LOGO -->
-      <img
-        src="assets/tagfinal-logo.png"
-        alt="Logo"
-        class="logo"
-      />
+      <img src="assets/tagfinal-logo.png" alt="Logo" class="logo" />
 
       <span class="spacer"></span>
 
       <!-- NOTIFICATIONS -->
-      <div
-        class="notification-wrapper"
-        (click)="showNotificationDropdown = !showNotificationDropdown"
-      >
+      <div class="notification-wrapper" (click)="showNotificationDropdown = !showNotificationDropdown">
         <mat-icon class="notification-icon">notifications</mat-icon>
         <span class="notification-badge" *ngIf="unreadCount">
           {{ unreadCount }}
@@ -36,17 +23,10 @@
 
         <div class="notification-dropdown" *ngIf="showNotificationDropdown">
           <div *ngIf="notifications.length; else noNotification">
-            <div
-              *ngFor="let note of notifications"
-              class="notification-item"
-            >
+            <div *ngFor="let note of notifications" class="notification-item">
               {{ note.message }}
             </div>
-            <button
-              mat-flat-button
-              class="mark-read-btn"
-              (click)="markAllAsRead()"
-            >
+            <button mat-flat-button class="mark-read-btn" (click)="markAllAsRead()">
               Mark all as read
             </button>
           </div>
@@ -63,26 +43,14 @@
       <mat-icon class="icon">settings</mat-icon>
 
       <!-- PROFILE -->
-      <div
-        *ngIf="username"
-        class="profile-container"
-        (mouseenter)="showLogout = true"
-        (mouseleave)="showLogout = false"
-      >
+      <div *ngIf="username" class="profile-container" (mouseenter)="showLogout = true"
+        (mouseleave)="showLogout = false">
         <div class="profile-section">
           <span class="profile-text">{{ username }}</span>
-          <img
-            src="assets/profile.avif"
-            alt="Profile"
-            class="imageprofile"
-          />
+          <img src="assets/profile.avif" alt="Profile" class="imageprofile" />
         </div>
 
-        <div
-          *ngIf="showLogout"
-          class="logout-dropdown"
-          (click)="logout()"
-        >
+        <div *ngIf="showLogout" class="logout-dropdown" (click)="logout()">
           Logout
         </div>
       </div>
@@ -92,20 +60,10 @@
     <mat-sidenav-container class="sidenav-container">
 
       <!-- SIDEBAR -->
-      <mat-sidenav
-        #sidenav
-        [mode]="isDesktop ? 'side' : 'over'"
-        [opened]="isDesktop"
-        class="sidenav"
-      >
+      <mat-sidenav #sidenav [mode]="isDesktop ? 'side' : 'over'" [opened]="isDesktop" class="sidenav">
         <mat-nav-list class="sidebarbg">
-          <mat-list-item
-            *ngFor="let item of menuItems"
-            [routerLink]="item.route"
-            (click)="selectItem(item.label)"
-            [ngClass]="{ 'active-item': selectedItem === item.label }"
-            class="menu-item-wrapper"
-          >
+          <mat-list-item *ngFor="let item of menuItems" [routerLink]="item.route" (click)="selectItem(item.label)"
+            [ngClass]="{ 'active-item': selectedItem === item.label }" class="menu-item-wrapper">
             <div class="menu-item-content">
               <mat-icon class="menu-icon">
                 {{ item.icon }}
@@ -122,11 +80,8 @@
       <mat-sidenav-content class="content">
 
         <!-- 🌐 GLOBAL BREADCRUMB -->
-        <div class="breadcrumb-wrapper" *ngIf="breadcrumbs?.length">
-          <p-breadcrumb
-            [model]="breadcrumbs"
-            [home]="home"
-          ></p-breadcrumb>
+        <div class="breadcrumb-wrapper" *ngIf="breadcrumbs.length">
+          <p-breadcrumb [model]="breadcrumbs" [home]="home"></p-breadcrumb>
         </div>
 
         <!-- PAGE CONTENT -->

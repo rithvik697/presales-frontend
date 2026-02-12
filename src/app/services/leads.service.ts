@@ -7,8 +7,8 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class LeadsService {
-  // replace with your backend base url later
-  private baseUrl = 'http://localhost:8000/api/leads';
+  // Backend API URL
+  private baseUrl = 'http://localhost:5000/api/leads';
 
   // State for UI persistence
   public filterViewOpen = false;
@@ -16,27 +16,7 @@ export class LeadsService {
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Lead[]> {
-    // switch to: return this.http.get<Lead[]>(this.baseUrl);
-    // temporary mock for frontend development:
-    const mock: Lead[] = [
-      {
-        id: 'L001',
-        name: 'Ravi Kumar',
-        phone: '9876543210',
-        project: 'Patio',
-        source: 'Google',
-        assignedTo: 'Anil',
-      },
-      {
-        id: 'L002',
-        name: 'Sita Devi',
-        phone: '9123456789',
-        project: 'Amity',
-        source: 'Website',
-        assignedTo: 'Kiran',
-      },
-    ];
-    return of(mock);
+    return this.http.get<Lead[]>(this.baseUrl);
   }
 
   getById(id: string): Observable<Lead> {
@@ -53,5 +33,9 @@ export class LeadsService {
 
   delete(id: string) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  getEmployees(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/employees`);
   }
 }

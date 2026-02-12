@@ -16,6 +16,7 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   filterText = '';
   private subscriptions: Subscription[] = [];
   showFilterView = false; // Toggle for filter panel
+  loading: boolean = true;
 
   // Dynamic dropdown values
   sourceOptions: string[] = [];
@@ -25,6 +26,9 @@ export class LeadsListComponent implements OnInit, OnDestroy {
 
   // Filter form
   filterForm: FormGroup;
+
+  // PrimeNG Table Cols
+  cols: any[] = [];
 
   constructor(private leadsService: LeadsService, private router: Router) {
     this.filterForm = new FormGroup({
@@ -41,7 +45,22 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Restore state from service
     this.showFilterView = this.leadsService.filterViewOpen;
+
+    this.cols = [
+      { field: 'id', header: 'Lead ID' },
+      { field: 'name', header: 'Name' },
+      { field: 'phone', header: 'Phone' },
+      { field: 'project', header: 'Project' },
+      { field: 'source', header: 'Source' },
+      { field: 'status', header: 'Status' },
+      { field: 'assignedTo', header: 'Assigned To' },
+      { field: 'createdAt', header: 'Created On' },
+      { field: 'createdBy', header: 'Created By' },
+      // Modified fields optional in cols if heavily formatted in template
+    ];
+
     this.loadLeads();
+    this.loadEmployees();
   }
 
   toggleFilterView(): void {
@@ -50,10 +69,19 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   }
 
   loadLeads(): void {
+    this.loading = true;
     const sub = this.leadsService.getAll().subscribe((data) => {
       this.allLeads = data;
       this.filteredLeads = data;
       this.extractDropdownValues();
+      this.loading = false;
+    });
+    this.subscriptions.push(sub);
+  }
+
+  loadEmployees(): void {
+    const sub = this.leadsService.getEmployees().subscribe((data) => {
+      this.employeeOptions = data;
     });
     this.subscriptions.push(sub);
   }
@@ -63,7 +91,6 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     this.sourceOptions = [...new Set(this.allLeads.map(l => l.source).filter((s): s is string => !!s))].sort();
     this.projectOptions = [...new Set(this.allLeads.map(l => l.project).filter((p): p is string => !!p))].sort();
     this.statusOptions = [...new Set(this.allLeads.map(l => l.status).filter((s): s is string => !!s))].sort();
-    this.employeeOptions = [...new Set(this.allLeads.map(l => l.assignedTo).filter((e): e is string => !!e))].sort();
   }
 
   applyFilters(): void {
@@ -101,9 +128,16 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       }
 
       // Scheduled Date filter
-      // Assuming lead.createdAt is a string like 'YYYY-MM-DD' or similar that matches input type='date'
-      if (filters.scheduledDate && !lead.createdAt?.startsWith(filters.scheduledDate)) {
-        return false;
+      // Assuming lead.createdAt varies format. Simple string match for now as per previous logic.
+      // Better to check date equality if needed.
+      if (filters.scheduledDate) {
+        // Convert input date to comparable string or match
+        // Note: input type=date gives YYYY-MM-DD
+        // lead.createdAt might be full timestamp. 
+        // Simple includes check as placeholder or previous behavior logic
+        if (lead.createdAt && !lead.createdAt.toString().includes(filters.scheduledDate)) {
+          return false;
+        }
       }
 
       return true;
@@ -121,16 +155,37 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   }
 
   edit(lead: Lead) {
-    // navigate to edit page later
-    console.log('edit', lead);
+    this.router.navigate(['/leads/edit', lead.id]);
   }
 
   delete(lead: Lead) {
     // call service delete later
-    console.log('delete', lead);
+    if (confirm('Are you sure you want to delete this lead?')) {
+      this.leadsService.delete(String(lead.id)).subscribe(() => {
+        this.loadLeads(); // Reload
+      });
+    }
+  }
+
+  getSeverity(status: string): string {
+    switch (status) {
+      case 'New':
+        return 'info';
+      case 'Contacted':
+        return 'warning';
+      case 'Qualified':
+        return 'success';
+      case 'Lost':
+        return 'danger';
+      case 'Converted':
+        return 'success';
+      default:
+        return 'info';
+    }
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
+
