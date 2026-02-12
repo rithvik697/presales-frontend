@@ -107,3 +107,20 @@ small.error {
   font-size: 12px;
   margin-top: 4px;
 }
+
+
+.centered-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.centered-header h2 {
+  color: #4c5db6;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.centered-header .subtitle {
+  font-size: 14px;
+  color: #666;
+}

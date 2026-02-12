@@ -1,15 +1,22 @@
 <div class="users-list-container">
 
-  <!-- Header: Title + Add User Button -->
-  <div class="users-header">
-    <h2>Employees List</h2>
+  <!-- ✅ Toolbar (MATCHES PROJECT PAGE STYLE) -->
+  <p-toolbar class="mb-3">
+    <div class="p-toolbar-group-left">
+      <h2 class="m-0">Employees List</h2>
+    </div>
 
-    <button class="add-user-btn" (click)="addUser()">
-      + Add User
-    </button>
-  </div>
+    <div class="p-toolbar-group-right">
+      <button
+        pButton
+        label="Add User"
+        icon="pi pi-plus"
+        class="p-button-primary"
+        (click)="addUser()">
+      </button>
+    </div>
+  </p-toolbar>
 
-  <!-- Table -->
   <div class="table-wrapper">
 
     <p-table
@@ -25,113 +32,106 @@
 
       <!-- ================= HEADER ================= -->
       <ng-template pTemplate="header">
-
         <tr>
           <th>#</th>
-
           <th pSortableColumn="emp_id">
             Employee ID
             <p-sortIcon field="emp_id"></p-sortIcon>
           </th>
-
           <th pSortableColumn="emp_first_name">
             First Name
             <p-sortIcon field="emp_first_name"></p-sortIcon>
           </th>
-
           <th pSortableColumn="emp_middle_name">
             Middle Name
             <p-sortIcon field="emp_middle_name"></p-sortIcon>
           </th>
-
           <th pSortableColumn="emp_last_name">
             Last Name
             <p-sortIcon field="emp_last_name"></p-sortIcon>
           </th>
-
           <th pSortableColumn="role_id">
             Role
             <p-sortIcon field="role_id"></p-sortIcon>
           </th>
-
           <th pSortableColumn="emp_status">
             Status
             <p-sortIcon field="emp_status"></p-sortIcon>
           </th>
-
           <th pSortableColumn="created_by">
             Created By
             <p-sortIcon field="created_by"></p-sortIcon>
           </th>
-
           <th pSortableColumn="created_on">
             Created On
             <p-sortIcon field="created_on"></p-sortIcon>
           </th>
-
           <th pSortableColumn="modified_on">
             Modified On
             <p-sortIcon field="modified_on"></p-sortIcon>
           </th>
-
           <th>Action</th>
         </tr>
 
         <!-- 🔍 FILTER ROW -->
-        <tr>
+        <tr class="filter-row">
           <th>
-            <input pInputText disabled style="width: 40px; opacity: 0.6;" />
+            <input pInputText disabled class="table-search-input" />
           </th>
 
           <th>
-            <input pInputText #empId
-              (input)="dt.filter(empId.value, 'emp_id', 'contains')" />
+            <input pInputText placeholder="Search ID"
+              class="table-search-input"
+              (input)="dt.filter($any($event.target).value, 'emp_id', 'contains')" />
           </th>
 
           <th>
-            <input pInputText #firstName
-              (input)="dt.filter(firstName.value, 'emp_first_name', 'contains')" />
+            <input pInputText placeholder="Search first name"
+              class="table-search-input"
+              (input)="dt.filter($any($event.target).value, 'emp_first_name', 'contains')" />
           </th>
 
           <th>
-            <input pInputText #middleName
-              (input)="dt.filter(middleName.value, 'emp_middle_name', 'contains')" />
+            <input pInputText placeholder="Search middle name"
+              class="table-search-input"
+              (input)="dt.filter($any($event.target).value, 'emp_middle_name', 'contains')" />
           </th>
 
           <th>
-            <input pInputText #lastName
-              (input)="dt.filter(lastName.value, 'emp_last_name', 'contains')" />
+            <input pInputText placeholder="Search last name"
+              class="table-search-input"
+              (input)="dt.filter($any($event.target).value, 'emp_last_name', 'contains')" />
           </th>
 
           <th>
-            <input pInputText #role
-              (input)="dt.filter(role.value, 'role_id', 'contains')" />
+            <input pInputText placeholder="Search role"
+              class="table-search-input"
+              (input)="dt.filter($any($event.target).value, 'role_id', 'contains')" />
           </th>
 
           <th>
-            <input pInputText #status
-              (input)="dt.filter(status.value, 'emp_status', 'contains')" />
+            <input pInputText placeholder="Search status"
+              class="table-search-input"
+              (input)="dt.filter($any($event.target).value, 'emp_status', 'contains')" />
           </th>
 
           <th>
-            <input pInputText #createdBy
-              (input)="dt.filter(createdBy.value, 'created_by', 'contains')" />
+            <input pInputText placeholder="Search created by"
+              class="table-search-input"
+              (input)="dt.filter($any($event.target).value, 'created_by', 'contains')" />
           </th>
 
           <th></th>
           <th></th>
           <th></th>
         </tr>
-
       </ng-template>
 
       <!-- ================= BODY ================= -->
       <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
         <tr>
 
-          <td>
-            {{ dt.first + rowIndex + 1 }}
-          </td>
+          <td>{{ dt.first + rowIndex + 1 }}</td>
 
           <td>{{ user.emp_id }}</td>
           <td>{{ user.emp_first_name }}</td>
@@ -139,19 +139,13 @@
           <td>{{ user.emp_last_name }}</td>
           <td>{{ user.role_id }}</td>
 
-          <!-- ✅ PROFESSIONAL STATUS TOGGLE -->
           <td>
             <div
               class="status-toggle"
               [class.active]="user.emp_status === 'Active'"
               (click)="toggleUserStatus(user)">
-
               <div class="toggle-knob"></div>
-
-              <span class="status-text">
-                {{ user.emp_status }}
-              </span>
-
+              <span>{{ user.emp_status }}</span>
             </div>
           </td>
 
@@ -159,23 +153,23 @@
           <td>{{ user.created_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
           <td>{{ user.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
 
-          <td>
-            <p-button
+          <!-- ✅ MATCHED PROJECT STYLE EDIT BUTTON -->
+          <td class="text-center">
+            <button
+              pButton
               icon="pi pi-pencil"
-              class="p-button-text p-button-primary p-button-sm"
-              pTooltip="Edit User"
-              tooltipPosition="top"
-              (onClick)="editUser(user.emp_id)">
-            </p-button>
+              class="p-button-rounded p-button-primary"
+              (click)="editUser(user.emp_id)">
+            </button>
           </td>
 
         </tr>
       </ng-template>
 
-      <!-- ================= EMPTY STATE ================= -->
+      <!-- EMPTY -->
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="12" class="empty-state">
+          <td colspan="11" class="empty-state">
             No employee records available
           </td>
         </tr>

@@ -1,14 +1,21 @@
 <div class="page-container">
+
   <p-breadcrumb
-  [model]="breadcrumbItems"
-  [home]="home"
-  class="mb-3">
-</p-breadcrumb>
+    [model]="breadcrumbItems"
+    [home]="home"
+    class="mb-3">
+  </p-breadcrumb>
 
   <div class="card">
-     <div class="page-header">
-    <h2>Project Registration</h2>
-  </div>
+
+    <!-- ✅ CENTERED HEADER (UPDATED LIKE USER FORM) -->
+    <div class="page-header centered-header">
+      <h2>Project Registration</h2>
+      <p class="subtitle">
+        Create a new project with complete information
+      </p>
+    </div>
+
     <form (ngSubmit)="submitProject()" #projectForm="ngForm">
 
       <!-- BASIC DETAILS -->

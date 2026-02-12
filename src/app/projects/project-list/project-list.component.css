@@ -85,3 +85,44 @@
 :host ::ng-deep .crm-table.p-datatable {
   border: 1px solid #e6e9f2;
 }
+
+
+
+/* =========================================
+   FORCE UNIFORM COLUMNS + HORIZONTAL SCROLL
+========================================= */
+
+/* Allow natural table width (no squeezing) */
+:host ::ng-deep .crm-table .p-datatable-table {
+  table-layout: auto;       /* IMPORTANT */
+  min-width: 1100px;        /* forces horizontal scroll */
+}
+
+/* Prevent header wrapping */
+:host ::ng-deep .crm-table .p-datatable-thead th {
+  white-space: nowrap;
+}
+
+/* Prevent body wrapping */
+:host ::ng-deep .crm-table .p-datatable-tbody td {
+  white-space: nowrap;
+}
+
+/* Uniform column width */
+:host ::ng-deep .crm-table .p-datatable-thead th,
+:host ::ng-deep .crm-table .p-datatable-tbody td {
+  min-width: 160px;
+}
+
+/* Serial column smaller */
+:host ::ng-deep .crm-table .p-datatable-thead th:first-child,
+:host ::ng-deep .crm-table .p-datatable-tbody td:first-child {
+  min-width: 60px;
+}
+
+/* Action column compact */
+:host ::ng-deep .crm-table .p-datatable-thead th:last-child,
+:host ::ng-deep .crm-table .p-datatable-tbody td:last-child {
+  min-width: 90px;
+  text-align: center;
+}

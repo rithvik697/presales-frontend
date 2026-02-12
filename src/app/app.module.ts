@@ -37,6 +37,9 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { TagModule } from 'primeng/tag';
+import { ToolbarModule } from 'primeng/toolbar';
+
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -113,6 +116,8 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     InputNumberModule,
     PanelModule,
     BreadcrumbModule,
+    TagModule,
+    ToolbarModule,    
 
     /* Charts & Notifications */
     NgChartsModule,
