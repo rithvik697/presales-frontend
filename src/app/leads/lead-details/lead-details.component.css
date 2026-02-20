@@ -132,8 +132,8 @@
 
 .activity-header {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 20px;
 }
 
@@ -155,7 +155,6 @@
     border-radius: 4px;
     font-size: 0.8rem;
     cursor: pointer;
-    margin-top: 10px;
 }
 
 .activity-table-container {
@@ -283,4 +282,76 @@
 
 .readonly-input:focus {
     border-color: #ced4da !important;
+}
+
+/* Ensure p-dropdown panel is on top */
+::ng-deep .p-dropdown-panel {
+    z-index: 99999 !important;
+}
+
+/* New Buttons Styles */
+.add-activity-btn {
+    background: #4caf50;
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.add-activity-btn:hover {
+    opacity: 0.9;
+}
+
+.delete-activity-row-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.delete-activity-row-btn:hover {
+    background: #d32f2f;
+}
+
+.edit-activity-row-btn {
+    background: #2196f3;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.edit-activity-row-btn:hover {
+    background: #1976d2;
+}
+
+/* Delete confirmation styling */
+::ng-deep .delete-confirm-dialog .p-dialog-header {
+    background: #f44336 !important;
+    color: white !important;
+}
+
+.text-warning {
+    color: #ffc107;
+}
+
+.text-lg {
+    font-size: 1.1rem;
 }

@@ -74,6 +74,17 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       { field: 'actions', header: 'Actions' }
     ];
 
+    // Predefine status options for filtering
+    this.statusOptions = [
+      'New Enquiry', 'Phone Call', 'WhatsApp', 'Offline Lead', 'NRI',
+      'Re-Enquire', 'Expected Site Visit', 'Site Visit Done',
+      'Expected Office Visit', 'Office Visit Done', 'Pipeline',
+      'Deal Closed', 'Sq. Yards Concern', 'Sq. Feet Concern',
+      'Distance Concern', 'OTP', '50:50', 'Pre-Launch',
+      'Not Answered', 'Not Interested', 'Spam', 'Low Budget',
+      'OOS', 'Old Leads'
+    ];
+
     // Default: Show ONLY main fields initially as requested
     this.selectedOptionalCols = [];
 
@@ -131,10 +142,17 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   }
 
   extractDropdownValues(): void {
-    // Extract unique values from leads array
-    this.sourceOptions = [...new Set(this.allLeads.map(l => l.source).filter((s): s is string => !!s))].sort();
-    this.projectOptions = [...new Set(this.allLeads.map(l => l.project).filter((p): p is string => !!p))].sort();
-    this.statusOptions = [...new Set(this.allLeads.map(l => l.status).filter((s): s is string => !!s))].sort();
+    // Extract unique values from leads array and combine with predefined if needed
+    const currentSources = new Set(this.allLeads.map(l => l.source).filter((s): s is string => !!s));
+    this.sourceOptions = [...currentSources].sort();
+
+    const currentProjects = new Set(this.allLeads.map(l => l.project).filter((p): p is string => !!p));
+    this.projectOptions = [...currentProjects].sort();
+
+    // For status, keep our predefined comprehensive list but ensure it's sorted or includes current ones
+    const currentStatuses = new Set(this.allLeads.map(l => l.status).filter((s): s is string => !!s));
+    // Add current ones to our list if not already there
+    this.statusOptions = [...new Set([...this.statusOptions, ...currentStatuses])].sort();
   }
 
   applyFilters(): void {

@@ -92,9 +92,15 @@
         <!-- Right Side Panel (Activities) -->
         <div class="activities-panel">
             <div class="activity-header">
-                <span class="date">{{lead.createdAt | date: 'dd-MM-yyyy'}}</span>
-                <span class="time">{{lead.createdAt | date: 'HH:mm a'}}</span>
-                <button class="activity-history-btn" (click)="openEdit()">EDIT</button>
+                <div class="flex flex-column">
+                    <span class="date">{{lead.createdAt | date: 'dd-MM-yyyy'}}</span>
+                    <span class="time">{{lead.createdAt | date: 'HH:mm a'}}</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <button class="add-activity-btn" (click)="openEdit()" title="Add Activity">
+                        <i class="pi pi-plus"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="activity-table-container">
@@ -105,14 +111,26 @@
                             <th>Activity Type</th>
                             <th>Activity Data</th>
                             <th>Updated By</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let act of activityHistory">
+                        <tr *ngFor="let act of activityHistory; let i = index">
                             <td>{{act.requirement}}</td>
                             <td>{{act.type}}</td>
                             <td>{{act.date}}</td>
                             <td>{{act.updatedBy}}</td>
+                            <td class="text-center">
+                                <div class="flex justify-content-center gap-1">
+                                    <button class="edit-activity-row-btn" (click)="openEdit(i)" title="Edit Activity">
+                                        <i class="pi pi-pencil"></i>
+                                    </button>
+                                    <button class="delete-activity-row-btn" (click)="confirmDelete(i)"
+                                        title="Delete Activity">
+                                        <i class="pi pi-minus"></i>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -122,8 +140,8 @@
 </p-dialog>
 
 <!-- EDIT ACTIVITY POPUP -->
-<p-dialog header="Edit Activity" [(visible)]="showEditActivity" [modal]="true" [style]="{width: '500px'}"
-    appendTo="body" styleClass="edit-activity-dialog">
+<p-dialog [header]="editingIndex !== null ? 'Edit Activity' : 'Add Activity'" [(visible)]="showEditActivity"
+    [modal]="true" [style]="{width: '500px'}" appendTo="body" styleClass="edit-activity-dialog">
     <div class="edit-activity-container" *ngIf="lead">
         <div class="edit-form-grid">
             <div class="form-field">
@@ -133,9 +151,9 @@
             </div>
             <div class="form-field">
                 <label>Activity Type</label>
-                <select [(ngModel)]="editData.activityType" [disabled]="!isAdmin" class="custom-select">
-                    <option *ngFor="let t of activityTypes" [value]="t">{{t}}</option>
-                </select>
+                <p-dropdown [options]="activityTypes" [(ngModel)]="editData.activityType" optionLabel="label"
+                    optionValue="value" styleClass="w-full" appendTo="body" [filter]="true"
+                    placeholder="Select Activity Type"></p-dropdown>
             </div>
             <div class="form-field">
                 <label>Activity Date</label>
@@ -144,9 +162,9 @@
             </div>
             <div class="form-field">
                 <label>Updated By</label>
-                <select [(ngModel)]="editData.updatedBy" [disabled]="!isAdmin" class="custom-select">
-                    <option *ngFor="let emp of employeeOptions" [value]="emp">{{emp}}</option>
-                </select>
+                <p-dropdown [options]="employeeOptions" [(ngModel)]="editData.updatedBy" optionLabel="label"
+                    optionValue="value" styleClass="w-full" appendTo="body" [filter]="true"
+                    placeholder="Select User"></p-dropdown>
             </div>
         </div>
 
@@ -175,8 +193,26 @@
         <div class="form-actions mt-4">
             <button pButton label="Cancel" icon="pi pi-times" (click)="showEditActivity=false"
                 class="p-button-text p-button-secondary"></button>
-            <button pButton label="Save Changes" icon="pi pi-check" (click)="saveActivity()" class="p-button-success"
-                [disabled]="!isAdmin"></button>
+            <button pButton label="Save Changes" icon="pi pi-check" (click)="saveActivity()"
+                class="p-button-success"></button>
         </div>
     </div>
+</p-dialog>
+
+<!-- DELETE CONFIRMATION DIALOG -->
+<p-dialog header="Confirm Delete?" [(visible)]="showDeleteConfirmation" [modal]="true" [style]="{width: '350px'}"
+    appendTo="body" styleClass="delete-confirm-dialog" [draggable]="false" [resizable]="false">
+    <div class="delete-confirm-body text-center py-3">
+        <div class="flex justify-content-center mb-3">
+            <i class="pi pi-exclamation-triangle text-warning" style="font-size: 3rem"></i>
+        </div>
+        <p class="m-0 font-semibold text-lg text-700">Are you sure you want to delete this activity?</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center gap-2 w-full">
+            <button pButton label="No" icon="pi pi-times" (click)="showDeleteConfirmation=false"
+                class="p-button-text p-button-secondary"></button>
+            <button pButton label="Yes" icon="pi pi-check" (click)="deleteActivity()" class="p-button-danger"></button>
+        </div>
+    </ng-template>
 </p-dialog>

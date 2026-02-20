@@ -14,6 +14,9 @@ export class LeadDetailsComponent implements OnInit {
     @Output() visibleChange = new EventEmitter<boolean>();
 
     showEditActivity: boolean = false;
+    showDeleteConfirmation: boolean = false;
+    activityToDeleteIndex: number | null = null;
+    editingIndex: number | null = null;
     isAdmin: boolean = false;
     currentUser: string = '';
 
@@ -21,8 +24,33 @@ export class LeadDetailsComponent implements OnInit {
         { requirement: 'Not Found', type: 'Site Visit done', date: '2024-12-03', updatedBy: 'Prakash' }
     ];
 
-    activityTypes = ['OOS', 'OTP', 'NRI', 'Re-Enquire', 'Offline', 'Site Visit Done'];
-    employeeOptions: string[] = [];
+    activityTypes: any[] = [
+        { label: 'New Enquiry', value: 'New Enquiry' },
+        { label: 'Phone Call', value: 'Phone Call' },
+        { label: 'WhatsApp', value: 'WhatsApp' },
+        { label: 'Offline Lead', value: 'Offline Lead' },
+        { label: 'NRI', value: 'NRI' },
+        { label: 'Re-Enquire', value: 'Re-Enquire' },
+        { label: 'Expected Site Visit', value: 'Expected Site Visit' },
+        { label: 'Site Visit Done', value: 'Site Visit Done' },
+        { label: 'Expected Office Visit', value: 'Expected Office Visit' },
+        { label: 'Office Visit Done', value: 'Office Visit Done' },
+        { label: 'Pipeline', value: 'Pipeline' },
+        { label: 'Deal Closed', value: 'Deal Closed' },
+        { label: 'Sq. Yards Concern', value: 'Sq. Yards Concern' },
+        { label: 'Sq. Feet Concern', value: 'Sq. Feet Concern' },
+        { label: 'Distance Concern', value: 'Distance Concern' },
+        { label: 'OTP', value: 'OTP' },
+        { label: '50:50', value: '50:50' },
+        { label: 'Pre-Launch', value: 'Pre-Launch' },
+        { label: 'Not Answered', value: 'Not Answered' },
+        { label: 'Not Interested', value: 'Not Interested' },
+        { label: 'Spam', value: 'Spam' },
+        { label: 'Low Budget', value: 'Low Budget' },
+        { label: 'OOS', value: 'OOS' },
+        { label: 'Old Leads', value: 'Old Leads' }
+    ];
+    employeeOptions: any[] = [];
 
     editData = {
         requirement: 'Not Found',
@@ -45,35 +73,70 @@ export class LeadDetailsComponent implements OnInit {
     loadEmployees() {
         this.leadsService.getEmployees().subscribe({
             next: (res) => {
-                // Combine employees with current user and remove duplicates
                 const all = new Set([this.currentUser, ...res]);
-                this.employeeOptions = Array.from(all);
+                this.employeeOptions = Array.from(all).map(emp => ({ label: emp, value: emp }));
             },
-            error: () => this.employeeOptions = [this.currentUser]
+            error: () => this.employeeOptions = [{ label: this.currentUser, value: this.currentUser }]
         });
     }
 
-    openEdit() {
+    openEdit(index?: number) {
         const today = new Date().toISOString().split('T')[0];
-        this.editData = {
-            requirement: this.lead?.description || 'New Requirement', // Default or could be lead description
-            activityType: 'Site Visit Done',
-            activityDate: today,
-            updatedBy: this.currentUser
-        };
+
+        if (index !== undefined) {
+            // Edit Mode
+            this.editingIndex = index;
+            const act = this.activityHistory[index];
+            this.editData = {
+                requirement: act.requirement,
+                activityType: act.type,
+                activityDate: act.date,
+                updatedBy: act.updatedBy
+            };
+        } else {
+            // Add Mode
+            this.editingIndex = null;
+            this.editData = {
+                requirement: this.lead?.description || 'New Requirement',
+                activityType: 'Site Visit Done',
+                activityDate: today,
+                updatedBy: this.currentUser
+            };
+        }
         this.showEditActivity = true;
     }
 
     saveActivity() {
-        console.log('Saving Activity:', this.editData);
-        // Update local history for demo purposes
-        this.activityHistory.unshift({
+        const activity = {
             requirement: this.editData.requirement,
             type: this.editData.activityType,
             date: this.editData.activityDate,
             updatedBy: this.editData.updatedBy
-        });
+        };
+
+        if (this.editingIndex !== null) {
+            // Update existing
+            this.activityHistory[this.editingIndex] = activity;
+        } else {
+            // Add new
+            this.activityHistory.unshift(activity);
+        }
+
         this.showEditActivity = false;
+        this.editingIndex = null;
+    }
+
+    confirmDelete(index: number) {
+        this.activityToDeleteIndex = index;
+        this.showDeleteConfirmation = true;
+    }
+
+    deleteActivity() {
+        if (this.activityToDeleteIndex !== null) {
+            this.activityHistory.splice(this.activityToDeleteIndex, 1);
+            this.activityToDeleteIndex = null;
+            this.showDeleteConfirmation = false;
+        }
     }
 
     close() {
