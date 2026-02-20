@@ -24,8 +24,27 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   statusOptions: string[] = [];
   employeeOptions: string[] = [];
 
+  // Lead Overview Modal
+  showLeadDetails: boolean = false;
+  selectedLead: Lead | null = null;
+
   // Filter form
   filterForm: FormGroup;
+
+  // Column Dynamic Selection
+  showColumnPicker = false;
+  allOptionalCols: any[] = [];
+  selectedOptionalCols: any[] = [];
+  activeCols: any[] = [];
+
+  // Main fields that are always visible
+  mainCols: any[] = [
+    { field: 'id', header: 'Lead ID' },
+    { field: 'name', header: 'Name' },
+    { field: 'phone', header: 'Phone' },
+    { field: 'project', header: 'Project' },
+    { field: 'source', header: 'Source' }
+  ];
 
   // PrimeNG Table Cols
   cols: any[] = [];
@@ -46,21 +65,46 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     // Restore state from service
     this.showFilterView = this.leadsService.filterViewOpen;
 
-    this.cols = [
-      { field: 'id', header: 'Lead ID' },
-      { field: 'name', header: 'Name' },
-      { field: 'phone', header: 'Phone' },
-      { field: 'project', header: 'Project' },
-      { field: 'source', header: 'Source' },
-      { field: 'status', header: 'Status' },
+    // Initialize Optional Columns
+    this.allOptionalCols = [
       { field: 'assignedTo', header: 'Assigned To' },
+      { field: 'status', header: 'Status' },
       { field: 'createdAt', header: 'Created On' },
-      { field: 'createdBy', header: 'Created By' },
-      // Modified fields optional in cols if heavily formatted in template
+      { field: 'modifiedAt', header: 'Modified On' },
+      { field: 'actions', header: 'Actions' }
     ];
 
+    // Default: Show ONLY main fields initially as requested
+    this.selectedOptionalCols = [];
+
+    this.applyColumns();
     this.loadLeads();
     this.loadEmployees();
+  }
+
+  applyColumns(): void {
+    // Combine main cols with selected optional cols
+    this.activeCols = [...this.mainCols, ...this.selectedOptionalCols];
+    this.showColumnPicker = false;
+  }
+
+  resetColumns(): void {
+    this.selectedOptionalCols = []; // Start with only main fields
+    this.applyColumns();
+  }
+
+  toggleColumnPicker(): void {
+    const activeFieldNames = this.activeCols.map(c => c.field);
+    this.selectedOptionalCols = this.allOptionalCols.filter(col => activeFieldNames.includes(col.field));
+    this.showColumnPicker = !this.showColumnPicker;
+  }
+
+  selectAllColumns(): void {
+    this.selectedOptionalCols = [...this.allOptionalCols];
+  }
+
+  unselectAllColumns(): void {
+    this.selectedOptionalCols = [];
   }
 
   toggleFilterView(): void {
@@ -144,10 +188,18 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  clearFilters(): void {
+  clearFilters(dt?: any): void {
     this.filterForm.reset();
     this.filterText = '';
     this.filteredLeads = this.allLeads;
+    if (dt) {
+      dt.clear(); // Clears PrimeNG table internal filters/sorting
+    }
+  }
+
+  viewLead(lead: Lead): void {
+    this.selectedLead = lead;
+    this.showLeadDetails = true;
   }
 
   goToCreate(): void {

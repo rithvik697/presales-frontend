@@ -39,22 +39,59 @@
         </div>
       </div>
 
-      <!-- SETTINGS -->
-      <mat-icon class="icon">settings</mat-icon>
-
-      <!-- PROFILE -->
-      <div *ngIf="username" class="profile-container" (mouseenter)="showLogout = true"
-        (mouseleave)="showLogout = false">
-        <div class="profile-section">
-          <span class="profile-text">{{ username }}</span>
-          <img src="assets/profile.avif" alt="Profile" class="imageprofile" />
+      <!-- PROFILE MENU (Settings icon removed) -->
+      <div class="settings-profile-wrapper">
+        <!-- Compact User Profile Display -->
+        <div class="user-profile-mini" *ngIf="username" [matMenuTriggerFor]="userMenu">
+          <span class="profile-name-mini">{{ username }}</span>
+          <img [src]="'https://ui-avatars.com/api/?name=' + (username || 'User') + '&background=0ea5e9&color=fff'"
+            alt="Profile" class="avatar-mini" />
         </div>
 
-        <div *ngIf="showLogout" class="logout-dropdown" (click)="logout()">
-          Logout
-        </div>
+        <mat-menu #userMenu="matMenu" class="custom-user-menu">
+          <button mat-menu-item (click)="showProfile()">
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+          </button>
+          <div class="menu-divider"></div>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
       </div>
     </mat-toolbar>
+
+    <!-- REQUESTED PROFILE DIALOG -->
+    <p-dialog header="Profile Details" [(visible)]="showProfileDialog" [modal]="true" [style]="{width: '400px'}"
+      [draggable]="false" [resizable]="false" styleClass="standard-profile-dialog">
+
+      <div class="profile-summary-container" *ngIf="userDetails.username || username; else noProfile">
+        <div class="summary-item">
+          <label>Name of the User</label>
+          <span class="value">: {{ userDetails.username || username || 'N/A' }}</span>
+        </div>
+        <div class="summary-item">
+          <label>Email of the user</label>
+          <span class="value">: {{ userDetails.email || 'Not provided' }}</span>
+        </div>
+        <div class="summary-item">
+          <label>Role of the user</label>
+          <span class="value">: {{ userDetails.role || 'User' }}</span>
+        </div>
+      </div>
+
+      <ng-template #noProfile>
+        <div class="p-4 text-center">
+          <p>No profile details found. Please try logging in again.</p>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton label="Close" icon="pi pi-times" (click)="showProfileDialog=false"
+          class="p-button-text"></button>
+      </ng-template>
+    </p-dialog>
 
     <!-- ===================== SIDENAV LAYOUT ===================== -->
     <mat-sidenav-container class="sidenav-container">

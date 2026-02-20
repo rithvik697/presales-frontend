@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MenuItem } from 'primeng/api';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-registration',
@@ -22,6 +23,9 @@ export class UserRegistrationComponent implements OnInit {
   // 🔹 Form model
   user = {
     emp_id: '',
+    username: '',
+    email: '',
+    password: '',
     emp_first_name: '',
     emp_middle_name: '',
     emp_last_name: '',
@@ -64,7 +68,7 @@ export class UserRegistrationComponent implements OnInit {
   // 🔹 Load user details for edit
   loadUserForEdit(): void {
     this.http.get<any>(
-      `http://127.0.0.1:5000/api/users/${this.employeeId}`
+      `${environment.apiUrl}/users/${this.employeeId}`
     ).subscribe({
       next: (res) => {
 
@@ -73,6 +77,9 @@ export class UserRegistrationComponent implements OnInit {
 
         this.user = {
           emp_id: data.emp_id,
+          username: data.username || '',
+          email: data.email || '',
+          password: '', // Don't load password from backend
           emp_first_name: data.emp_first_name,
           emp_middle_name: data.emp_middle_name,
           emp_last_name: data.emp_last_name,
@@ -91,6 +98,8 @@ export class UserRegistrationComponent implements OnInit {
   submit(): void {
     if (
       !this.user.emp_id ||
+      !this.user.username ||
+      (!this.isEditMode && (!this.user.email || !this.user.password)) ||
       !this.user.emp_first_name ||
       !this.user.emp_last_name ||
       !this.user.role_id
@@ -102,7 +111,7 @@ export class UserRegistrationComponent implements OnInit {
     if (this.isEditMode) {
       // ✅ UPDATE
       this.http.put(
-        `http://127.0.0.1:5000/api/users/${this.employeeId}`,
+        `${environment.apiUrl}/users/${this.employeeId}`,
         this.user
       ).subscribe({
         next: () => {
@@ -118,7 +127,7 @@ export class UserRegistrationComponent implements OnInit {
     } else {
       // ✅ CREATE
       this.http.post(
-        'http://127.0.0.1:5000/api/users/register',
+        `${environment.apiUrl}/users/register`,
         this.user
       ).subscribe({
         next: () => {

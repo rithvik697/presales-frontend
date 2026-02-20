@@ -9,7 +9,7 @@ export class AuthService {
 
   private API_URL = 'http://localhost:5000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(payload: {
     username: string;
@@ -27,7 +27,22 @@ export class AuthService {
     return localStorage.getItem('access_token');
   }
 
+  getUsername(): string | null {
+    return localStorage.getItem('username');
+  }
+
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
+  getEmail(): string | null {
+    return localStorage.getItem('email');
+  }
+
   logout() {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
+    localStorage.removeItem('email');
   }
 }

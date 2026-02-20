@@ -1,0 +1,75 @@
+﻿node.exe : 
+At C:\Program 
+Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE $NPX_CLI_JS 
+$args
++   
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (:String  
+  ) [], RemoteException
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+175:20 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+177:20 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+182:12 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+183:44 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+183:62 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+183:62 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+183:95 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+184:20 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+190:78 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+Error: src/app/leads/leads-li
+st/leads-list.component.html:
+192:67 - error NG5002: 
+Parser Error: Unexpected 
+token .
+
+

@@ -10,7 +10,8 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { MenuItem } from 'primeng/api'; // ✅ ADD
+import { MenuItem } from 'primeng/api';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
   showLogout: boolean = false;
   isLoginPage: boolean = false;
   isChangePasswordPage: boolean = false;
+  showProfileDialog: boolean = false;
+  userDetails: any = { username: '', role: '', email: '' };
 
   notifications: any[] = [];
   unreadCount: number = 0;
@@ -49,10 +52,15 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Call Logs', icon: 'call', route: '/call-logs' },
   ];
 
-  constructor(private router: Router, private toastr: ToastrService) { }
+  constructor(
+    private router: Router,
+    private toastr: ToastrService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.menuItems = this.allMenuItems;
+    this.loadUserData();
 
     this.routerSub = this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
@@ -61,6 +69,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.isLoginPage = url.startsWith('/login');
         this.isChangePasswordPage = url.startsWith('/change-password');
+
+        if (!this.isLoginPage && !this.isChangePasswordPage) {
+          this.loadUserData();
+        }
 
         // Sidebar selection
         const found = this.allMenuItems.find((m) => url.startsWith(m.route));
@@ -84,25 +96,29 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (url === '/users') {
-      this.breadcrumbs = [
-        { label: 'Users', routerLink: '/users' },
-      ];
-    }
-    else if (url === '/users/register') {
-      this.breadcrumbs = [
-        { label: 'Users', routerLink: '/users' },
-        { label: 'Register User' },
-      ];
-    }
-    else if (url === '/dashboard') {
-      this.breadcrumbs = [
-        { label: 'Dashboard' },
-      ];
-    }
-    else {
-      this.breadcrumbs = [];
-    }
+    const segments = url.split('/').filter(s => s);
+    const crumbs: MenuItem[] = [];
+
+    let currentUrl = '';
+    segments.forEach((segment, index) => {
+      currentUrl += `/${segment}`;
+
+      // Map segments to readable labels
+      let label = segment.charAt(0).toUpperCase() + segment.slice(1);
+      if (segment === 'leads') label = 'Leads Management';
+      if (segment === 'call-logs') label = 'Call Logs';
+      if (segment === 'register') label = 'Registration';
+      if (segment === 'edit') label = 'Edit';
+
+      // Skip numeric IDs from being labels directly if they are the last segment
+      if (index === segments.length - 1 && segment.match(/^[A-Z0-9-]+$/) && segment.length > 5) {
+        label = 'Details';
+      }
+
+      crumbs.push({ label, routerLink: currentUrl });
+    });
+
+    this.breadcrumbs = crumbs;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -115,8 +131,60 @@ export class AppComponent implements OnInit, OnDestroy {
     this.notifications = this.notifications.map((n) => ({ ...n, read: true }));
   }
 
+  loadUserData(): void {
+    // 1. Try primary keys from AuthService
+    this.username = this.authService.getUsername();
+    this.role = this.authService.getRole();
+    let email = this.authService.getEmail();
+
+    // 2. Fallback: Check for common alternative key names
+    if (!this.username) {
+      this.username = localStorage.getItem('user') || localStorage.getItem('user_name') || localStorage.getItem('userName');
+    }
+    if (!this.role) {
+      this.role = localStorage.getItem('role_type') || localStorage.getItem('roleType') || localStorage.getItem('userRole');
+    }
+
+    // 3. Ultimate Fallback: Decode JWT token if present
+    const token = this.authService.getToken();
+    if (token) {
+      try {
+        const payloadBase64 = token.split('.')[1];
+        if (payloadBase64) {
+          const decodedPayload = JSON.parse(atob(payloadBase64));
+          if (decodedPayload) {
+            if (!this.username) this.username = decodedPayload.username || decodedPayload.user;
+            if (!this.role) this.role = decodedPayload.role_type || decodedPayload.role;
+            if (!email) email = decodedPayload.email;
+          }
+        }
+      } catch (e) {
+        console.error('Error decoding JWT for profile:', e);
+      }
+    }
+
+    console.log('Final resolved user data for profile:', { username: this.username, role: this.role, email });
+
+    // 4. Update userDetails object for the template
+    if (this.username || email) {
+      this.userDetails.username = this.username || 'Logged In User';
+      this.userDetails.role = this.role || 'User';
+      this.userDetails.email = email || 'No email provided';
+
+      // Sync back to component properties if they were null
+      if (!this.username) this.username = this.userDetails.username;
+      if (!this.role) this.role = this.userDetails.role;
+    }
+  }
+
+  showProfile(): void {
+    this.loadUserData();
+    this.showProfileDialog = true;
+  }
+
   logout(): void {
     console.log('Logout clicked');
+    this.authService.logout();
     this.username = null;
     this.router.navigate(['/login']);
   }

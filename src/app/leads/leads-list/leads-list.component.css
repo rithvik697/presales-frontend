@@ -3,3 +3,45 @@
   padding: 0.5rem;
   font-size: 0.8rem;
 }
+
+/* Good spacing for table cells */
+:host ::ng-deep .p-datatable .p-datatable-tbody>tr>td {
+  padding: 1rem 1.25rem;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead>tr>th {
+  padding: 1rem 1.25rem;
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+}
+
+/* Sl No column width */
+:host ::ng-deep .p-datatable .p-datatable-tbody>tr>td:first-child {
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Column Picker Dialog Styling */
+.field-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.field-checkbox:hover {
+  background: #f1f5f9;
+}
+
+.field-checkbox label {
+  margin-left: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #334155;
+  flex: 1;
+}

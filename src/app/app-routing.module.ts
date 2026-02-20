@@ -26,7 +26,7 @@ const routes: Routes = [
       { path: 'register', component: UserRegistrationComponent }
     ]
   },
-  { path: 'datbackups', component: DatabackupsComponent },
+  { path: 'databackups', component: DatabackupsComponent },
   { path: 'configure', component: ConfigureComponent },
   { path: 'leads', component: LeadsListComponent },
   { path: 'leads/create', component: LeadCreateComponent },

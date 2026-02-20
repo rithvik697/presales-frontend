@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
@@ -18,6 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 
 /* ------------------ PrimeNG ------------------ */
 
@@ -59,6 +60,7 @@ import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
 import { CallLogsComponent } from './call-logs/call-logs.component';
+import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
@@ -78,6 +80,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     ProjectListComponent,
     ProjectRegistrationComponent,
     CallLogsComponent,
+    LeadDetailsComponent,
     FilterByPipe
   ],
   imports: [
@@ -100,6 +103,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatMenuModule,
 
     /* PrimeNG */
     TableModule,
@@ -130,6 +134,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
       progressBar: true,
     }),
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

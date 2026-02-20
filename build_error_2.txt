@@ -1,0 +1,31 @@
+﻿
+Initial Chunk Files           | Names         |  Raw Size | Estimated Transfer Size
+main.e925926e14e21b5a.js      | main          |   1.44 MB |               309.37 kB
+styles.490a88999d91f26e.css   | styles        | 594.15 kB |                43.33 kB
+polyfills.1aa9be2c8ed83ab9.js | polyfills     |  33.04 kB |                10.64 kB
+runtime.29f8713ce3779535.js   | runtime       | 916 bytes |               524 bytes
+
+| Initial Total |   2.05 MB |               363.86 kB
+
+Build at: 2026-02-20T05:20:01.224Z - Hash: 3d765495eedd2e99 - Time: 19956ms
+node.exe : 
+At C:\Program 
+Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE $NPX_CLI_JS 
+$args
++   
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (:String  
+  ) [], RemoteException
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+Warning: bundle initial 
+exceeded maximum budget. 
+Budget 2.00 MB was not met 
+by 50.33 kB with a total of 
+2.05 MB.
+
+
