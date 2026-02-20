@@ -60,6 +60,10 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
+/* ----- interceptors----*/
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+
+
 
 @NgModule({
   declarations: [
@@ -76,7 +80,8 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     ProjectListComponent,
     ProjectRegistrationComponent,
     CallLogsComponent,
-    FilterByPipe
+    FilterByPipe,
+  
   ],
   imports: [
     BrowserModule,
@@ -127,6 +132,9 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
       closeButton: true,
       progressBar: true,
     }),
+  ],
+   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

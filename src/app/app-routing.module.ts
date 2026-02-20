@@ -13,26 +13,43 @@ import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
 import { CallLogsComponent } from './call-logs/call-logs.component';
+import { AuthGuard } from './guards/auth.guard';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent,
+    canActivate: [AuthGuard]
+   },
   {
     path: 'users',
     component: UsersComponent,
     children: [
       { path: '', component: UsersListEmpComponent },          // default
       { path: 'register', component: UserRegistrationComponent }
-    ]
+    ],canActivate: [AuthGuard]
   },
-  { path: 'datbackups', component: DatabackupsComponent },
-  { path: 'configure', component: ConfigureComponent },
-  { path: 'leads', component: LeadsListComponent },
-  { path: 'leads/create', component: LeadCreateComponent },
-  {path: 'projects', component: ProjectListComponent},
-  { path: 'projects/register', component: ProjectRegistrationComponent },
-  { path: 'call-logs', component: CallLogsComponent },
+  { path: 'datbackups', component: DatabackupsComponent,
+    canActivate: [AuthGuard]
+   },
+  { path: 'configure', component: ConfigureComponent
+    ,canActivate: [AuthGuard]
+   },
+  { path: 'leads', component: LeadsListComponent,
+    canActivate: [AuthGuard]
+   },
+  { path: 'leads/create', component: LeadCreateComponent
+    ,canActivate: [AuthGuard]
+   },
+  {path: 'projects', component: ProjectListComponent
+    ,canActivate: [AuthGuard]
+  },
+  { path: 'projects/register', component: ProjectRegistrationComponent,
+    canActivate: [AuthGuard]
+   },
+  { path: 'call-logs', component: CallLogsComponent,canActivate: [AuthGuard] },
+
 ];
 
 @NgModule({

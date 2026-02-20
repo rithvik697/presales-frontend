@@ -49,25 +49,29 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private toastr: ToastrService) {}
 
-  ngOnInit(): void {
-    this.menuItems = this.allMenuItems;
+ ngOnInit(): void {
 
-    this.routerSub = this.router.events
-      .pipe(filter((e) => e instanceof NavigationEnd))
-      .subscribe((e: any) => {
-        const url: string = e.urlAfterRedirects || e.url;
+  this.menuItems = this.allMenuItems;
 
-        this.isLoginPage = url.startsWith('/login');
-        this.isChangePasswordPage = url.startsWith('/change-password');
+  this.routerSub = this.router.events
+    .pipe(filter((e) => e instanceof NavigationEnd))
+    .subscribe((e: any) => {
 
-        // Sidebar selection
-        const found = this.allMenuItems.find((m) => url.startsWith(m.route));
-        this.selectedItem = found ? found.label : '';
+      
+      this.username = localStorage.getItem('username');
 
-        // ✅ Breadcrumb update
-        this.updateBreadcrumbs(url);
-      });
-  }
+      const url: string = e.urlAfterRedirects || e.url;
+
+      this.isLoginPage = url.startsWith('/login');
+      this.isChangePasswordPage = url.startsWith('/change-password');
+
+      const found = this.allMenuItems.find((m) => url.startsWith(m.route));
+      this.selectedItem = found ? found.label : '';
+
+      this.updateBreadcrumbs(url);
+    });
+}
+
 
   ngOnDestroy(): void {
     if (this.routerSub) {
@@ -114,9 +118,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.username = null;
-    this.router.navigate(['/login']);
-  }
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+  this.username = null;
+  this.router.navigate(['/login']);
+ }
+
 
   toggleSidebar(sidenav: MatSidenav): void {
     sidenav.toggle();
