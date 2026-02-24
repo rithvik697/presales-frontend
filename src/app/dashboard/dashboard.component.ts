@@ -1,11 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  greeting: string = 'Hello';
+  username: string = '';
+
+  constructor(private authService: AuthService) { }
+
+  ngOnInit(): void {
+    this.username = this.authService.getUsername() || 'User';
+    const hour = new Date().getHours();
+    if (hour < 12) this.greeting = 'Good morning';
+    else if (hour < 17) this.greeting = 'Good afternoon';
+    else this.greeting = 'Good evening';
+  }
   leads = [
     {
       customer: 'Customer',

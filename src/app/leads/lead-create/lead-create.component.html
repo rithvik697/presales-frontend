@@ -5,16 +5,17 @@
     </button>
     <div class="title-group">
       <h2>{{ isEditMode ? 'Edit Lead' : 'New Lead' }}</h2>
-      <p class="subtitle">{{ isEditMode ? 'Update lead details' : 'Create a new lead entry with complete information' }}
+      <p class="subtitle">
+        {{ isEditMode ? 'Update lead details' : 'Create a new lead entry with complete information' }}
       </p>
     </div>
   </div>
+
   <div class="divider"></div>
 
   <form (ngSubmit)="submit()" #leadForm="ngForm">
 
-    <!-- Row 1: First Name, Last Name -->
-    <!-- Row 1: ID (Edit Only), First Name, Last Name -->
+    <!-- Row 1 -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field" *ngIf="isEditMode">
         <mat-label>Lead ID</mat-label>
@@ -37,12 +38,11 @@
       </mat-form-field>
     </div>
 
-    <!-- Row 2: Phone with Country Code, Email -->
+    <!-- Row 2 -->
     <div class="form-row">
       <div class="phone-group" [class.readonly-wrapper]="isEditMode">
         <mat-form-field appearance="outline" class="code-field">
           <mat-select [(ngModel)]="selectedCountryCode" name="countryCode" [disabled]="isEditMode">
-
             <mat-select-trigger>
               {{ selectedCountryCode.flag }} {{ selectedCountryCode.code }}
             </mat-select-trigger>
@@ -54,13 +54,20 @@
 
         <mat-form-field appearance="outline" class="phone-field" [class.readonly-field]="isEditMode">
           <mat-label>Phone Number **</mat-label>
-          <input matInput name="phone" required [(ngModel)]="model.phone" (input)="onPhoneInput($event, true)"
-            [readonly]="isEditMode" type="tel" pattern="[0-9]*" [maxlength]="selectedCountryCode.limit" />
-          <mat-hint align="end">{{model.phone.length || 0}} / {{selectedCountryCode.limit}}</mat-hint>
-          <mat-error *ngIf="leadForm.controls['phone']?.errors?.['pattern']">Numeric values only</mat-error>
+          <input matInput name="phone" required [(ngModel)]="model.phone"
+                 (input)="onPhoneInput($event, true)"
+                 [readonly]="isEditMode"
+                 type="tel"
+                 pattern="[0-9]*"
+                 [maxlength]="selectedCountryCode.limit" />
+          <mat-hint align="end">
+            {{model.phone.length || 0}} / {{selectedCountryCode.limit}}
+          </mat-hint>
+          <mat-error *ngIf="leadForm.controls['phone']?.errors?.['pattern']">
+            Numeric values only
+          </mat-error>
         </mat-form-field>
       </div>
-
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Email</mat-label>
@@ -68,30 +75,38 @@
       </mat-form-field>
     </div>
 
-    <!-- Row 3: Alternate Number, Project -->
+    <!-- Row 3 -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Alternate Number</mat-label>
-        <input matInput name="alternatePhone" [(ngModel)]="model.alternatePhone" type="tel" pattern="[0-9]*"
-          (input)="onPhoneInput($event, false)" [maxlength]="selectedCountryCode.limit" />
-
-
+        <input matInput name="alternatePhone"
+               [(ngModel)]="model.alternatePhone"
+               type="tel"
+               pattern="[0-9]*"
+               (input)="onPhoneInput($event, false)"
+               [maxlength]="selectedCountryCode.limit" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Project **</mat-label>
         <mat-select name="project" required [(ngModel)]="model.project">
-          <mat-option *ngFor="let p of projects" [value]="p">{{ p }}</mat-option>
+          <mat-option value="">Select Project</mat-option>
+          <mat-option *ngFor="let p of projects" [value]="p.project_id">
+            {{ p.project_name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-    <!-- Row 4: Lead Source, Profession -->
+    <!-- Row 4 -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Lead Source **</mat-label>
         <mat-select name="source" required [(ngModel)]="model.source">
-          <mat-option *ngFor="let s of sources" [value]="s">{{ s }}</mat-option>
+          <mat-option value="">Select Source</mat-option>
+          <mat-option *ngFor="let s of sources" [value]="s.source_id">
+            {{ s.source_name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -101,38 +116,49 @@
       </mat-form-field>
     </div>
 
-    <!-- Row 5: Status, Assigned To -->
+    <!-- Row 5 (STATUS FIXED HERE) -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Status</mat-label>
         <mat-select name="status" [(ngModel)]="model.status">
-          <mat-option value="New">New</mat-option>
-          <mat-option value="Contacted">Contacted</mat-option>
-          <mat-option value="Qualified">Qualified</mat-option>
-          <mat-option value="Lost">Lost</mat-option>
-          <mat-option value="Converted">Converted</mat-option>
+
+          <mat-option value="">Select Status</mat-option>
+
+          <mat-option *ngFor="let st of statuses" [value]="st.status_id">
+            {{ st.status_name }}
+          </mat-option>
+
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Assigned To</mat-label>
         <mat-select name="assignedTo" [(ngModel)]="model.assignedTo">
-          <mat-option *ngFor="let emp of employees" [value]="emp">{{ emp }}</mat-option>
+          <mat-option value="">Select Employee</mat-option>
+          <mat-option *ngFor="let emp of employees" [value]="emp.emp_id">
+            {{ emp.full_name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-    <!-- Row 5: Description -->
+    <!-- Description -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Description</mat-label>
-        <textarea matInput name="description" rows="3" [(ngModel)]="model.description"></textarea>
+        <textarea matInput name="description" rows="3"
+                  [(ngModel)]="model.description"></textarea>
       </mat-form-field>
     </div>
 
     <div class="form-row buttons">
-      <button mat-flat-button color="primary" type="submit">{{ isEditMode ? 'Update Lead' : 'Submit' }}</button>
-      <button mat-stroked-button color="warn" type="button" (click)="cancel()">Cancel</button>
+      <button mat-flat-button color="primary" type="submit">
+        {{ isEditMode ? 'Update Lead' : 'Submit' }}
+      </button>
+      <button mat-stroked-button color="warn" type="button" (click)="cancel()">
+        Cancel
+      </button>
     </div>
+
   </form>
 </div>

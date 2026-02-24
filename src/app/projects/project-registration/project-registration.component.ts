@@ -9,18 +9,18 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./project-registration.component.css']
 })
 export class ProjectRegistrationComponent {
-  
+
   breadcrumbItems!: MenuItem[];
   home!: MenuItem;
 
   ngOnInit(): void {
-  this.home = { icon: 'pi pi-home', routerLink: '/dashboard' };
+    this.home = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
-  this.breadcrumbItems = [
-    { label: 'Project', routerLink: '/projects' },
-    { label: 'Register Project' }
-  ];
-}
+    this.breadcrumbItems = [
+      { label: 'Project', routerLink: '/projects' },
+      { label: 'Register Project' }
+    ];
+  }
   projectData = {
     project_name: '',
     project_type: '',
@@ -32,8 +32,9 @@ export class ProjectRegistrationComponent {
     pincode: '',
     total_area: null,
     number_of_units: null,
-    rera_number: '',
-    created_by: 'EMP001' // later from auth
+    rera_number: ''
+    // created_by is NOT sent from the frontend.
+    // The backend reads it from the JWT token.
   };
 
   projectTypes = ['Villa', 'Apartment'];
@@ -45,7 +46,7 @@ export class ProjectRegistrationComponent {
   constructor(
     private projectService: ProjectService,
     private router: Router
-  ) {}
+  ) { }
 
   submitProject() {
     this.isSubmitting = true;
@@ -61,8 +62,8 @@ export class ProjectRegistrationComponent {
         this.isSubmitting = false;
       }
     });
-    
+
   }
-  
+
 }
 

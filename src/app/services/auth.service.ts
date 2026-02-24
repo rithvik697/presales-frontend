@@ -31,6 +31,10 @@ export class AuthService {
     return localStorage.getItem('username');
   }
 
+  getEmpId(): string | null {
+    return localStorage.getItem('emp_id');
+  }
+
   getRole(): string | null {
     return localStorage.getItem('role');
   }
@@ -41,6 +45,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('emp_id');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
