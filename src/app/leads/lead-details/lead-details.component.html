@@ -1,0 +1,218 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{width: '80vw', 'max-height': '90vh'}"
+    [header]="'Lead Overview'" (onHide)="close()" [draggable]="true" [resizable]="true" styleClass="lead-details-dialog"
+    appendTo="body">
+
+    <div class="lead-details-container" *ngIf="lead">
+
+        <!-- Main Content Section -->
+        <div class="main-content">
+            <!-- Header Info -->
+            <div class="header-info">
+
+                <div class="primary-details">
+                    <div class="detail-row">
+                        <span class="label">Name</span>
+                        <span class="valueHighlight">: {{lead.name}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Project</span>
+                        <span class="valueHighlight">: {{lead.project || 'N/A'}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Assigned To</span>
+                        <span class="valueHighlight">: {{lead.assignedTo || 'Unassigned'}}</span>
+                    </div>
+                </div>
+
+                <div class="secondary-details">
+                    <div class="detail-row ivr-row">
+                        <span class="icon-circle"><mat-icon>call</mat-icon></span>
+                        <span class="label">IVR</span>
+                        <span class="value ivr-value">: {{lead.phone}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Source</span>
+                        <span class="value-source">: {{lead.source || 'N/A'}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Created Date</span>
+                        <span class="value-date">: {{lead.createdAt | date: 'yyyy-MM-dd'}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Details Section -->
+            <div class="other-details-section">
+                <h3>OTHER DETAILS</h3>
+                <div class="details-grid">
+                    <div class="grid-item">
+                        <span class="label">Lead Name:</span>
+                        <span class="value">{{lead.name}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">IVR:</span>
+                        <span class="value">{{lead.phone}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Project:</span>
+                        <span class="value">{{lead.project || 'N/A'}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Source:</span>
+                        <span class="value">{{lead.source || 'N/A'}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Assigned To:</span>
+                        <span class="value">{{lead.assignedTo || 'N/A'}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Created Date:</span>
+                        <span class="value">{{lead.createdAt | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Created By:</span>
+                        <span class="value">{{lead.createdBy || 'Unknown'}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Modified Date:</span>
+                        <span class="value">{{lead.modifiedAt | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Modified By:</span>
+                        <span class="value">{{lead.modifiedBy || 'N/A'}}</span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="label">Lead Age (days):</span>
+                        <span class="value age-tag">{{getLeadAge(lead.createdAt)}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side Panel (Activities) -->
+        <div class="activities-panel">
+            <div class="activity-header">
+                <div class="flex flex-column">
+                    <span class="date">{{lead.createdAt | date: 'dd-MM-yyyy'}}</span>
+                    <span class="time">{{lead.createdAt | date: 'HH:mm a'}}</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <button class="add-activity-btn" (click)="openEdit()" title="Add Activity">
+                        <i class="pi pi-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-table-container">
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Requirement</th>
+                            <th>Activity Type</th>
+                            <th>Activity Data</th>
+                            <th>Updated By</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let act of activityHistory; let i = index">
+                            <td>{{act.requirement}}</td>
+                            <td>{{act.type}}</td>
+                            <td>{{act.date}}</td>
+                            <td>{{act.updatedBy}}</td>
+                            <td class="text-center">
+                                <div class="flex justify-content-center gap-1">
+                                    <button class="edit-activity-row-btn" (click)="openEdit(i)" title="Edit Activity">
+                                        <i class="pi pi-pencil"></i>
+                                    </button>
+                                    <button class="delete-activity-row-btn" (click)="confirmDelete(i)"
+                                        title="Delete Activity">
+                                        <i class="pi pi-minus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- EDIT ACTIVITY POPUP -->
+<p-dialog [header]="editingIndex !== null ? 'Edit Activity' : 'Add Activity'" [(visible)]="showEditActivity"
+    [modal]="true" [style]="{width: '500px'}" appendTo="body" styleClass="edit-activity-dialog">
+    <div class="edit-activity-container" *ngIf="lead">
+        <div class="edit-form-grid">
+            <div class="form-field">
+                <label>Requirement</label>
+                <input type="text" [(ngModel)]="editData.requirement" [disabled]="true"
+                    class="p-inputtext readonly-input" />
+            </div>
+            <div class="form-field">
+                <label>Activity Type</label>
+                <p-dropdown [options]="activityTypes" [(ngModel)]="editData.activityType" optionLabel="label"
+                    optionValue="value" styleClass="w-full" appendTo="body" [filter]="true"
+                    placeholder="Select Activity Type"></p-dropdown>
+            </div>
+            <div class="form-field">
+                <label>Activity Date</label>
+                <input type="date" [(ngModel)]="editData.activityDate" [disabled]="true"
+                    class="p-inputtext readonly-input" />
+            </div>
+            <div class="form-field">
+                <label>Updated By</label>
+                <p-dropdown [options]="employeeOptions" [(ngModel)]="editData.updatedBy" optionLabel="label"
+                    optionValue="value" styleClass="w-full" appendTo="body" [filter]="true"
+                    placeholder="Select User"></p-dropdown>
+            </div>
+        </div>
+
+        <div class="lead-summary-section">
+            <h4 class="section-title">Lead Details</h4>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <label>Name</label>
+                    <span>: {{lead.name}}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Phone</label>
+                    <span>: {{lead.phone}}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Project</label>
+                    <span>: {{lead.project || 'N/A'}}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Assigned To</label>
+                    <span>: {{lead.assignedTo || 'Unassigned'}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions mt-4">
+            <button pButton label="Cancel" icon="pi pi-times" (click)="showEditActivity=false"
+                class="p-button-text p-button-secondary"></button>
+            <button pButton label="Save Changes" icon="pi pi-check" (click)="saveActivity()"
+                class="p-button-success"></button>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- DELETE CONFIRMATION DIALOG -->
+<p-dialog header="Confirm Delete?" [(visible)]="showDeleteConfirmation" [modal]="true" [style]="{width: '350px'}"
+    appendTo="body" styleClass="delete-confirm-dialog" [draggable]="false" [resizable]="false">
+    <div class="delete-confirm-body text-center py-3">
+        <div class="flex justify-content-center mb-3">
+            <i class="pi pi-exclamation-triangle text-warning" style="font-size: 3rem"></i>
+        </div>
+        <p class="m-0 font-semibold text-lg text-700">Are you sure you want to delete this activity?</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center gap-2 w-full">
+            <button pButton label="No" icon="pi pi-times" (click)="showDeleteConfirmation=false"
+                class="p-button-text p-button-secondary"></button>
+            <button pButton label="Yes" icon="pi pi-check" (click)="deleteActivity()" class="p-button-danger"></button>
+        </div>
+    </ng-template>
+</p-dialog>

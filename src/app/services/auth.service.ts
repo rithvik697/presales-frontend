@@ -30,4 +30,11 @@ export class AuthService {
   logout() {
     localStorage.removeItem('access_token');
   }
+   getUsername(): string | null {
+    return localStorage.getItem('username');
+  }
+
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
 }

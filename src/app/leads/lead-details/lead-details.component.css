@@ -1,0 +1,357 @@
+.lead-details-container {
+    display: flex;
+    height: 100%;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    min-height: 500px;
+}
+
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: white;
+}
+
+.header-info {
+    display: flex;
+    gap: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+
+.primary-details,
+.secondary-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.label {
+    min-width: 100px;
+    color: #666;
+    font-weight: 500;
+}
+
+.valueHighlight {
+    color: #9c27b0;
+    font-weight: 600;
+}
+
+.value-source {
+    color: #ff9800;
+    font-weight: 600;
+}
+
+.value-date {
+    color: #2196f3;
+    font-weight: 600;
+}
+
+.ivr-row {
+    gap: 10px;
+}
+
+.icon-circle {
+    background: #2196f3;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-circle mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.ivr-value {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+/* Other Details */
+.other-details-section h3 {
+    font-size: 1rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.grid-item {
+    display: flex;
+    align-items: center;
+}
+
+.grid-item .label {
+    min-width: 150px;
+    font-weight: normal;
+}
+
+.grid-item .value {
+    color: #333;
+    font-weight: 500;
+}
+
+.age-tag {
+    background: #fff3e0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #e65100;
+    font-size: 0.85rem;
+}
+
+/* Activities Panel */
+.activities-panel {
+    width: 350px;
+    padding: 20px;
+    background: #fafafa;
+    border-left: 1px solid #e0e0e0;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.activity-header .date {
+    font-weight: bold;
+    color: #666;
+}
+
+.activity-header .time {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.activity-history-btn {
+    background: #9c27b0;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.activity-table-container {
+    overflow-x: auto;
+}
+
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.activity-table th {
+    text-align: left;
+    padding: 8px;
+    background: #eee;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.activity-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Modal Styling Overrides */
+::ng-deep .lead-details-dialog .p-dialog-header,
+::ng-deep .edit-activity-dialog .p-dialog-header {
+    background: #e91e63;
+    color: white;
+    padding: 10px 20px;
+}
+
+::ng-deep .lead-details-dialog .p-dialog-header .p-dialog-header-icon,
+::ng-deep .edit-activity-dialog .p-dialog-header .p-dialog-header-icon {
+    color: white;
+}
+
+::ng-deep .lead-details-dialog .p-dialog-content,
+::ng-deep .edit-activity-dialog .p-dialog-content {
+    padding: 20px !important;
+}
+
+/* Edit Activity Layout */
+.edit-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-field label {
+    font-weight: 600;
+    color: #444;
+    font-size: 0.9rem;
+}
+
+.custom-select,
+.p-inputtext {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.custom-select:focus,
+.p-inputtext:focus {
+    border-color: #e91e63;
+    outline: none;
+}
+
+.lead-summary-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+}
+
+.section-title {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #e91e63;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.summary-item {
+    font-size: 0.85rem;
+}
+
+.summary-item label {
+    font-weight: bold;
+    color: #666;
+    margin-right: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.readonly-input {
+    background-color: #f1f3f5 !important;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.readonly-input:focus {
+    border-color: #ced4da !important;
+}
+
+/* Ensure p-dropdown panel is on top */
+::ng-deep .p-dropdown-panel {
+    z-index: 99999 !important;
+}
+
+/* New Buttons Styles */
+.add-activity-btn {
+    background: #4caf50;
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.add-activity-btn:hover {
+    opacity: 0.9;
+}
+
+.delete-activity-row-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.delete-activity-row-btn:hover {
+    background: #d32f2f;
+}
+
+.edit-activity-row-btn {
+    background: #2196f3;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.edit-activity-row-btn:hover {
+    background: #1976d2;
+}
+
+/* Delete confirmation styling */
+::ng-deep .delete-confirm-dialog .p-dialog-header {
+    background: #f44336 !important;
+    color: white !important;
+}
+
+.text-warning {
+    color: #ffc107;
+}
+
+.text-lg {
+    font-size: 1.1rem;
+}

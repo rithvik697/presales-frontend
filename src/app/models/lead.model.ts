@@ -2,6 +2,7 @@ export interface Lead {
   id?: string;
   name: string;
   firstName?: string;
+  middleName?: string;
   lastName?: string;
   phone: string;
   alternatePhone?: string;
@@ -13,4 +14,7 @@ export interface Lead {
   assignedTo?: string;
   status?: string;
   createdAt?: string;
+  createdBy?: string;     
+  modifiedAt?: string;    
+  modifiedBy?: string;  
 }

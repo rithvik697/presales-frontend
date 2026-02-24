@@ -62,6 +62,7 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
 import { FilterByPipe } from './pipes/filter-by.pipe';
 /* ----- interceptors----*/
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 
 
 
@@ -76,6 +77,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     ConfigureComponent,
     DatabackupsComponent,
     LeadsListComponent,
+    LeadDetailsComponent,
     LeadCreateComponent,
     ProjectListComponent,
     ProjectRegistrationComponent,

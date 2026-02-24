@@ -1,3 +1,66 @@
+.phone-group {
+  display: flex;
+  gap: 0px;
+  /* Reduced from 10px to 0 for tighter look */
+  flex: 1;
+}
+
+.code-field {
+  width: 120px;
+  /* Increased to fit country code + flag */
+}
+
+.phone-field {
+  flex: 1;
+}
+
+/* Ensure shaded background for readonly inputs */
+::ng-deep .readonly-field .mat-form-field-wrapper,
+::ng-deep .readonly-field .mat-form-field-flex {
+  background-color: #e0e0e0 !important;
+  /* Shady grey */
+  border-radius: 4px;
+}
+
+/* Fix visibility for disabled/readonly elements in Edit Mode */
+::ng-deep .readonly-wrapper .mat-select-disabled .mat-select-value {
+  color: black !important;
+  opacity: 1 !important;
+}
+
+/* Remove underline ripple for cleaner look if desired, or keep it */
+::ng-deep .readonly-field .mat-form-field-underline {
+  display: none;
+}
+
+/* Remove outer box for Update Lead specifically if requested */
+/* This removes the border for readonly-field */
+::ng-deep .readonly-field .mat-form-field-outline {
+  display: none !important;
+  opacity: 0 !important;
+  border: none !important;
+}
+
+/* Specific fix: sometimes the wrapper has its own spacing/border logic */
+::ng-deep .readonly-field .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+  margin-top: -2px;
+}
+
+
+/* Bring them closer */
+.phone-group .phone-field {
+  margin-left: -5px;
+}
+
+
+
+/* Readonly styling */
+.readonly-field ::ng-deep .mat-form-field-wrapper {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
 .lead-create-container {
   max-width: 95%;
   /* Increased from 800px to fill more space */

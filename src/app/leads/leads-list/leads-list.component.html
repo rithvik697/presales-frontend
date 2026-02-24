@@ -1,139 +1,196 @@
-<div class="leads-list-container">
-  <!-- Top Toolbar: Title + Actions -->
-  <div class="top-toolbar">
-    <!-- Title -->
-    <h2>Leads Management</h2>
+<!-- Main Layout using PrimeNG Card/Panel structure -->
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-4 py-4">
+      <!-- Toolbar -->
+      <p-toolbar styleClass="mb-4 gap-2">
+        <ng-template pTemplate="left">
+          <h2 class="m-0 font-bold text-primary">Leads Management</h2>
+        </ng-template>
 
-    <!-- Right Actions -->
-    <div class="toolbar-actions">
-      <!-- Search Input -->
-      <div class="search-container">
-        <input type="text" placeholder="Search by name or phone..." [(ngModel)]="filterText" />
+        <ng-template pTemplate="right">
+          <div class="flex gap-2">
+            <!-- Toggle Filters -->
+            <button pButton pRipple label="Lead-Filter View" icon="pi pi-search" class="p-button-help"
+              (click)="toggleFilterView()"></button>
+            <!-- Create Lead -->
+            <button pButton pRipple label="Create Lead" icon="pi pi-plus" class="p-button-primary"
+              (click)="goToCreate()"></button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+
+      <!-- Filter Panel -->
+      <div *ngIf="showFilterView" class="card mb-4 surface-ground border-round-md p-3">
+        <form [formGroup]="filterForm">
+          <div class="formgrid grid">
+            <!-- Row 1 -->
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="customerName">Customer Name</label>
+              <input pInputText id="customerName" formControlName="customerName" placeholder="Search name..."
+                class="w-full" />
+            </div>
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="mobileNumber">Mobile Number</label>
+              <input pInputText id="mobileNumber" formControlName="mobileNumber" placeholder="Search phone..."
+                class="w-full" />
+            </div>
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="source">Source</label>
+              <p-dropdown [options]="sourceOptions" formControlName="source" placeholder="All" cssClass="w-full"
+                styleClass="w-full" [showClear]="true"></p-dropdown>
+            </div>
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="project">Project</label>
+              <p-dropdown [options]="projectOptions" formControlName="project" placeholder="All" styleClass="w-full"
+                [showClear]="true"></p-dropdown>
+            </div>
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="status">Status</label>
+              <p-dropdown [options]="statusOptions" formControlName="status" placeholder="All" styleClass="w-full"
+                [showClear]="true"></p-dropdown>
+            </div>
+
+            <!-- Row 2 / Continued Flow -->
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="assignedEmployee">Assigned To</label>
+              <p-dropdown [options]="employeeOptions" formControlName="assignedEmployee" placeholder="All"
+                styleClass="w-full" [showClear]="true"></p-dropdown>
+            </div>
+
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="scheduledDate">Scheduled Date</label>
+              <!-- Use basic input type date for compatibility if p-calendar isn't working perfectly with string dates, but user asked for p-calendar -->
+              <!-- We need to ensure date format matches. For now using basic input to be safe per logic, or p-calendar if safe -->
+              <!-- Using pInputText type=date for safety with existing logic string match -->
+              <input pInputText type="date" id="scheduledDate" formControlName="scheduledDate" class="w-full" />
+            </div>
+
+            <!-- Actions -->
+            <div class="field col-12 md:col-6 lg:col-4 flex align-items-end gap-2">
+              <button pButton label="Apply Filters" icon="pi pi-check" class="p-button-success"
+                (click)="applyFilters()"></button>
+              <button pButton label="Clear Filters" icon="pi pi-times" class="p-button-secondary p-button-outlined"
+                (click)="clearFilters(dt)"></button>
+            </div>
+          </div>
+        </form>
       </div>
 
-      <!-- Filter Toggle Button -->
-      <button class="action-btn filter-toggle-btn" [class.active]="showFilterView" (click)="toggleFilterView()">
-        <span class="icon">🔍</span> LEAD-FILTER VIEW
-      </button>
+      <!-- Leads Table -->
+      <p-table #dt [value]="filteredLeads" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['name','phone','source','status']" [rowHover]="true" dataKey="id"
+        styleClass="p-datatable-striped" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true" responsiveLayout="scroll" [loading]="loading">
 
-      <!-- Create Lead Button -->
-      <button class="action-btn create-new-btn" (click)="goToCreate()">
-        + CREATE LEAD
-      </button>
+        <ng-template pTemplate="caption">
+          <div class="flex align-items-center justify-content-between">
+            <div class="flex align-items-center gap-2">
+              <!-- Search Bar with Clear -->
+              <span class="p-input-icon-left mr-2">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" [(ngModel)]="filterText"
+                  (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Global Search..." />
+              </span>
+              <button pButton label="Clear Filters" icon="pi pi-filter-slash"
+                class="p-button-outlined p-button-sm p-button-secondary" (click)="clearFilters(dt)"
+                pTooltip="Reset all search filters" tooltipPosition="bottom"
+                *ngIf="filterText || filterForm.dirty"></button>
+            </div>
+
+            <div class="flex align-items-center gap-2">
+              <h5 class="m-0 hidden md:block">Manage Leads</h5>
+              <!-- Dynamic Column Picker -->
+              <button pButton icon="pi pi-list" class="p-button-rounded p-button-info p-button-text"
+                (click)="toggleColumnPicker()" title="Show/Hide Columns"></button>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 4rem" class="text-center">Sl No</th>
+            <th *ngFor="let col of activeCols" [pSortableColumn]="col.field">
+              {{ col.header }}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-lead let-i="rowIndex">
+          <tr>
+            <td>{{ i + 1 }}</td>
+            <td *ngFor="let col of activeCols">
+              <!-- Custom Cell Rendering based on field -->
+              <ng-container [ngSwitch]="col.field">
+                <!-- Name with View Link -->
+                <span *ngSwitchCase="'name'" class="text-primary cursor-pointer font-bold underline"
+                  (click)="viewLead(lead)">
+                  {{ lead.name }}
+                </span>
+
+                <!-- Status with Tag -->
+                <p-tag *ngSwitchCase="'status'" [value]="lead.status" [severity]="getSeverity(lead.status)"></p-tag>
+
+                <!-- Dates -->
+                <span *ngSwitchCase="'createdAt'">{{ lead.createdAt | date:'dd-MM-yyyy' }}</span>
+                <span *ngSwitchCase="'modifiedAt'">{{ lead.modifiedAt ? (lead.modifiedAt | date:'dd-MM-yyyy') : '-'
+                  }}</span>
+
+                <!-- Actions -->
+                <div *ngSwitchCase="'actions'" class="flex gap-2">
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-button-sm"
+                    (click)="edit(lead)" title="Edit"></button>
+                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning p-button-sm"
+                    (click)="delete(lead)" title="Delete"></button>
+                </div>
+
+                <!-- Default Text -->
+                <span *ngSwitchDefault>{{ lead[col.field] || '-' }}</span>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="activeCols.length + 1" class="text-center p-4">No leads found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </div>
 
-  <!-- Filter Panel (Collapsible) -->
-  <div class="filter-panel" *ngIf="showFilterView">
-    <form [formGroup]="filterForm" class="filter-form">
+  <!-- Lead Overview Popup -->
+  <app-lead-details [lead]="selectedLead" [(visible)]="showLeadDetails"></app-lead-details>
 
-      <!-- Row 1: 5 Columns -->
-      <div class="filter-row row-five">
-        <!-- Customer Name -->
-        <div class="filter-group">
-          <label>CUSTOMER NAME</label>
-          <input type="text" formControlName="customerName" placeholder="Search name...">
-        </div>
+  <!-- Column Picker Dialog -->
+  <p-dialog header="Choose Display Columns" [(visible)]="showColumnPicker" [modal]="true" [style]="{width: '350px'}"
+    appendTo="body" styleClass="column-picker-dialog">
 
-        <!-- Mobile Number -->
-        <div class="filter-group">
-          <label>MOBILE NUMBER</label>
-          <input type="text" formControlName="mobileNumber" placeholder="Search phone...">
-        </div>
-
-        <!-- Source -->
-        <div class="filter-group">
-          <label>SOURCE</label>
-          <select formControlName="source">
-            <option value="">All</option>
-            <option *ngFor="let s of sourceOptions" [value]="s">{{ s }}</option>
-          </select>
-        </div>
-
-        <!-- Project -->
-        <div class="filter-group">
-          <label>PROJECT</label>
-          <select formControlName="project">
-            <option value="">All</option>
-            <option *ngFor="let p of projectOptions" [value]="p">{{ p }}</option>
-          </select>
-        </div>
-
-        <!-- Activity/Status -->
-        <div class="filter-group">
-          <label>ACTIVITY / STATUS</label>
-          <select formControlName="status">
-            <option value="">All</option>
-            <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
-          </select>
-        </div>
+    <div class="flex justify-content-between align-items-center mb-3 pb-2 border-bottom-1 surface-border">
+      <span class="text-sm font-semibold text-600">Toggle Fields</span>
+      <div class="flex gap-2">
+        <button pButton label="All" class="p-button-text p-button-sm p-0" (click)="selectAllColumns()"></button>
+        <button pButton label="None" class="p-button-text p-button-sm p-0 p-button-danger"
+          (click)="unselectAllColumns()"></button>
       </div>
+    </div>
 
-      <!-- Row 2: 2 Columns + Actions -->
-      <div class="filter-row row-two-actions">
-
-        <div class="row-two-inputs">
-          <!-- Assigned Employee -->
-          <div class="filter-group">
-            <label>ASSIGNED EMPLOYEE</label>
-            <select formControlName="assignedEmployee">
-              <option value="">All</option>
-              <option *ngFor="let e of employeeOptions" [value]="e">{{ e }}</option>
-            </select>
-          </div>
-
-          <!-- Scheduled Date -->
-          <div class="filter-group">
-            <label>SCHEDULED DATE</label>
-            <input type="date" formControlName="scheduledDate">
-          </div>
-        </div>
-
-        <!-- Action Buttons (Right Aligned) -->
-        <div class="filter-action-buttons">
-          <button type="button" class="apply-btn" (click)="applyFilters()">APPLY FILTERS</button>
-          <button type="button" class="clear-btn" (click)="clearFilters()">CLEAR FILTERS</button>
-        </div>
-
+    <div class="flex flex-column gap-3 py-2 max-h-20rem overflow-y-auto">
+      <div *ngFor="let col of allOptionalCols" class="field-checkbox">
+        <p-checkbox name="group1" [value]="col" [(ngModel)]="selectedOptionalCols" [inputId]="col.field"
+          [label]="col.header"></p-checkbox>
       </div>
+    </div>
 
-    </form>
-  </div>
-
-  <!-- Leads Count Info -->
-  <div class="leads-info">
-    <mat-icon class="chart-icon">bar_chart</mat-icon>
-    <span class="info-text">Showing <strong>{{ filteredLeads.length }}</strong> of <strong>{{ allLeads.length
-        }}</strong> Leads</span>
-  </div>
-
-  <!-- Table -->
-  <table class="leads-table">
-    <thead>
-      <tr>
-        <th>Lead ID</th>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Project</th>
-        <th>Source</th>
-        <th>Assigned To</th>
-        <th style="text-align:center;">Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let lead of filteredLeads | filterBy: filterText">
-        <td>{{ lead.id }}</td>
-        <td>{{ lead.name }}</td>
-        <td>{{ lead.phone }}</td>
-        <td>{{ lead.project }}</td>
-        <td>{{ lead.source }}</td>
-        <td>{{ lead.assignedTo }}</td>
-        <td style="text-align:center;" class="action-buttons">
-          <button class="edit-btn" (click)="edit(lead)">Edit</button>
-          <button class="delete-btn" (click)="delete(lead)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 w-full">
+        <button pButton label="Reset Defaults" icon="pi pi-refresh" (click)="resetColumns()"
+          class="p-button-outlined p-button-secondary flex-1"></button>
+        <button pButton label="Apply" icon="pi pi-check" (click)="applyColumns()"
+          class="p-button-primary flex-1"></button>
+      </div>
+    </ng-template>
+  </p-dialog>
 </div>
