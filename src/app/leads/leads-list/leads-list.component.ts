@@ -74,23 +74,15 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       { field: 'actions', header: 'Actions' }
     ];
 
-    // Predefine status options for filtering
-    this.statusOptions = [
-      'New Enquiry', 'Phone Call', 'WhatsApp', 'Offline Lead', 'NRI',
-      'Re-Enquire', 'Expected Site Visit', 'Site Visit Done',
-      'Expected Office Visit', 'Office Visit Done', 'Pipeline',
-      'Deal Closed', 'Sq. Yards Concern', 'Sq. Feet Concern',
-      'Distance Concern', 'OTP', '50:50', 'Pre-Launch',
-      'Not Answered', 'Not Interested', 'Spam', 'Low Budget',
-      'OOS', 'Old Leads'
-    ];
-
-    // Default: Show ONLY main fields initially as requested
+    // Default: Show ONLY main fields initially
     this.selectedOptionalCols = [];
 
     this.applyColumns();
     this.loadLeads();
     this.loadEmployees();
+    this.loadProjects();
+    this.loadSources();
+    this.loadStatuses();
   }
 
   applyColumns(): void {
@@ -135,23 +127,41 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   }
 
   loadEmployees(): void {
-    const sub = this.leadsService.getEmployees().subscribe((data) => {
-      this.employeeOptions = data;
+    const sub = this.leadsService.getEmployees().subscribe((data: any[]) => {
+      // Backend returns array of objects with emp_id and full_name
+      this.employeeOptions = data.map(e => e.full_name).sort();
+    });
+    this.subscriptions.push(sub);
+  }
+
+  loadProjects(): void {
+    const sub = this.leadsService.getProjects().subscribe((data) => {
+      this.projectOptions = data.map(p => p.project_name).sort();
+    });
+    this.subscriptions.push(sub);
+  }
+
+  loadSources(): void {
+    const sub = this.leadsService.getSources().subscribe((data) => {
+      this.sourceOptions = data.map(s => s.source_name).sort();
+    });
+    this.subscriptions.push(sub);
+  }
+
+  loadStatuses(): void {
+    const sub = this.leadsService.getStatuses().subscribe((data) => {
+      this.statusOptions = data.map(s => s.status_name).sort();
     });
     this.subscriptions.push(sub);
   }
 
   extractDropdownValues(): void {
-    // Extract unique values from leads array and combine with predefined if needed
+    // Dropdown values are now predominantly fetched directly from DB.
+    // We only perform fallback/extraction if necessary for values not in DB but in current list.
     const currentSources = new Set(this.allLeads.map(l => l.source).filter((s): s is string => !!s));
-    this.sourceOptions = [...currentSources].sort();
+    this.sourceOptions = [...new Set([...this.sourceOptions, ...currentSources])].sort();
 
-    const currentProjects = new Set(this.allLeads.map(l => l.project).filter((p): p is string => !!p));
-    this.projectOptions = [...currentProjects].sort();
-
-    // For status, keep our predefined comprehensive list but ensure it's sorted or includes current ones
     const currentStatuses = new Set(this.allLeads.map(l => l.status).filter((s): s is string => !!s));
-    // Add current ones to our list if not already there
     this.statusOptions = [...new Set([...this.statusOptions, ...currentStatuses])].sort();
   }
 
@@ -184,9 +194,13 @@ export class LeadsListComponent implements OnInit, OnDestroy {
         return false;
       }
 
-      // Assigned Employee filter
-      if (filters.assignedEmployee && lead.assignedTo !== filters.assignedEmployee) {
-        return false;
+      // Assigned Employee filter (Fuzzy Match)
+      if (filters.assignedEmployee) {
+        const leadAssigned = (lead.assignedTo || '').toLowerCase();
+        const filterAssigned = filters.assignedEmployee.toLowerCase();
+        if (!leadAssigned.includes(filterAssigned) && !filterAssigned.includes(leadAssigned)) {
+          return false;
+        }
       }
 
       // Scheduled Date filter

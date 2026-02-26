@@ -8,6 +8,7 @@ export interface Lead {
   alternatePhone?: string;
   email?: string;
   project?: string;
+  projectId?: string; 
   source?: string;
   profession?: string;
   description?: string;

@@ -22,7 +22,16 @@ export class LeadsService {
   getById(id: string): Observable<Lead> {
     return this.http.get<Lead>(`${this.baseUrl}/${id}`);
   }
+  getProjects() {
+    return this.http.get<any[]>('http://localhost:5000/api/projects');
+  }
+  getSources(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/sources`);
+  }
 
+  getStatuses(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/statuses`);
+  }
   create(lead: Lead): Observable<Lead> {
     return this.http.post<Lead>(this.baseUrl, lead);
   }

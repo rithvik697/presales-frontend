@@ -72,9 +72,8 @@ export class LeadDetailsComponent implements OnInit {
 
     loadEmployees() {
         this.leadsService.getEmployees().subscribe({
-            next: (res) => {
-                const all = new Set([this.currentUser, ...res]);
-                this.employeeOptions = Array.from(all).map(emp => ({ label: emp, value: emp }));
+            next: (res: any[]) => {
+                this.employeeOptions = res.map(e => ({ label: e.full_name, value: e.full_name }));
             },
             error: () => this.employeeOptions = [{ label: this.currentUser, value: this.currentUser }]
         });
