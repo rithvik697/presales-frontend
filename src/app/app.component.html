@@ -6,7 +6,6 @@
     <mat-toolbar
       class="app-toolbar"
     >
-      <!-- 🍔 HAMBURGER BUTTON -->
       <button
         mat-icon-button
         class="menu-toggle"
@@ -63,29 +62,30 @@
       <mat-icon class="icon">settings</mat-icon>
 
       <!-- PROFILE -->
-      <div
-        *ngIf="username"
-        class="profile-container"
-        (mouseenter)="showLogout = true"
-        (mouseleave)="showLogout = false"
+    <div
+      *ngIf="username"
+      class="profile-container"
+      (click)="showLogout = !showLogout"
       >
-        <div class="profile-section">
-          <span class="profile-text">{{ username }}</span>
-          <img
-            src="assets/profile.avif"
-            alt="Profile"
-            class="imageprofile"
-          />
-        </div>
+      <div class="profile-section">
+      <span class="profile-text">{{ username }}</span>
+      <img
+      src="assets/profile.avif"
+      alt="Profile"
+      class="imageprofile"
+      />
+      </div>
 
-        <div
-          *ngIf="showLogout"
-          class="logout-dropdown"
-          (click)="logout()"
-        >
+      <div
+      *ngIf="showLogout"
+      class="logout-dropdown"
+      >
+          <div (click)="logout(); $event.stopPropagation()">
           Logout
         </div>
+        </div>
       </div>
+
     </mat-toolbar>
 
     <!-- ===================== SIDENAV LAYOUT ===================== -->
@@ -121,8 +121,8 @@
       <!-- ===================== MAIN CONTENT ===================== -->
       <mat-sidenav-content class="content">
 
-        <!-- 🌐 GLOBAL BREADCRUMB -->
-        <div class="breadcrumb-wrapper" *ngIf="breadcrumbs?.length">
+        <!-- GLOBAL BREADCRUMB -->
+        <div class="breadcrumb-wrapper" *ngIf="breadcrumbs.length">
           <p-breadcrumb
             [model]="breadcrumbs"
             [home]="home"

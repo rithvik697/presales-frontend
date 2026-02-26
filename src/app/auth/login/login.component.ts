@@ -29,22 +29,25 @@ export class LoginComponent implements OnInit {
   }
 
   loginUser(): void {
-    if (this.loginForm.invalid) {
-      return;
-    }
-
-    this.isLoading = true;
-    this.errorMessage = '';
-
-    this.authService.login(this.loginForm.value).subscribe({
-      next: (res) => {
-        localStorage.setItem('access_token', res.access_token);
-        this.router.navigate(['/dashboard']);
-      },
-      error: () => {
-        this.errorMessage = 'Invalid credentials';
-        this.isLoading = false;
-      }
-    });
+  if (this.loginForm.invalid) {
+    return;
   }
+
+  this.isLoading = true;
+  this.errorMessage = '';
+
+  this.authService.login(this.loginForm.value).subscribe({
+    next: (res) => {
+      localStorage.setItem('token', res.access_token); // match guard
+      localStorage.setItem('username', this.loginForm.value.username);
+      this.isLoading = false;
+      this.router.navigate(['/dashboard']);
+    },
+    error: () => {
+      this.errorMessage = 'Invalid credentials';
+      this.isLoading = false;
+    }
+  });
+}
+
 }
