@@ -63,6 +63,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
 /* ----- interceptors----*/
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
+import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
 
 
 
@@ -83,6 +84,7 @@ import { LeadDetailsComponent } from './leads/lead-details/lead-details.componen
     ProjectRegistrationComponent,
     CallLogsComponent,
     FilterByPipe,
+    ProjectDetailsComponent,
   
   ],
   imports: [
