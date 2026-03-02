@@ -1,10 +1,6 @@
 <div class="form-page">
   <div class="form-card">
-
-    <!-- ================= HEADER ================= -->
     <div class="form-header">
-
-      <!-- Back Arrow -->
       <button
         mat-icon-button
         class="back-btn"
@@ -14,7 +10,6 @@
         <mat-icon>arrow_back</mat-icon>
       </button>
 
-      <!-- Centered Title -->
       <div class="title-wrapper">
         <h2>{{ isEditMode ? 'Edit User' : 'User Registration' }}</h2>
         <p class="subtitle">
@@ -29,87 +24,65 @@
       <div></div>
     </div>
 
-    <!-- ================= FORM ================= -->
     <form (ngSubmit)="submit()" #userForm="ngForm">
-
       <div class="form-grid">
+        <div class="name-row">
+          <div class="form-group">
+            <label>First Name <span class="required">*</span></label>
+            <input
+              type="text"
+              name="emp_first_name"
+              [(ngModel)]="user.emp_first_name"
+              required
+            />
+          </div>
 
-        <!-- Employee ID -->
-        <div class="form-group">
-          <label>
-            Employee ID <span class="required">*</span>
-          </label>
+          <div class="form-group">
+            <label>Middle Name</label>
+            <input
+              type="text"
+              name="emp_middle_name"
+              [(ngModel)]="user.emp_middle_name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Last Name <span class="required">*</span></label>
+            <input
+              type="text"
+              name="emp_last_name"
+              [(ngModel)]="user.emp_last_name"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="isEditMode">
+          <label>Employee ID <span class="required">*</span></label>
           <input
             type="text"
             name="emp_id"
             [(ngModel)]="user.emp_id"
-            required
-            [disabled]="isEditMode"
+            readonly
           />
         </div>
 
-        <!-- Role -->
         <div class="form-group">
-          <label>
-            Role <span class="required">*</span>
-          </label>
+          <label>Role <span class="required">*</span></label>
           <select
             name="role_id"
             [(ngModel)]="user.role_id"
             required
           >
-<<<<<<< HEAD
-            <option value="">Role **</option>
-=======
             <option value="">Select Role</option>
             <option value="ADMIN">Admin</option>
             <option value="SALES_EXEC">Sales Executive</option>
             <option value="SALES_MGR">Sales Manager</option>
->>>>>>> origin/varun-frontend
           </select>
         </div>
 
-        <!-- First Name -->
         <div class="form-group">
-          <label>
-            First Name <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            name="emp_first_name"
-            [(ngModel)]="user.emp_first_name"
-            required
-          />
-        </div>
-
-        <!-- Last Name -->
-        <div class="form-group">
-          <label>
-            Last Name <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            name="emp_last_name"
-            [(ngModel)]="user.emp_last_name"
-            required
-          />
-        </div>
-
-        <!-- Middle Name -->
-        <div class="form-group">
-          <label>Middle Name</label>
-          <input
-            type="text"
-            name="emp_middle_name"
-            [(ngModel)]="user.emp_middle_name"
-          />
-        </div>
-
-        <!-- Status -->
-        <div class="form-group">
-          <label>
-            Status <span class="required">*</span>
-          </label>
+          <label>Status <span class="required">*</span></label>
           <select
             name="emp_status"
             [(ngModel)]="user.emp_status"
@@ -121,9 +94,40 @@
           </select>
         </div>
 
+        <div class="form-group">
+          <label>Phone Number <span class="required">*</span></label>
+          <input
+            type="text"
+            name="phone_num"
+            [(ngModel)]="user.phone_num"
+            #phoneCtrl="ngModel"
+            required
+            maxlength="10"
+            pattern="^\d{10}$"
+            placeholder="10 digit phone number"
+          />
+          <small class="error-text" *ngIf="phoneCtrl.invalid && (phoneCtrl.dirty || phoneCtrl.touched)">
+            Enter a valid 10 digit phone number
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Email ID <span class="required">*</span></label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="user.email"
+            #emailCtrl="ngModel"
+            required
+            email
+            placeholder="name@example.com"
+          />
+          <small class="error-text" *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)">
+            Enter a valid email address
+          </small>
+        </div>
       </div>
 
-      <!-- ================= ACTIONS ================= -->
       <div class="form-actions">
         <button type="submit" class="primary-btn">
           {{ isEditMode ? 'Update User' : 'Create User' }}
@@ -137,7 +141,6 @@
           Cancel
         </button>
       </div>
-
     </form>
   </div>
 </div>

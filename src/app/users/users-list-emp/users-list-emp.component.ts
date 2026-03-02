@@ -13,6 +13,7 @@ export class UsersListEmpComponent implements OnInit {
   users: any[] = [];
   loading = true;
 
+
   constructor(
     private regService: RegistrationService,
     private toastr: ToastrService,
@@ -40,6 +41,22 @@ export class UsersListEmpComponent implements OnInit {
   addUser() {
     this.router.navigate(['users/register']);
   }
+
+toggleStatus(user: any) {
+  const newStatus =
+    user.emp_status === 'Active' ? 'Inactive' : 'Active';
+
+  this.regService.updateStatus(user.emp_id, newStatus).subscribe({
+    next: () => {
+      user.emp_status = newStatus;
+      this.toastr.success('Status updated successfully');
+    },
+    error: (err) => {
+      console.error(err);
+      this.toastr.error('Failed to update status');
+    }
+  });
+}
 
   // ✅ ADD THIS METHOD
   editUser(empId: string) {
