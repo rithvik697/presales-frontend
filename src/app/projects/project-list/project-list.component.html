@@ -104,11 +104,15 @@
     <!-- BODY -->
     <ng-template pTemplate="body" let-project>
       <tr>
-        <td>{{ project.project_name }}</td>
+        <td>
+          <a class="project-name-link" (click)="viewProjectDetails(project)">
+            {{ project.project_name }}
+          </a>
+        </td>
         <td>{{ project.project_type }}</td>
         <td>
           <p-tag
-            [value]="project.status"
+            [value]="formatStatus(project.status)"
             [severity]="getStatusSeverity(project.status)">
           </p-tag>
         </td>

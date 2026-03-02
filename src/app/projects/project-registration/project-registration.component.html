@@ -39,8 +39,8 @@
               #projectType="ngModel"
             >
               <option value="">Select Type</option>
-              <option *ngFor="let type of projectTypes" [value]="type">
-                {{ type }}
+              <option *ngFor="let type of projectTypes" [value]="type.value">
+                {{ type.label }}
               </option>
             </select>
             <small class="error" *ngIf="projectType.invalid && projectType.touched">
@@ -57,8 +57,8 @@
               #projectStatus="ngModel"
             >
               <option value="">Select Status</option>
-              <option *ngFor="let status of projectStatuses" [value]="status">
-                {{ status }}
+              <option *ngFor="let status of projectStatuses" [value]="status.value">
+                {{ status.label }}
               </option>
             </select>
             <small class="error" *ngIf="projectStatus.invalid && projectStatus.touched">
@@ -72,11 +72,13 @@
               type="text"
               [(ngModel)]="projectData.rera_number"
               name="rera_number"
-              required
+              [required]="projectData.status === 'RERA_APPROVED' || projectData.status === 'COMPLETED'"
               #rera="ngModel"
             />
-            <small class="error" *ngIf="rera.invalid && rera.touched">
-              RERA number is required
+            <small class="error"
+              *ngIf="rera.invalid && rera.touched && (projectData.status === 'RERA_APPROVED' || projectData.status === 'COMPLETED')"
+            > 
+              RERA number is required for approved or completed projects
             </small>
           </div>
         </div>
@@ -192,7 +194,7 @@
           type="submit"
           [disabled]="isSubmitting || projectForm.invalid"
         >
-          {{ isSubmitting ? 'Saving...' : 'Create Project' }}
+          {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Project' : 'Create Project') }}
         </button>
       </div>
 

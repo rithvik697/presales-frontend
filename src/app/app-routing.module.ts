@@ -16,6 +16,7 @@ import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
 
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
+import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
 
 import { CallLogsComponent } from './call-logs/call-logs.component';
 
@@ -57,6 +58,8 @@ const routes: Routes = [
       // PROJECTS
       { path: 'projects', component: ProjectListComponent },
       { path: 'projects/register', component: ProjectRegistrationComponent },
+      { path: 'projects/edit/:id', component: ProjectRegistrationComponent},
+      { path: 'projects/:id', component: ProjectDetailsComponent },
 
       // CALL LOGS
       { path: 'call-logs', component: CallLogsComponent }

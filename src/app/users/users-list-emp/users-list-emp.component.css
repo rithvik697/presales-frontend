@@ -282,10 +282,10 @@
 }
 
 /* Wider columns for date fields */
-:host ::ng-deep .users-table .p-datatable-thead th:nth-child(8),
-:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(8),
 :host ::ng-deep .users-table .p-datatable-thead th:nth-child(10),
-:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(10) {
+:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(10),
+:host ::ng-deep .users-table .p-datatable-thead th:nth-child(11),
+:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(11) {
   min-width: 200px;
 }
 
@@ -299,4 +299,61 @@
 /* Enable smooth horizontal scroll */
 .table-wrapper {
   overflow-x: auto;
+}
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 13px;
+  display: inline-block;
+  transition: 0.2s ease;
+}
+
+.status-active {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.status-inactive {
+  background-color: #fdecea;
+  color: #c82333;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+:host ::ng-deep .p-column-filter-menu-button {
+  color: #ffffff;
+  margin-left: 6px;
+}
+
+/* Make sort icons white */
+:host ::ng-deep .users-table .p-sortable-column .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* Active sorted column stronger white */
+:host ::ng-deep .users-table .p-sortable-column.p-highlight .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* Header cell layout */
+.header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Filter icon below text */
+.filter-icon {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Make filter icon white */
+:host ::ng-deep .p-column-filter-menu-button {
+  color: #ffffff !important;
 }

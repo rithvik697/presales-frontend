@@ -85,3 +85,18 @@
 :host ::ng-deep .crm-table.p-datatable {
   border: 1px solid #e6e9f2;
 }
+
+/* Clickable Project Name */
+.project-name-link {
+  color: #4c5db6;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.project-name-link:hover {
+  color: #3b4a91;
+  text-decoration: underline;
+}

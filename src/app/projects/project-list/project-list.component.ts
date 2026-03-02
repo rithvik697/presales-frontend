@@ -50,19 +50,24 @@ export class ProjectListComponent implements OnInit {
     this.router.navigate(['/projects/register']);
   }
 
-  getStatusSeverity(status: string) {
-    switch (status) {
-      case 'Active':
-        return 'success';
-      case 'Pre-Launch':
-        return 'warning';
-      case 'Inactive':
-        return 'danger';
-      default:
-        return 'info';
-    }
+  statusSeverityMap: { [key: string]: string } = {
+  RERA_APPROVED: 'success',   // Green
+  COMPLETED: 'info',          // Blue
+  PRE_LAUNCH: 'warning'       // Orange
+  };
+
+  getStatusSeverity(status: string): string {
+    return this.statusSeverityMap[status] || 'secondary';
   }
   openEditDialog(project: any) {
-  // opens PrimeNG dialog
+  this.router.navigate(['/projects/edit', project.project_id]);
+}
+
+  viewProjectDetails(project: any) {
+    this.router.navigate(['/projects', project.project_id]);
   }
+
+  formatStatus(status: string): string {
+  return status.replace('_', ' ');
+ }
 }
