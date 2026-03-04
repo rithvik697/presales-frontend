@@ -39,6 +39,10 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -57,15 +61,15 @@ import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
 import { CallLogsComponent } from './call-logs/call-logs.component';
-
-/* ------------------ Pipes ------------------ */
-import { FilterByPipe } from './pipes/filter-by.pipe';
-/* ----- interceptors----*/
-import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
 
+/* ------------------ Pipes ------------------ */
+import { FilterByPipe } from './pipes/filter-by.pipe';
 
+/* ------------------ Interceptors ------------------ */
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +89,7 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
     CallLogsComponent,
     FilterByPipe,
     ProjectDetailsComponent,
-  
+    AuditTrailComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +97,6 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
     CommonModule,
     HttpClientModule,
     AppRoutingModule,
-
     FormsModule,
     ReactiveFormsModule,
 
@@ -127,6 +130,8 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
     InputNumberModule,
     PanelModule,
     BreadcrumbModule,
+    ToastModule,
+    ConfirmDialogModule,
 
     /* Charts & Notifications */
     NgChartsModule,
@@ -137,7 +142,11 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
       progressBar: true,
     }),
   ],
-   providers: [
+  providers: [
+    MessageService,  // ✅ REQUIRED FOR PRIME TOAST
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+    ConfirmationService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

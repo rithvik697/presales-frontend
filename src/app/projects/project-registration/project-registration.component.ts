@@ -139,6 +139,7 @@ export class ProjectRegistrationComponent {
         }
       });
   }
+  
 }
   
   loadProject(id: string) {

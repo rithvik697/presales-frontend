@@ -1,11 +1,16 @@
+<!-- PrimeNG Global Toast -->
+<p-toast position="top-center"></p-toast>
+
+<!-- ✅ PrimeNG Confirm Dialog (GLOBAL) -->
+<p-confirmDialog></p-confirmDialog>
+
 <!-- Show toolbar and sidenav only if NOT on login or change-password page -->
 <ng-container *ngIf="!isLoginPage && !isChangePasswordPage">
   <div class="crm" (mouseleave)="showLogout = false">
 
     <!-- ===================== TOOLBAR ===================== -->
-    <mat-toolbar
-      class="app-toolbar"
-    >
+    <mat-toolbar class="app-toolbar">
+
       <button
         mat-icon-button
         class="menu-toggle"
@@ -62,27 +67,27 @@
       <mat-icon class="icon">settings</mat-icon>
 
       <!-- PROFILE -->
-    <div
-      *ngIf="username"
-      class="profile-container"
-      (click)="showLogout = !showLogout"
-      >
-      <div class="profile-section">
-      <span class="profile-text">{{ username }}</span>
-      <img
-      src="assets/profile.avif"
-      alt="Profile"
-      class="imageprofile"
-      />
-      </div>
-
       <div
-      *ngIf="showLogout"
-      class="logout-dropdown"
+        *ngIf="username"
+        class="profile-container"
+        (click)="showLogout = !showLogout"
       >
-          <div (click)="logout(); $event.stopPropagation()">
-          Logout
+        <div class="profile-section">
+          <span class="profile-text">{{ username }}</span>
+          <img
+            src="assets/profile.avif"
+            alt="Profile"
+            class="imageprofile"
+          />
         </div>
+
+        <div
+          *ngIf="showLogout"
+          class="logout-dropdown"
+        >
+          <div (click)="logout(); $event.stopPropagation()">
+            Logout
+          </div>
         </div>
       </div>
 
@@ -133,7 +138,9 @@
         <router-outlet></router-outlet>
 
       </mat-sidenav-content>
+
     </mat-sidenav-container>
+
   </div>
 </ng-container>
 
