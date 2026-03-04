@@ -1,0 +1,109 @@
+<div class="page-container">
+  <p-breadcrumb
+    [model]="breadcrumbItems"
+    [home]="home"
+    class="mb-3">
+  </p-breadcrumb>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    <p>Loading project details...</p>
+  </div>
+
+  <!-- Project Details -->
+  <div *ngIf="!loading && project" class="details-container">
+
+    <!-- Header Card -->
+    <div class="header-card">
+      <div class="header-content">
+        <div class="title-section">
+          <h1>{{ project.project_name }}</h1>
+          <div class="status-badges">
+            <p-tag
+              [value]="getStatusLabel(project.status)"
+              [severity]="getStatusColor(project.status)">
+            </p-tag>
+            <span class="project-type">
+              <i class="pi pi-building"></i> {{ project.project_type }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button pButton type="button" label="Edit Project"
+            icon="pi pi-pencil"
+            class="p-button-primary"
+            (click)="editProject()">
+          </button>
+          <button pButton type="button" label="Back"
+            icon="pi pi-arrow-left"
+            class="p-button-outlined"
+            (click)="goBack()">
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="details-grid">
+
+      <!-- Location Information -->
+      <p-card header="Location Details" class="detail-card">
+        <div class="detail-row">
+          <label><i class="pi pi-map-marker"></i> Address</label>
+          <span>{{ project.address_line_1 }}</span>
+        </div>
+        <div class="detail-row">
+          <label><i class="pi pi-map"></i> City</label>
+          <span>{{ project.city }}</span>
+        </div>
+        <div class="detail-row">
+          <label><i class="pi pi-globe"></i> State</label>
+          <span>{{ project.state }}</span>
+        </div>
+        <div class="detail-row">
+          <label><i class="pi pi-hashtag"></i> Pincode</label>
+          <span>{{ project.pincode }}</span>
+        </div>
+      </p-card>
+
+      <!-- Project Information -->
+      <p-card header="Project Information" class="detail-card">
+        <div class="detail-row">
+          <label><i class="pi pi-chart-bar"></i> Total Area</label>
+          <span>{{ project.total_area | number }} sq ft</span>
+        </div>
+        <div class="detail-row">
+          <label><i class="pi pi-home"></i> Number of Units</label>
+          <span>{{ project.number_of_units | number }}</span>
+        </div>
+        <div class="detail-row" *ngIf="project.rera_number">
+          <label><i class="pi pi-shield"></i> RERA Number</label>
+          <span>{{ project.rera_number }}</span>
+        </div>
+        <div class="detail-row">
+          <label><i class="pi pi-info-circle"></i> Status</label>
+          <span>{{ getStatusLabel(project.status) }}</span>
+        </div>
+      </p-card>
+
+      <!-- Timeline Information -->
+      <p-card header="Timeline" class="detail-card">
+        <div class="detail-row">
+          <label><i class="pi pi-calendar-plus"></i> Created On</label>
+          <span>{{ project.created_on | date: 'dd MMM yyyy' }}</span>
+        </div>
+        <div class="detail-row" *ngIf="project.created_by">
+          <label><i class="pi pi-user"></i> Created By</label>
+          <span>{{ project.created_by }}</span>
+        </div>
+        <div class="detail-row" *ngIf="project.modified_on">
+          <label><i class="pi pi-calendar"></i> Last Modified</label>
+          <span>{{ project.modified_on | date: 'dd MMM yyyy, h:mm a' }}</span>
+        </div>
+      </p-card>
+
+    </div>
+
+  </div>
+</div>

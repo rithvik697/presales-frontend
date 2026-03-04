@@ -1,22 +1,12 @@
 <div class="users-list-container">
 
-  <!-- ✅ Toolbar (MATCHES PROJECT PAGE STYLE) -->
-  <p-toolbar class="mb-3">
-    <div class="p-toolbar-group-left">
-      <h2 class="m-0">Employees List</h2>
-    </div>
+  <!-- Header -->
+  <div class="users-header">
+    <h2>Employees List</h2>
+    <button class="add-user-btn" (click)="addUser()">+ Add User</button>
+  </div>
 
-    <div class="p-toolbar-group-right">
-      <button
-        pButton
-        label="Add User"
-        icon="pi pi-plus"
-        class="p-button-primary"
-        (click)="addUser()">
-      </button>
-    </div>
-  </p-toolbar>
-
+  <!-- Scroll Wrapper -->
   <div class="table-wrapper">
 
     <p-table
@@ -24,106 +14,101 @@
       [value]="users"
       [paginator]="true"
       [rows]="5"
-      [scrollable]="true"
-      scrollDirection="horizontal"
       sortMode="multiple"
       class="users-table"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
     >
 
       <!-- ================= HEADER ================= -->
       <ng-template pTemplate="header">
         <tr>
-          <th>#</th>
+
+          <th style="width:70px">#</th>
+
           <th pSortableColumn="emp_id">
-            Employee ID
-            <p-sortIcon field="emp_id"></p-sortIcon>
+            <div class="header-cell">
+              <span>Employee ID</span>
+              <p-sortIcon field="emp_id"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="emp_id" display="menu" type="text"></p-columnFilter>
+            </div>
           </th>
+
+          <!-- ✅ FULL NAME COLUMN -->
           <th pSortableColumn="emp_first_name">
-            First Name
-            <p-sortIcon field="emp_first_name"></p-sortIcon>
+            <div class="header-cell">
+              <span>Full Name</span>
+              <p-sortIcon field="emp_first_name"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="emp_first_name" display="menu" type="text"></p-columnFilter>
+            </div>
           </th>
-          <th pSortableColumn="emp_middle_name">
-            Middle Name
-            <p-sortIcon field="emp_middle_name"></p-sortIcon>
-          </th>
-          <th pSortableColumn="emp_last_name">
-            Last Name
-            <p-sortIcon field="emp_last_name"></p-sortIcon>
-          </th>
+
           <th pSortableColumn="role_id">
-            Role
-            <p-sortIcon field="role_id"></p-sortIcon>
+            <div class="header-cell">
+              <span>Role</span>
+              <p-sortIcon field="role_id"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="role_id" display="menu" type="text"></p-columnFilter>
+            </div>
           </th>
+
           <th pSortableColumn="emp_status">
-            Status
-            <p-sortIcon field="emp_status"></p-sortIcon>
+            <div class="header-cell">
+              <span>Status</span>
+              <p-sortIcon field="emp_status"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="emp_status" display="menu" type="text"></p-columnFilter>
+            </div>
           </th>
+
+          <th pSortableColumn="phone_num">
+            <div class="header-cell">
+              <span>Phone</span>
+              <p-sortIcon field="phone_num"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="phone_num" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
+
           <th pSortableColumn="created_by">
-            Created By
-            <p-sortIcon field="created_by"></p-sortIcon>
+            <div class="header-cell">
+              <span>Created By</span>
+              <p-sortIcon field="created_by"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="created_by" display="menu" type="text"></p-columnFilter>
+            </div>
           </th>
+
           <th pSortableColumn="created_on">
-            Created On
-            <p-sortIcon field="created_on"></p-sortIcon>
+            <div class="header-cell">
+              <span>Created On</span>
+              <p-sortIcon field="created_on"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="created_on" display="menu" type="text"></p-columnFilter>
+            </div>
           </th>
+
           <th pSortableColumn="modified_on">
-            Modified On
-            <p-sortIcon field="modified_on"></p-sortIcon>
-          </th>
-          <th>Action</th>
-        </tr>
-
-        <!-- 🔍 FILTER ROW -->
-        <tr class="filter-row">
-          <th>
-            <input pInputText disabled class="table-search-input" />
+            <div class="header-cell">
+              <span>Modified On</span>
+              <p-sortIcon field="modified_on"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="modified_on" display="menu" type="text"></p-columnFilter>
+            </div>
           </th>
 
-          <th>
-            <input pInputText placeholder="Search ID"
-              class="table-search-input"
-              (input)="dt.filter($any($event.target).value, 'emp_id', 'contains')" />
-          </th>
+          <th style="width:100px; text-align:center">Action</th>
 
-          <th>
-            <input pInputText placeholder="Search first name"
-              class="table-search-input"
-              (input)="dt.filter($any($event.target).value, 'emp_first_name', 'contains')" />
-          </th>
-
-          <th>
-            <input pInputText placeholder="Search middle name"
-              class="table-search-input"
-              (input)="dt.filter($any($event.target).value, 'emp_middle_name', 'contains')" />
-          </th>
-
-          <th>
-            <input pInputText placeholder="Search last name"
-              class="table-search-input"
-              (input)="dt.filter($any($event.target).value, 'emp_last_name', 'contains')" />
-          </th>
-
-          <th>
-            <input pInputText placeholder="Search role"
-              class="table-search-input"
-              (input)="dt.filter($any($event.target).value, 'role_id', 'contains')" />
-          </th>
-
-          <th>
-            <input pInputText placeholder="Search status"
-              class="table-search-input"
-              (input)="dt.filter($any($event.target).value, 'emp_status', 'contains')" />
-          </th>
-
-          <th>
-            <input pInputText placeholder="Search created by"
-              class="table-search-input"
-              (input)="dt.filter($any($event.target).value, 'created_by', 'contains')" />
-          </th>
-
-          <th></th>
-          <th></th>
-          <th></th>
         </tr>
       </ng-template>
 
@@ -132,44 +117,47 @@
         <tr>
 
           <td>{{ dt.first + rowIndex + 1 }}</td>
-
           <td>{{ user.emp_id }}</td>
-          <td>{{ user.emp_first_name }}</td>
-          <td>{{ user.emp_middle_name || '-' }}</td>
-          <td>{{ user.emp_last_name }}</td>
+
+          <!-- ✅ FULL NAME DISPLAY -->
+          <td>
+            {{ getFullName(user) }}
+          </td>
+
           <td>{{ user.role_id }}</td>
 
+          <!-- STATUS PILL TOGGLE -->
           <td>
             <div
-              class="status-toggle"
-              [class.active]="user.emp_status === 'Active'"
-              (click)="toggleUserStatus(user)">
-              <div class="toggle-knob"></div>
-              <span>{{ user.emp_status }}</span>
+              class="status-toggle-pill"
+              [ngClass]="user.emp_status === 'Active' ? 'active-pill' : 'inactive-pill'"
+              (click)="onStatusToggle(user)"
+            >
+              <span class="dot"></span>
+              {{ user.emp_status }}
             </div>
           </td>
 
+          <td>{{ user.phone_num || '-' }}</td>
           <td>{{ user.created_by }}</td>
           <td>{{ user.created_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
           <td>{{ user.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
 
-          <!-- ✅ MATCHED PROJECT STYLE EDIT BUTTON -->
-          <td class="text-center">
-            <button
-              pButton
+          <td>
+            <p-button
               icon="pi pi-pencil"
-              class="p-button-rounded p-button-primary"
-              (click)="editUser(user.emp_id)">
-            </button>
+              class="p-button-text p-button-primary p-button-sm"
+              (onClick)="editUser(user.emp_id)">
+            </p-button>
           </td>
 
         </tr>
       </ng-template>
 
-      <!-- EMPTY -->
+      <!-- ================= EMPTY ================= -->
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="11" class="empty-state">
+          <td colspan="10" class="empty-state">
             No employee records available
           </td>
         </tr>
@@ -178,5 +166,4 @@
     </p-table>
 
   </div>
-
 </div>

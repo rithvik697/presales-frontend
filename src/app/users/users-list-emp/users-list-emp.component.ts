@@ -54,32 +54,38 @@ export class UsersListEmpComponent implements OnInit {
   }
 
   /* ================= STATUS TOGGLE ================= */
-  toggleUserStatus(user: any) {
+  onStatusToggle(user: any) {
 
     const oldStatus = user.emp_status;
     const newStatus = oldStatus === 'Active' ? 'Inactive' : 'Active';
 
-    user.emp_status = newStatus; // Optimistic UI
+    // Optimistic UI update
+    user.emp_status = newStatus;
 
-    this.regService.updateUserStatus(user.emp_id, newStatus).subscribe({
-      next: (res: any) => {
-
-        console.log("Status API Response:", res);
-
-        // Accept any positive response
-        if (res && (res.success === true || res.message)) {
-          this.toastr.success(`User marked as ${newStatus}`);
-        } else {
-          user.emp_status = oldStatus;
-          this.toastr.error('Failed to update status');
-        }
+    this.regService.updateStatus(user.emp_id, newStatus).subscribe({
+      next: () => {
+        this.toastr.success('Status updated successfully');
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error(err);
+
+        // Revert UI on error
         user.emp_status = oldStatus;
-        this.toastr.error('Error updating status');
+
+        this.toastr.error('Failed to update status');
       }
     });
+  }
+
+/* ================= FULL NAME================= */
+  getFullName(user: any): string {
+    return [
+      user.emp_first_name,
+      user.emp_middle_name,
+      user.emp_last_name
+    ]
+    .filter(name => name && name.trim() !== '')
+    .join(' ');
   }
 
 }

@@ -1,21 +1,18 @@
-/* ================= PAGE CONTAINER ================= */
 .form-page {
   display: flex;
   justify-content: center;
   padding: 40px 20px;
 }
 
-/* ================= CARD ================= */
 .form-card {
   width: 100%;
-  max-width: 900px;
+  max-width: 980px;
   background: #ffffff;
   border-radius: 12px;
   padding: 32px 40px 36px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* ================= HEADER ================= */
 .form-header {
   display: grid;
   grid-template-columns: 40px 1fr 40px;
@@ -23,13 +20,11 @@
   margin-bottom: 24px;
 }
 
-/* Back button */
 .back-btn {
   justify-self: start;
   color: #3f51b5;
 }
 
-/* Title wrapper */
 .title-wrapper {
   text-align: center;
 }
@@ -47,7 +42,6 @@
   color: #666;
 }
 
-/* ================= GRID ================= */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -55,7 +49,13 @@
   row-gap: 22px;
 }
 
-/* ================= FORM CONTROLS ================= */
+.name-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 28px;
+}
+
 .form-group input,
 .form-group select {
   width: 100%;
@@ -66,43 +66,32 @@
   border: 1px solid #d0d0d0;
   background-color: #ffffff;
   box-sizing: border-box;
+  margin-top: 2px;
 }
 
-/* Placeholder */
 .form-group input::placeholder {
   color: #9a9a9a;
 }
 
-/* Focus */
 .form-group input:focus,
 .form-group select:focus {
   border-color: #3f51b5;
   outline: none;
 }
 
-/* ================= READ-ONLY / DISABLED (EDIT MODE) ================= */
-.form-group input:disabled,
-.form-group select:disabled {
+.form-group input[readonly] {
   background-color: #f2f3f5;
   color: #6b6b6b;
   border: 1px solid #d6d6d6;
   cursor: not-allowed;
-  opacity: 1; /* keep text readable */
 }
 
-/* Subtle inset for disabled fields */
-.form-group input:disabled {
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-/* ================= ACTION BUTTONS ================= */
 .form-actions {
   margin-top: 32px;
   display: flex;
   gap: 16px;
 }
 
-/* Primary */
 .primary-btn {
   background-color: #3f51b5;
   color: #ffffff;
@@ -118,7 +107,6 @@
   background-color: #2f3fa4;
 }
 
-/* Secondary */
 .secondary-btn {
   background-color: #e0e0e0;
   color: #333333;
@@ -133,7 +121,6 @@
   background-color: #d2d2d2;
 }
 
-/* ================= LABELS ================= */
 .form-group label {
   display: block;
   margin-bottom: 6px;
@@ -142,15 +129,58 @@
   color: #444;
 }
 
-/* Required star */
 .form-group .required {
   color: #d32f2f;
   margin-left: 2px;
 }
 
-/* Better spacing between label & input */
-.form-group input,
-.form-group select {
-  margin-top: 2px;
+.error-text {
+  display: block;
+  margin-top: 6px;
+  color: #d32f2f;
+  font-size: 12px;
 }
 
+@media (max-width: 900px) {
+  .name-row {
+    grid-template-columns: 1fr;
+    row-gap: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-card {
+    padding: 24px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.action-right {
+  display: flex;
+  gap: 12px;
+}
+
+.danger-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.danger-btn:hover {
+  background-color: #b02a37;
+}

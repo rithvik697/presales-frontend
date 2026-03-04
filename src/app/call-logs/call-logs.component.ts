@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
 import { CallLogsService } from '../services/call-logs.service';
+import { MenuItem } from 'primeng/api';
 
 export interface CallLog {
   userName: string;
@@ -20,29 +20,42 @@ export interface CallLog {
 })
 export class CallLogsComponent implements OnInit {
 
-  displayedColumns = [
-    'userName',
-    'leadName',
-    'phoneNumber',
-    'callType',
-    'callStatus',
-    'callDuration',
-    'callTime',
-    'remarks'
-  ];
+  breadcrumbItems!: MenuItem[];
+  home!: MenuItem;
 
-  dataSource = new MatTableDataSource<CallLog>([]);
+  callLogs: CallLog[] = [];
+  loading = true;
 
   constructor(private callLogsService: CallLogsService) {}
 
   ngOnInit(): void {
+    this.home = { icon: 'pi pi-home', routerLink: '/dashboard' };
+    this.breadcrumbItems = [{ label: 'Call Logs' }];
+    this.loadCallLogs();
+  }
+
+  loadCallLogs() {
     this.callLogsService.getCallLogs().subscribe({
       next: (data: CallLog[]) => {
-        this.dataSource.data = data;
+        console.log('API DATA:', data); // sanity check
+        this.callLogs = data;
+        this.loading = false;
       },
-      error: (err: any) => {
+      error: err => {
         console.error(err);
+        this.loading = false;
       }
     });
+  }
+
+  getStatusSeverity(status: string) {
+    switch (status) {
+      case 'Connected':
+        return 'success';
+      case 'Completed':
+        return 'info';
+      default:
+        return 'secondary';
+    }
   }
 }

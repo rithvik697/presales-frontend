@@ -32,9 +32,7 @@
     [paginator]="true"
     [rows]="5"
     [rowsPerPageOptions]="[5,10,20]"
-    [scrollable]="true"
-    scrollDirection="horizontal"
-    sortMode="multiple"
+    responsiveLayout="scroll"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} projects"
     styleClass="crm-table"
@@ -43,9 +41,6 @@
     <!-- HEADER -->
     <ng-template pTemplate="header">
       <tr>
-
-        <th>#</th>
-
         <th pSortableColumn="project_name">
           <div class="header-content">
             Project Name
@@ -81,61 +76,48 @@
 
       <!-- FILTER ROW -->
       <tr class="filter-row">
-
-        <th>
-          <input pInputText type="text" disabled />
-        </th>
-
         <th>
           <input pInputText type="text"
             placeholder="Search name"
             (input)="dt.filter($any($event.target).value, 'project_name', 'contains')" />
         </th>
-
         <th>
           <input pInputText type="text"
             placeholder="Search type"
             (input)="dt.filter($any($event.target).value, 'project_type', 'contains')" />
         </th>
-
         <th>
           <input pInputText type="text"
             placeholder="Search status"
             (input)="dt.filter($any($event.target).value, 'status', 'contains')" />
         </th>
-
         <th>
           <input pInputText type="text"
             placeholder="Search city"
             (input)="dt.filter($any($event.target).value, 'city', 'contains')" />
         </th>
-
         <th></th>
         <th></th>
       </tr>
     </ng-template>
 
     <!-- BODY -->
-    <ng-template pTemplate="body" let-project let-rowIndex="rowIndex">
+    <ng-template pTemplate="body" let-project>
       <tr>
-
         <td>
-          {{ dt.first + rowIndex + 1 }}
+          <a class="project-name-link" (click)="viewProjectDetails(project)">
+            {{ project.project_name }}
+          </a>
         </td>
-
-        <td>{{ project.project_name }}</td>
         <td>{{ project.project_type }}</td>
-
         <td>
           <p-tag
-            [value]="project.status"
+            [value]="formatStatus(project.status)"
             [severity]="getStatusSeverity(project.status)">
           </p-tag>
         </td>
-
         <td>{{ project.city }}</td>
         <td>{{ project.created_on | date:'dd MMM yyyy' }}</td>
-
         <td class="text-center">
           <button
             pButton
@@ -150,7 +132,7 @@
     <!-- EMPTY -->
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="7" class="text-center">
+        <td colspan="6" class="text-center">
           No projects registered yet.
         </td>
       </tr>

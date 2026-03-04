@@ -24,6 +24,8 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
+import { TagModule } from 'primeng/tag';
+import { ToolbarModule } from 'primeng/toolbar';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -37,9 +39,10 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { TagModule } from 'primeng/tag';
-import { ToolbarModule } from 'primeng/toolbar';
-
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -49,6 +52,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { UsersComponent } from './users/users.component';
 import { UsersListEmpComponent } from './users/users-list-emp/users-list-emp.component';
 import { UserRegistrationComponent } from './users/users-registration/user-registration.component';
+import { LoginComponent } from './auth/login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigureComponent } from './configure/configure.component';
 import { DatabackupsComponent } from './databackups/databackups.component';
@@ -57,12 +61,19 @@ import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
 import { CallLogsComponent } from './call-logs/call-logs.component';
+import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
+import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
 
+/* ------------------ Interceptors ------------------ */
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuditTrailComponent } from './audit-trail/audit-trail.component';
+
 @NgModule({
   declarations: [
+    LoginComponent,
     AppComponent,
     UsersComponent,
     UsersListEmpComponent,
@@ -71,11 +82,14 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     ConfigureComponent,
     DatabackupsComponent,
     LeadsListComponent,
+    LeadDetailsComponent,
     LeadCreateComponent,
     ProjectListComponent,
     ProjectRegistrationComponent,
     CallLogsComponent,
-    FilterByPipe
+    FilterByPipe,
+    ProjectDetailsComponent,
+    AuditTrailComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +97,6 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     CommonModule,
     HttpClientModule,
     AppRoutingModule,
-
     FormsModule,
     ReactiveFormsModule,
 
@@ -101,7 +114,8 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     /* PrimeNG */
     TableModule,
     ButtonModule,
-    TooltipModule,
+    TagModule,
+    ToolbarModule,
     InputTextModule,
     DropdownModule,
     CalendarModule,
@@ -116,8 +130,8 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
     InputNumberModule,
     PanelModule,
     BreadcrumbModule,
-    TagModule,
-    ToolbarModule,    
+    ToastModule,
+    ConfirmDialogModule,
 
     /* Charts & Notifications */
     NgChartsModule,
@@ -127,6 +141,13 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
       closeButton: true,
       progressBar: true,
     }),
+  ],
+  providers: [
+    MessageService,  // ✅ REQUIRED FOR PRIME TOAST
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+    ConfirmationService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

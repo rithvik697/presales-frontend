@@ -10,7 +10,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { MenuItem } from 'primeng/api'; // ✅ ADD
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -33,9 +33,10 @@ export class AppComponent implements OnInit, OnDestroy {
   showNotificationDropdown: boolean = false;
 
   menuItems: any[] = [];
-  breadcrumbs: MenuItem[] = []; // ✅ ADD
+  breadcrumbs: MenuItem[] = [];
 
-  home = { icon: 'pi pi-home', routerLink: '/' }; // ✅ ADD 
+  // ✅ Home now correctly goes to Dashboard
+  home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
   private routerSub!: Subscription;
 
@@ -55,16 +56,19 @@ export class AppComponent implements OnInit, OnDestroy {
     this.routerSub = this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((e: any) => {
+
+        this.username = localStorage.getItem('username');
+
         const url: string = e.urlAfterRedirects || e.url;
 
         this.isLoginPage = url.startsWith('/login');
         this.isChangePasswordPage = url.startsWith('/change-password');
 
-        // Sidebar selection
-        const found = this.allMenuItems.find((m) => url.startsWith(m.route));
+        const found = this.allMenuItems.find((m) =>
+          url.startsWith(m.route)
+        );
         this.selectedItem = found ? found.label : '';
 
-        // ✅ Breadcrumb update
         this.updateBreadcrumbs(url);
       });
   }
@@ -75,29 +79,38 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ✅ BREADCRUMB LOGIC
+  // ✅ FIXED BREADCRUMB LOGIC
   updateBreadcrumbs(url: string): void {
+
     if (this.isLoginPage || this.isChangePasswordPage) {
       this.breadcrumbs = [];
       return;
     }
 
-    if (url === '/users') {
+    // USERS REGISTER (ADD + EDIT)
+    if (url.startsWith('/users/register')) {
+      const isEdit = url.includes('id=');
+
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
-      ];
-    } 
-    else if (url === '/users/register') {
-      this.breadcrumbs = [
-        { label: 'Users', routerLink: '/users' },
-        { label: 'Register User' },
+        { label: isEdit ? 'Edit User' : 'Register User' },
       ];
     }
-    else if (url === '/dashboard') {
+
+    // USERS LIST
+    else if (url.startsWith('/users')) {
+      this.breadcrumbs = [
+        { label: 'Users', routerLink: '/users' },
+      ];
+    }
+
+    // DASHBOARD
+    else if (url.startsWith('/dashboard')) {
       this.breadcrumbs = [
         { label: 'Dashboard' },
       ];
     }
+
     else {
       this.breadcrumbs = [];
     }
@@ -110,10 +123,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
   markAllAsRead(): void {
     this.unreadCount = 0;
-    this.notifications = this.notifications.map((n) => ({ ...n, read: true }));
+    this.notifications = this.notifications.map((n) => ({
+      ...n,
+      read: true,
+    }));
   }
 
   logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
     this.username = null;
     this.router.navigate(['/login']);
   }

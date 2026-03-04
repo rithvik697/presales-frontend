@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -22,12 +22,27 @@ export class RegistrationService {
     return this.http.get(this.apiUrl);
   }
 
-  /* ================= UPDATE USER STATUS ================= */
-  updateUserStatus(empId: string, status: string): Observable<any> {
+  /* ================= GET USER BY ID ================= */
+  getUserById(empId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${empId}`);
+  }
+
+  /* ================= UPDATE USER ================= */
+  updateUser(empId: string, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${empId}`, data);
+  }
+
+  /* ================= UPDATE USER STATUS (TOGGLE) ================= */
+  updateStatus(empId: string, status: string): Observable<any> {
     return this.http.put(
       `${this.apiUrl}/${empId}/status`,
       { emp_status: status }
     );
+  }
+
+  /* ================= DELETE USER ================= */
+  deleteUser(empId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${empId}`);
   }
 
 }

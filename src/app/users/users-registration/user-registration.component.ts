@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
+import { RegistrationService } from 'app/services/registration.service';
 
 @Component({
   selector: 'app-user-registration',
@@ -11,73 +11,59 @@ import { MenuItem } from 'primeng/api';
 })
 export class UserRegistrationComponent implements OnInit {
 
-  // 🔹 Breadcrumb
-  breadcrumbItems: MenuItem[];
-  home: MenuItem;
-
-  // 🔹 Edit mode flag
-  isEditMode: boolean = false;        // 🔧 explicit type (safe)
+  isEditMode: boolean = false;
   employeeId!: string;
 
-  // 🔹 Form model
+  private readonly emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  private readonly phoneRegex = /^\d{10}$/;
+  private readonly usernameRegex = /^[a-zA-Z0-9_]{3,}$/; // letters, numbers, underscore (min 3)
+
   user = {
     emp_id: '',
     emp_first_name: '',
     emp_middle_name: '',
     emp_last_name: '',
     role_id: '',
-    emp_status: 'Active'
+    emp_status: 'Active',
+    phone_num: '',
+    email: '',
+    username: ''   // ✅ ADDED
   };
 
   constructor(
-    private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
-  ) {
-    this.home = { icon: 'pi pi-home', routerLink: '/dashboard' };
+    private toastr: ToastrService,
+    private confirmationService: ConfirmationService,
+    private regService: RegistrationService
+  ) {}
 
-    this.breadcrumbItems = [
-      { label: 'Users', routerLink: '/users' },
-      { label: 'Register User' }
-    ];
-  }
-
-  // 🔹 Init
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
         this.employeeId = params['id'];
-
-        // 🔧 CHANGE: update breadcrumb defensively
-        this.breadcrumbItems = [
-          { label: 'Users', routerLink: '/users' },
-          { label: 'Edit User' }
-        ];
-
         this.loadUserForEdit();
       }
     });
   }
 
-  // 🔹 Load user details for edit
+  // ================= LOAD USER =================
   loadUserForEdit(): void {
-    this.http.get<any>(
-      `http://127.0.0.1:5000/api/users/${this.employeeId}`
-    ).subscribe({
-      next: (res) => {
-
-        // 🔧 CHANGE: support BOTH backend response shapes
+    this.regService.getUserById(this.employeeId).subscribe({
+      next: (res: any) => {
         const data = res?.data ?? res;
 
         this.user = {
-          emp_id: data.emp_id,
-          emp_first_name: data.emp_first_name,
-          emp_middle_name: data.emp_middle_name,
-          emp_last_name: data.emp_last_name,
-          role_id: data.role_id,
-          emp_status: data.emp_status
+          emp_id: data.emp_id || '',
+          emp_first_name: data.emp_first_name || '',
+          emp_middle_name: data.emp_middle_name || '',
+          emp_last_name: data.emp_last_name || '',
+          role_id: data.role_id || '',
+          emp_status: data.emp_status || 'Active',
+          phone_num: data.phone_num || '',
+          email: data.email || '',
+          username: data.username || ''  // ✅ ADDED
         };
       },
       error: () => {
@@ -87,59 +73,122 @@ export class UserRegistrationComponent implements OnInit {
     });
   }
 
-  // 🔹 Submit form (CREATE or UPDATE)
+  // ================= SUBMIT =================
   submit(): void {
+
+    // Trim inputs
+    this.user.emp_first_name = this.user.emp_first_name.trim();
+    this.user.emp_middle_name = (this.user.emp_middle_name || '').trim();
+    this.user.emp_last_name = this.user.emp_last_name.trim();
+    this.user.phone_num = this.user.phone_num.trim();
+    this.user.email = this.user.email.trim().toLowerCase();
+    this.user.username = this.user.username.trim();
+
+    // Required field check
     if (
-      !this.user.emp_id ||
       !this.user.emp_first_name ||
       !this.user.emp_last_name ||
-      !this.user.role_id
+      !this.user.role_id ||
+      !this.user.emp_status ||
+      !this.user.username
     ) {
       this.toastr.warning('Please fill all required fields');
       return;
     }
 
+    // Username validation
+    if (!this.usernameRegex.test(this.user.username)) {
+      this.toastr.warning('Username must be at least 3 characters and contain only letters, numbers or underscore');
+      return;
+    }
+
+    // Phone validation
+    if (!this.phoneRegex.test(this.user.phone_num)) {
+      this.toastr.warning('Phone number must be exactly 10 digits');
+      return;
+    }
+
+    // Email validation
+    if (!this.emailRegex.test(this.user.email)) {
+      this.toastr.warning('Please enter a valid email address');
+      return;
+    }
+
+    // ================= UPDATE MODE =================
     if (this.isEditMode) {
-      // ✅ UPDATE
-      this.http.put(
-        `http://127.0.0.1:5000/api/users/${this.employeeId}`,
-        this.user
-      ).subscribe({
+
+      this.regService.updateUser(this.employeeId, this.user).subscribe({
         next: () => {
           this.toastr.success('User updated successfully');
           this.router.navigate(['/users']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error(err);
           this.toastr.error(err?.error?.error || 'Failed to update user');
         }
       });
 
-    } else {
-      // ✅ CREATE
-      this.http.post(
-        'http://127.0.0.1:5000/api/users/register',
-        this.user
-      ).subscribe({
-        next: () => {
-          this.toastr.success('User created successfully');
+    } 
+    // ================= CREATE MODE =================
+    else {
+
+      this.regService.registerUser(this.user).subscribe({
+        next: (res: any) => {
+
+          const assignedEmpId = res?.emp_id || res?.data?.emp_id;
+
+          if (assignedEmpId) {
+            this.toastr.success(`User created successfully. Employee ID: ${assignedEmpId}`);
+          } else {
+            this.toastr.success('User created successfully');
+          }
+
           this.router.navigate(['/users']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error(err);
           this.toastr.error(err?.error?.error || 'Failed to create user');
         }
       });
+
     }
   }
 
-  // 🔹 Cancel button
+  // ================= DELETE =================
+  confirmDelete() {
+    this.confirmationService.confirm({
+      header: 'Confirm Deletion',
+      message: 'Are you sure you want to delete this user? This action cannot be undone.',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Yes, Delete',
+      rejectLabel: 'Cancel',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.deleteUser();
+      }
+    });
+  }
+
+  deleteUser() {
+    this.regService.deleteUser(this.employeeId).subscribe({
+      next: () => {
+        this.toastr.success('User deleted successfully');
+        this.router.navigate(['/users']);
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.toastr.error('Failed to delete user');
+      }
+    });
+  }
+
+  // ================= NAVIGATION =================
   cancel(): void {
     this.router.navigate(['/users']);
   }
 
-  // 🔹 Back arrow button
   goBack(): void {
     this.router.navigate(['/users']);
   }
+
 }

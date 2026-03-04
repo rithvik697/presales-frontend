@@ -282,10 +282,10 @@
 }
 
 /* Wider columns for date fields */
-:host ::ng-deep .users-table .p-datatable-thead th:nth-child(8),
-:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(8),
 :host ::ng-deep .users-table .p-datatable-thead th:nth-child(10),
-:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(10) {
+:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(10),
+:host ::ng-deep .users-table .p-datatable-thead th:nth-child(11),
+:host ::ng-deep .users-table .p-datatable-tbody td:nth-child(11) {
   min-width: 200px;
 }
 
@@ -301,118 +301,99 @@
   overflow-x: auto;
 }
 
-/* ===============================
-   STATUS TOGGLE BUTTON
-=================================*/
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 13px;
+  display: inline-block;
+  transition: 0.2s ease;
+}
 
-.status-toggle {
+.status-active {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.status-inactive {
+  background-color: #fdecea;
+  color: #c82333;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+:host ::ng-deep .p-column-filter-menu-button {
+  color: #ffffff;
+  margin-left: 6px;
+}
+
+/* Make sort icons white */
+:host ::ng-deep .users-table .p-sortable-column .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* Active sorted column stronger white */
+:host ::ng-deep .users-table .p-sortable-column.p-highlight .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* Header cell layout */
+.header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Filter icon below text */
+.filter-icon {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Make filter icon white */
+:host ::ng-deep .p-column-filter-menu-button {
+  color: #ffffff !important;
+}
+
+/* STATUS TOGGLE PILL */
+.status-toggle-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 12px;
-  border-radius: 20px;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #f3f4f6; /* default grey */
-  font-size: 13px;
-  font-weight: 500;
-  position: relative;
-}
-
-/* Toggle knob */
-.status-toggle .toggle-knob {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #000;
-  transition: all 0.3s ease;
-}
-
-/* Active State */
-.status-toggle.active {
-  background-color: #d9f99d; /* light green/yellow like screenshot */
-  color: #166534;
-}
-
-/* Move knob to right when active */
-.status-toggle.active .toggle-knob {
-  transform: translateX(4px);
-}
-
-
-
-
-
-
-
-
-
-/* ===== STATUS TOGGLE PILL ===== */
-
-.status-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #e5e7eb;
-  font-size: 13px;
-  font-weight: 500;
-  min-width: 90px;
+  transition: all 0.25s ease;
+  min-width: 110px;
   justify-content: center;
 }
 
-.status-toggle .toggle-knob {
-  width: 14px;
-  height: 14px;
+/* DOT */
+.status-toggle-pill .dot {
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background-color: #000;
-  transition: all 0.3s ease;
 }
 
-.status-toggle.active {
-  background-color: #d9f99d;
-  color: #166534;
+/* ACTIVE STYLE */
+.active-pill {
+  background-color: #b9e87a;
+  color: #0b5d1e;
 }
 
-.status-toggle.active .toggle-knob {
-  transform: translateX(2px);
+/* INACTIVE STYLE */
+.inactive-pill {
+  background-color: #d9d9d9;
+  color: #333;
 }
 
-
-
-/* =========================================
-   MATCH PROJECTS PAGE SEARCH BOX STYLE
-========================================= */
-
-/* Filter row background (same as Projects) */
-:host ::ng-deep .users-table .p-datatable-thead > tr.filter-row > th {
-  background-color: #f3f4f6 !important;
-  padding: 8px 10px !important;
-  border: none;
-}
-
-/* Search inputs */
-:host ::ng-deep .users-table .p-datatable-thead > tr.filter-row input {
-  width: 100%;
-  height: 36px;
-  padding: 6px 12px;
-  font-size: 14px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background-color: #ffffff;
-  transition: border-color 0.2s ease;
-}
-
-/* Focus state */
-:host ::ng-deep .users-table .p-datatable-thead > tr.filter-row input:focus {
-  outline: none;
-  border-color: #2563eb;
-}
-
-/* Remove default PrimeNG border effect */
-:host ::ng-deep .users-table .p-datatable-thead input.p-inputtext {
-  box-shadow: none;
+/* HOVER EFFECT */
+.status-toggle-pill:hover {
+  transform: scale(1.05);
 }
