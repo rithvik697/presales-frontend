@@ -90,34 +90,35 @@ export class LeadCreateComponent implements OnInit {
   }
 
   loadLead(id: string) {
-    this.leadsService.getById(id).subscribe({
+  this.leadsService.getById(id).subscribe({
       next: (lead) => {
         this.model = lead;
-        // Bind the dropdown to projectId if available
-        if (lead.projectId) {
-          this.model.project = lead.projectId;
-        }
 
-        // Parse full name
+        // Bind dropdowns to IDs (not names) so mat-select can match them
+      if (lead.projectId)    { this.model.project    = lead.projectId; }
+      if (lead.sourceId)     { this.model.source     = lead.sourceId; }
+      if (lead.statusId)     { this.model.status     = lead.statusId; }
+      if (lead.assignedToId) { this.model.assignedTo = lead.assignedToId; }
+
+        // Parse full name into first/last
         if (lead.name) {
-          const parts = lead.name.split(' ');
-          this.model.firstName = parts[0] || '';
-          this.model.lastName = parts.slice(1).join(' ') || '';
+        const parts = lead.name.split(' ');
+        this.model.firstName = parts[0] || '';
+        this.model.lastName = parts.slice(1).join(' ') || '';
         }
 
-        // Extract country code
+        // Extract country code from phone
         if (this.model.phone) {
           const found = this.countryCodes
             .sort((a, b) => b.code.length - a.code.length)
             .find(c => this.model.phone.startsWith(c.code));
 
-          if (found) {
+        if (found) {
             this.selectedCountryCode = found;
-            this.model.phone =
-              this.model.phone.replace(found.code, '').trim();
-          }
+            this.model.phone = this.model.phone.replace(found.code, '').trim();
         }
-      },
+      }
+    },
       error: () => this.toastr.error('Failed to load lead')
     });
   }

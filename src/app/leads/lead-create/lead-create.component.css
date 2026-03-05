@@ -61,6 +61,12 @@
   border-radius: 4px;
 }
 
+.readonly-input {
+  background-color: #f0f0f0 !important;
+  color: #888 !important;
+  cursor: not-allowed !important;
+}
+
 .lead-create-container {
   max-width: 95%;
   /* Increased from 800px to fill more space */

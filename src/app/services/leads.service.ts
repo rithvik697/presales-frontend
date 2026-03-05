@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Lead } from '../models/lead.model';
-import { Observable, of } from 'rxjs';
+import { LeadStatusHistory, StatusOption } from '../models/lead-status-history.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeadsService {
-  // Backend API URL
   private baseUrl = 'http://localhost:5000/api/leads';
 
-  // State for UI persistence
   public filterViewOpen = false;
 
   constructor(private http: HttpClient) { }
+
+  // ─── Existing Lead CRUD (unchanged) ───────────────────────
 
   getAll(): Observable<Lead[]> {
     return this.http.get<Lead[]>(this.baseUrl);
@@ -22,16 +23,19 @@ export class LeadsService {
   getById(id: string): Observable<Lead> {
     return this.http.get<Lead>(`${this.baseUrl}/${id}`);
   }
+
   getProjects() {
     return this.http.get<any[]>('http://localhost:5000/api/projects');
   }
+
   getSources(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/sources`);
+    return this.http.get<any[]>(`${this.baseUrl}/sources`);
   }
 
   getStatuses(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/statuses`);
+    return this.http.get<any[]>(`${this.baseUrl}/statuses`);
   }
+
   create(lead: Lead): Observable<Lead> {
     return this.http.post<Lead>(this.baseUrl, lead);
   }
@@ -44,7 +48,33 @@ export class LeadsService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  getEmployees(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/employees`);
+  getEmployees(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/employees`);
+  }
+
+  // ─── Status History (Timeline) ────────────────────────────
+
+  getStatusHistory(leadId: string): Observable<LeadStatusHistory[]> {
+    return this.http.get<LeadStatusHistory[]>(
+      `${this.baseUrl}/${leadId}/status-history`
+    );
+  }
+
+  createStatusChange(leadId: string, data: { new_status_id: string; remarks?: string }): Observable<LeadStatusHistory> {
+    return this.http.post<LeadStatusHistory>(
+      `${this.baseUrl}/${leadId}/status-history`, data
+    );
+  }
+
+  updateStatusHistory(leadId: string, historyId: number, data: { remarks: string }): Observable<LeadStatusHistory> {
+    return this.http.put<LeadStatusHistory>(
+      `${this.baseUrl}/${leadId}/status-history/${historyId}`, data
+    );
+  }
+
+  deleteStatusHistory(leadId: string, historyId: number): Observable<any> {
+    return this.http.delete(
+      `${this.baseUrl}/${leadId}/status-history/${historyId}`
+    );
   }
 }

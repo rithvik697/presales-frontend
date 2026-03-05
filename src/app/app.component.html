@@ -1,6 +1,6 @@
 <!-- Show toolbar and sidenav only if NOT on login or change-password page -->
 <ng-container *ngIf="!isLoginPage && !isChangePasswordPage">
-  <div class="crm" (mouseleave)="showLogout = false">
+  <div class="crm">
 
     <!-- ===================== TOOLBAR ===================== -->
     <mat-toolbar
@@ -58,32 +58,37 @@
         </div>
       </div>
 
-      <!-- SETTINGS -->
-      <mat-icon class="icon">settings</mat-icon>
-
-      <!-- PROFILE -->
-    <div
-      *ngIf="username"
-      class="profile-container"
-      (click)="showLogout = !showLogout"
-      >
-      <div class="profile-section">
-      <span class="profile-text">{{ username }}</span>
-      <img
-      src="assets/profile.avif"
-      alt="Profile"
-      class="imageprofile"
-      />
-      </div>
-
+      <!-- PROFILE DROPDOWN -->
       <div
-      *ngIf="showLogout"
-      class="logout-dropdown"
+        *ngIf="username"
+        class="profile-container"
+        (click)="profileMenu.toggle($event)"
       >
-          <div (click)="logout(); $event.stopPropagation()">
-          Logout
+        <div class="profile-section">
+          <mat-icon class="profile-icon">account_circle</mat-icon>
+          <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
         </div>
-        </div>
+
+        <!-- PrimeNG Menu -->
+        <p-menu
+          #profileMenu
+          [model]="profileMenuItems"
+          [popup]="true"
+          appendTo="body"
+          styleClass="profile-dropdown-menu"
+        >
+          <ng-template pTemplate="start">
+            <div class="profile-menu-header">
+              <div class="user-info">
+                <mat-icon class="user-avatar">account_circle</mat-icon>
+                <div class="user-details">
+                  <span class="user-name">{{ fullName || username }}</span>
+                  <span class="user-role">{{ role || 'User' }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-menu>
       </div>
 
     </mat-toolbar>

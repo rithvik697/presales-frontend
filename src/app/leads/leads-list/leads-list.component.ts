@@ -13,10 +13,13 @@ import { Subscription } from 'rxjs';
 export class LeadsListComponent implements OnInit, OnDestroy {
   allLeads: Lead[] = [];
   filteredLeads: Lead[] = [];
-  filterText = '';
   private subscriptions: Subscription[] = [];
   showFilterView = false; // Toggle for filter panel
   loading: boolean = true;
+
+  // Breadcrumbs
+  breadcrumbItems: any[] = [];
+  home: any;
 
   // Dynamic dropdown values
   sourceOptions: string[] = [];
@@ -43,7 +46,8 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     { field: 'name', header: 'Name' },
     { field: 'phone', header: 'Phone' },
     { field: 'project', header: 'Project' },
-    { field: 'source', header: 'Source' }
+    { field: 'source', header: 'Source' },
+    { field: 'description', header: 'Remarks' }
   ];
 
   // PrimeNG Table Cols
@@ -62,6 +66,9 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Setup breadcrumbs
+    this.setupBreadcrumbs();
+
     // Restore state from service
     this.showFilterView = this.leadsService.filterViewOpen;
 
@@ -83,6 +90,11 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     this.loadProjects();
     this.loadSources();
     this.loadStatuses();
+  }
+
+  setupBreadcrumbs(): void {
+    this.home = { icon: 'pi pi-home', routerLink: '/dashboard' };
+    this.breadcrumbItems = [{ label: 'Leads' }];
   }
 
   applyColumns(): void {
@@ -222,7 +234,6 @@ export class LeadsListComponent implements OnInit, OnDestroy {
 
   clearFilters(dt?: any): void {
     this.filterForm.reset();
-    this.filterText = '';
     this.filteredLeads = this.allLeads;
     if (dt) {
       dt.clear(); // Clears PrimeNG table internal filters/sorting
@@ -230,8 +241,7 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   }
 
   viewLead(lead: Lead): void {
-    this.selectedLead = lead;
-    this.showLeadDetails = true;
+    this.router.navigate(['/leads/details', lead.id]);
   }
 
   goToCreate(): void {

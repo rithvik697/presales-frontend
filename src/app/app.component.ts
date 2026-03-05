@@ -23,8 +23,8 @@ export class AppComponent implements OnInit, OnDestroy {
   isDesktop: boolean = window.innerWidth > 768;
   selectedItem: string = '';
   username: string | null = null;
+  fullName: string | null = null;
   role: string | null = null;
-  showLogout: boolean = false;
   isLoginPage: boolean = false;
   isChangePasswordPage: boolean = false;
 
@@ -33,9 +33,10 @@ export class AppComponent implements OnInit, OnDestroy {
   showNotificationDropdown: boolean = false;
 
   menuItems: any[] = [];
-  breadcrumbs: MenuItem[] = []; // ✅ ADD
+  breadcrumbs: MenuItem[] = [];
+  profileMenuItems: MenuItem[] = [];
 
-  home = { icon: 'pi pi-home', routerLink: '/' }; // ✅ ADD 
+  home = { icon: 'pi pi-home', routerLink: '/' }; 
 
   private routerSub!: Subscription;
 
@@ -53,12 +54,37 @@ export class AppComponent implements OnInit, OnDestroy {
 
   this.menuItems = this.allMenuItems;
 
+  // Initialize profile menu items
+  this.profileMenuItems = [
+    {
+      label: 'Profile',
+      icon: 'pi pi-user',
+      // TODO: Implement profile page
+      command: () => {}
+    },
+    {
+      label: 'Settings',
+      icon: 'pi pi-cog',
+      // TODO: Implement settings page
+      command: () => {}
+    },
+    {
+      separator: true
+    },
+    {
+      label: 'Logout',
+      icon: 'pi pi-sign-out',
+      command: () => this.logout()
+    }
+  ];
+
   this.routerSub = this.router.events
     .pipe(filter((e) => e instanceof NavigationEnd))
     .subscribe((e: any) => {
 
-      
       this.username = localStorage.getItem('username');
+      this.fullName = localStorage.getItem('fullName');
+      this.role = localStorage.getItem('role');
 
       const url: string = e.urlAfterRedirects || e.url;
 
@@ -118,11 +144,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-  localStorage.removeItem('token');
-  localStorage.removeItem('username');
-  this.username = null;
-  this.router.navigate(['/login']);
- }
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('fullName');
+    localStorage.removeItem('role');
+    this.username = null;
+    this.fullName = null;
+    this.role = null;
+    this.router.navigate(['/login']);
+  }
 
 
   toggleSidebar(sidenav: MatSidenav): void {

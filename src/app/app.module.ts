@@ -39,6 +39,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { MenuModule } from 'primeng/menu';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -127,6 +128,8 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
     InputNumberModule,
     PanelModule,
     BreadcrumbModule,
+    MenuModule,
+    TooltipModule,
 
     /* Charts & Notifications */
     NgChartsModule,

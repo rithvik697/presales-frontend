@@ -13,6 +13,7 @@ import { ConfigureComponent } from './configure/configure.component';
 
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
+import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
@@ -54,6 +55,8 @@ const routes: Routes = [
       // LEADS
       { path: 'leads', component: LeadsListComponent },
       { path: 'leads/create', component: LeadCreateComponent },
+      { path: 'leads/edit/:id', component: LeadCreateComponent },
+      { path: 'leads/details/:id', component: LeadDetailsComponent },
 
       // PROJECTS
       { path: 'projects', component: ProjectListComponent },

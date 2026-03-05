@@ -1,27 +1,200 @@
-/* PrimeNG overrides if necessary */
-:host ::ng-deep .p-button-sm {
-  padding: 0.5rem;
-  font-size: 0.8rem;
+/* ---------- PAGE CONTAINER ---------- */
+.page-container {
+  padding: 1.5rem;
+  margin: 0 auto;
+  width: 100%;
 }
 
-/* Good spacing for table cells */
-:host ::ng-deep .p-datatable .p-datatable-tbody>tr>td {
-  padding: 1rem 1.25rem;
+/* ---------- TABLE BASE ---------- */
+.leads-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.leads-table th,
+.leads-table td {
+  padding: 14px 18px !important;
+  text-align: left;
+  font-size: 15px !important;
+}
+
+/* ---------- TABLE HEADER ---------- */
+.leads-table thead {
+  background-color: #3f51b5;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.leads-table thead th {
+  white-space: nowrap;
+  text-align: center;
+  font-size: 14px;
+  padding: 16px 18px;
+}
+
+/* ---------- TABLE BODY ---------- */
+.leads-table tbody tr {
+  background-color: #ffffff;
+  transition: background-color 0.3s ease;
+  height: 56px;
+  cursor: default;
+}
+
+.leads-table tbody tr:nth-child(even) {
+  background-color: #f2f6fc;
+}
+
+.leads-table tbody tr:hover {
+  background-color: #eef4ff;
+}
+
+.leads-table td {
+  white-space: nowrap;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ---------- TABLE WRAPPER ---------- */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 14px;
+  width: 100%;
+}
+
+/* ---------- EMPTY STATE ---------- */
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  font-size: 15px;
+  color: #777;
+  font-style: italic;
+}
+
+/* ---------- ACTION COLUMN ---------- */
+.leads-table th:last-child,
+.leads-table td:last-child {
+  min-width: 110px;
+  text-align: center;
+  pointer-events: auto;
+}
+
+/* ============================
+   PrimeNG Table – Blue Theme
+   ============================ */
+
+/* Header row */
+:host ::ng-deep .leads-table .p-datatable-thead > tr:first-child > th {
+  background-color: #3f51b5;
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  padding: 16px 18px !important;
+  text-align: left;
+  font-size: 14px !important;
+}
+
+/* Body rows */
+:host ::ng-deep .leads-table .p-datatable-tbody > tr {
+  background-color: #ffffff;
+  height: 56px;
+}
+
+:host ::ng-deep .leads-table .p-datatable-tbody > tr:hover {
+  background-color: #f3f5ff;
+}
+
+/* Body cells padding */
+:host ::ng-deep .leads-table .p-datatable-tbody > tr > td {
+  padding: 14px 18px !important;
+  font-size: 15px !important;
+  vertical-align: middle;
+}
+
+/* Pagination alignment */
+:host ::ng-deep .p-paginator {
+  border: none;
+  margin-top: 10px;
+}
+
+/* Edit button alignment */
+:host ::ng-deep .p-button.p-button-text {
+  padding: 6px;
+}
+
+/* Force PrimeNG table to use full width */
+:host ::ng-deep .leads-table .p-datatable-table {
+  table-layout: auto;
+  width: 100%;
+}
+
+/* Force headers to stay in ONE line */
+:host ::ng-deep .leads-table .p-datatable-thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Same for body cells */
+:host ::ng-deep .leads-table .p-datatable-tbody td {
   white-space: nowrap;
 }
 
-:host ::ng-deep .p-datatable .p-datatable-thead>tr>th {
-  padding: 1rem 1.25rem;
-  background-color: #f8fafc;
-  color: #475569;
-  font-weight: 600;
+/* Uniform column width */
+:host ::ng-deep .leads-table .p-datatable-thead th,
+:host ::ng-deep .leads-table .p-datatable-tbody td {
+  min-width: 140px;
 }
 
-/* Sl No column width */
-:host ::ng-deep .p-datatable .p-datatable-tbody>tr>td:first-child {
-  font-weight: 600;
-  color: #64748b;
+/* Action column stays compact */
+:host ::ng-deep .leads-table .p-datatable-thead th:last-child,
+:host ::ng-deep .leads-table .p-datatable-tbody td:last-child {
+  min-width: 90px;
   text-align: center;
+}
+
+/* Filter icons - removed as we don't have column filters */
+
+/* Make sort icons white */
+:host ::ng-deep .leads-table .p-sortable-column .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* Active sorted column */
+:host ::ng-deep .leads-table .p-sortable-column.p-highlight .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* PrimeNG Tag styling */
+:host ::ng-deep .p-tag {
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* Clickable Lead Name */
+.text-primary.cursor-pointer {
+  color: #4c5db6;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.text-primary.cursor-pointer:hover {
+  color: #3b4a91;
+  text-decoration: underline;
 }
 
 /* Column Picker Dialog Styling */
@@ -44,4 +217,36 @@
   font-weight: 500;
   color: #334155;
   flex: 1;
+}
+
+/* Sl No column */
+:host ::ng-deep .leads-table .p-datatable-tbody > tr > td:first-child {
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media screen and (max-width: 992px) {
+  .page-container {
+    padding: 20px;
+  }
+
+  .leads-table th,
+  .leads-table td {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .page-container {
+    padding: 15px;
+  }
+
+  .leads-table th,
+  .leads-table td {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
 }

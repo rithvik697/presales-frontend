@@ -108,11 +108,6 @@ mat-sidenav-content {
     color: gray;
     margin-right: 16px;
   }
-  .imageprofile {
-    height: 50px;
-    border-radius: 50%; /* If you want a circular profile */
-    cursor: pointer;
-  }
  
   .mobile-menu {
     display: none;
@@ -122,15 +117,46 @@ mat-sidenav-content {
     font-size: 20px;
     font-weight: bold;
   }
+  .profile-container {
+    position: relative;
+    cursor: pointer;
+    margin-left: 16px;
+  }
+
   .profile-section {
     display: flex;
     align-items: center;
-    margin-left: auto; /* Pushes the profile section to the right */
-    font-size: small;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.1);
   }
-  .profile-text{
-    font-size: medium;
-    margin-right: 15px;
+
+  .profile-section:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .profile-icon {
+    font-size: 28px;
+    color: #6b7280;
+    transition: color 0.2s ease;
+  }
+
+  .profile-section:hover .profile-icon {
+    color: #3f51b5;
+  }
+
+  .dropdown-arrow {
+    font-size: 20px;
+    color: #6b7280;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .profile-section:hover .dropdown-arrow {
+    transform: rotate(180deg);
+    color: #3f51b5;
   }
 
 .sidenav-container {
@@ -260,15 +286,12 @@ new-icon{
       margin-right: 10px;
     }
     
-    .profile-text{
-      font-size: medium;
-      display: none;
+    .profile-icon {
+      font-size: 24px;
     }
-    .imageprofile {
-      height: 20px;
-      border-radius: 50%; /* If you want a circular profile */
-      cursor: pointer;
-      margin: 8px;
+
+    .dropdown-arrow {
+      font-size: 18px;
     }
     
    
@@ -307,24 +330,89 @@ new-icon{
     margin-right: 16px;
     height: 10px;
   }
-  .logout-dropdown {
-  position: absolute;
-  top: 70px;
-  right: 0;
-  background-color: #ff4d4d;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  transition: background-color 0.3s ease;
+/* Profile Dropdown Menu Styles */
+::ng-deep .profile-dropdown-menu {
+  margin-top: 8px;
+  margin-right: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e5e7eb;
+  min-width: 260px;
+  max-width: 280px;
 }
 
-.logout-dropdown:hover {
-  background-color: #e60000;
+/* Profile Menu Header */
+.profile-menu-header {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  font-size: 48px;
+  color: white;
+  width: 48px;
+  height: 48px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.user-role {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+::ng-deep .profile-dropdown-menu .p-menuitem-link {
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+::ng-deep .profile-dropdown-menu .p-menuitem-link:hover {
+  background-color: #f3f4f6 !important;
+}
+
+::ng-deep .profile-dropdown-menu .p-menuitem-icon {
+  color: #6b7280;
+  font-size: 16px;
+  margin-right: 12px;
+}
+
+::ng-deep .profile-dropdown-menu .p-menuitem-text {
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Logout item - red color */
+::ng-deep .profile-dropdown-menu .p-menuitem:last-child .p-menuitem-link {
+  color: #ef4444;
+}
+
+::ng-deep .profile-dropdown-menu .p-menuitem:last-child .p-menuitem-icon {
+  color: #ef4444;
+}
+
+::ng-deep .profile-dropdown-menu .p-menuitem:last-child .p-menuitem-link:hover {
+  background-color: #fee2e2 !important;
 }
 /* .active-item {
   background-color: orangered !important;
