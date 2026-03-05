@@ -14,6 +14,11 @@ export class RegistrationService {
 
   /* ================= REGISTER USER ================= */
   registerUser(data: any): Observable<any> {
+
+    const username = localStorage.getItem('username');
+
+    data.created_by = username || 'ADMIN';
+
     return this.http.post(`${this.apiUrl}/register`, data);
   }
 
@@ -29,20 +34,39 @@ export class RegistrationService {
 
   /* ================= UPDATE USER ================= */
   updateUser(empId: string, data: any): Observable<any> {
+
+    const username = localStorage.getItem('username');
+
+    data.modified_by = username || 'ADMIN';
+
     return this.http.put(`${this.apiUrl}/${empId}`, data);
   }
 
   /* ================= UPDATE USER STATUS (TOGGLE) ================= */
   updateStatus(empId: string, status: string): Observable<any> {
+
+    const username = localStorage.getItem('username');
+
     return this.http.put(
       `${this.apiUrl}/${empId}/status`,
-      { emp_status: status }
+      {
+        emp_status: status,
+        modified_by: username || 'ADMIN'
+      }
     );
   }
 
   /* ================= DELETE USER ================= */
   deleteUser(empId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${empId}`);
+
+    const username = localStorage.getItem('username');
+
+    return this.http.delete(
+      `${this.apiUrl}/${empId}`,
+      {
+        body: { modified_by: username || 'ADMIN' }
+      }
+    );
   }
 
 }

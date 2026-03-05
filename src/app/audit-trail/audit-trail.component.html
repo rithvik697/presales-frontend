@@ -1,1 +1,180 @@
-<p>audit-trail works!</p>
+<div class="users-list-container">
+
+  <!-- Header -->
+  <div class="users-header">
+
+    <h2>Audit Trail</h2>
+
+    <!-- Global Search -->
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        placeholder="Global Search"
+        (input)="onGlobalSearch($event, dt)"
+      />
+    </span>
+
+  </div>
+
+
+  <!-- Table -->
+  <div class="table-wrapper">
+
+    <p-table
+      #dt
+      [value]="auditLogs"
+      [paginator]="true"
+      [rows]="10"
+      [globalFilterFields]="globalFilterFields"
+      sortMode="multiple"
+      class="users-table"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    >
+
+      <!-- HEADER -->
+      <ng-template pTemplate="header">
+
+        <tr>
+
+          <th>#</th>
+
+          <th pSortableColumn="object_name">
+            <div class="header-cell">
+              <span>Object</span>
+              <p-sortIcon field="object_name"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="object_name" display="menu"></p-columnFilter>
+            </div>
+          </th>
+
+
+          <th pSortableColumn="object_id">
+            <div class="header-cell">
+              <span>Object ID</span>
+              <p-sortIcon field="object_id"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="object_id" display="menu"></p-columnFilter>
+            </div>
+          </th>
+
+
+          <th pSortableColumn="property_name">
+            <div class="header-cell">
+              <span>Property</span>
+              <p-sortIcon field="property_name"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="property_name" display="menu"></p-columnFilter>
+            </div>
+          </th>
+
+
+          <th>
+            Old Value
+            <p-columnFilter field="old_value" display="menu"></p-columnFilter>
+          </th>
+
+
+          <th>
+            New Value
+            <p-columnFilter field="new_value" display="menu"></p-columnFilter>
+          </th>
+
+
+          <th pSortableColumn="modified_by">
+            <div class="header-cell">
+              <span>Modified By</span>
+              <p-sortIcon field="modified_by"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="modified_by" display="menu"></p-columnFilter>
+            </div>
+          </th>
+
+
+          <th pSortableColumn="modified_on">
+            <div class="header-cell">
+              <span>Modified On</span>
+              <p-sortIcon field="modified_on"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="modified_on" display="menu"></p-columnFilter>
+            </div>
+          </th>
+
+
+          <th pSortableColumn="action_type">
+            <div class="header-cell">
+              <span>Action</span>
+              <p-sortIcon field="action_type"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="action_type" display="menu"></p-columnFilter>
+            </div>
+          </th>
+
+        </tr>
+
+      </ng-template>
+
+
+
+      <!-- BODY -->
+      <ng-template pTemplate="body" let-log let-i="rowIndex">
+
+        <tr>
+
+          <td>{{ i + 1 }}</td>
+
+          <td>{{ log.object_name }}</td>
+
+          <td>{{ log.object_id }}</td>
+
+          <td>{{ log.property_name }}</td>
+
+          <td>{{ log.old_value || '-' }}</td>
+
+          <td>{{ log.new_value || '-' }}</td>
+
+          <td>{{ log.modified_by }}</td>
+
+          <td>{{ log.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
+
+
+          <!-- Colored Action -->
+          <td>
+
+            <p-tag
+              *ngIf="log.action_type === 'INSERT'"
+              value="INSERT"
+              severity="success">
+            </p-tag>
+
+            <p-tag
+              *ngIf="log.action_type === 'UPDATE'"
+              value="UPDATE"
+              severity="warning">
+            </p-tag>
+
+            <p-tag
+              *ngIf="log.action_type === 'DELETE'"
+              value="DELETE"
+              severity="danger">
+            </p-tag>
+
+          </td>
+
+        </tr>
+
+      </ng-template>
+
+    </p-table>
+
+  </div>
+
+</div>
