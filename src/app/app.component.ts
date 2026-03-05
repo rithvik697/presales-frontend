@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   menuItems: any[] = [];
   breadcrumbs: MenuItem[] = [];
 
-  // ✅ Home now correctly goes to Dashboard
+  // Home now correctly goes to Dashboard
   home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
   private routerSub!: Subscription;
@@ -46,6 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Users', icon: 'people', route: '/users' },
     { label: 'Project', icon: 'assignment', route: '/projects' },
     { label: 'Call Logs', icon: 'call', route: '/call-logs' },
+    { label : 'Audit Trail', icon: 'history', route: '/audit-trail' },
   ];
 
   constructor(private router: Router, private toastr: ToastrService) {}
