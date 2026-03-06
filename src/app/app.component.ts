@@ -27,6 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
   showLogout: boolean = false;
   isLoginPage: boolean = false;
   isChangePasswordPage: boolean = false;
+  isForgotPasswordPage:boolean = false;
+  isResetPasswordPage: boolean = false;
 
   notifications: any[] = [];
   unreadCount: number = 0;
@@ -63,6 +65,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.isLoginPage = url.startsWith('/login');
         this.isChangePasswordPage = url.startsWith('/change-password');
+        this.isForgotPasswordPage = url.startsWith('/forgot-password');
+        this.isResetPasswordPage = url.startsWith('/reset-password');
 
         const found = this.allMenuItems.find((m) =>
           url.startsWith(m.route)
@@ -82,7 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // ✅ FIXED BREADCRUMB LOGIC
   updateBreadcrumbs(url: string): void {
 
-    if (this.isLoginPage || this.isChangePasswordPage) {
+    if (this.isLoginPage || this.isChangePasswordPage || this.isForgotPasswordPage || this.isResetPasswordPage) {
       this.breadcrumbs = [];
       return;
     }

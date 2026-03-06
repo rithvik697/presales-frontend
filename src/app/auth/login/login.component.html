@@ -24,7 +24,24 @@
       <!-- Password -->
       <mat-form-field appearance="fill" class="full-width custom-field">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
+
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+        />
+
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword = !hidePassword">
+
+          <mat-icon>
+            {{ hidePassword ? 'visibility_off' : 'visibility' }}
+          </mat-icon>
+
+        </button>
       </mat-form-field>
 
       <!-- ERROR -->
