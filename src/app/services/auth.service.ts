@@ -37,4 +37,15 @@ export class AuthService {
   getRole(): string | null {
     return localStorage.getItem('role');
   }
+
+  forgotPassword(email: string) {
+  return this.http.post('http://localhost:5000/api/forgot-password', { email });
+  }
+
+  resetPassword(token: string, password: string) {
+  return this.http.post('/api/reset-password', {
+    token,
+    password
+  });
+  }
 }

@@ -138,7 +138,8 @@ export class UserRegistrationComponent implements OnInit {
           const assignedEmpId = res?.emp_id || res?.data?.emp_id;
 
           if (assignedEmpId) {
-            this.toastr.success(`User created successfully. Employee ID: ${assignedEmpId}`);
+            this.toastr.success(`User created successfully. Employee ID: ${assignedEmpId}
+              Login credentials have been sent to the user's email.`);
           } else {
             this.toastr.success('User created successfully');
           }

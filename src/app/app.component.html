@@ -5,7 +5,7 @@
 <p-confirmDialog></p-confirmDialog>
 
 <!-- Show toolbar and sidenav only if NOT on login or change-password page -->
-<ng-container *ngIf="!isLoginPage && !isChangePasswordPage">
+<ng-container *ngIf="!isLoginPage && !isChangePasswordPage && !isForgotPasswordPage && !isResetPasswordPage">
   <div class="crm" (mouseleave)="showLogout = false">
 
     <!-- ===================== TOOLBAR ===================== -->
@@ -145,6 +145,6 @@
 </ng-container>
 
 <!-- ===================== LOGIN / CHANGE PASSWORD ===================== -->
-<ng-container *ngIf="isLoginPage || isChangePasswordPage">
+<ng-container *ngIf="isLoginPage || isChangePasswordPage || isForgotPasswordPage || isResetPasswordPage">
   <router-outlet></router-outlet>
 </ng-container>
