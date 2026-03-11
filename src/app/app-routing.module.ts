@@ -24,11 +24,15 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
 
 import { AuthGuard } from './guards/auth.guard';
 
+import { AuditTrailComponent } from './audit-trail/audit-trail.component';
+
+
 const routes: Routes = [
 
   // Public Route
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'audit-trail', component: AuditTrailComponent },
   {
   path: 'forgot-password',
   component: ForgotPasswordComponent
