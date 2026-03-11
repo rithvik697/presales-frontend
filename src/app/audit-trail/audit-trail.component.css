@@ -1,0 +1,57 @@
+/* Blue header like Users table */
+:host ::ng-deep .users-table .p-datatable-thead > tr > th {
+  background-color: #3f51b5 !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  border: none;
+}
+
+/* Rounded container */
+.users-list-container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Rounded table */
+.users-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Hover like Users table */
+:host ::ng-deep .users-table .p-datatable-tbody > tr:hover {
+  background-color: #f5f7ff;
+}
+
+
+/* Main white card */
+.users-list-container {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 20px;   /* more curvy */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Table wrapper for curved edges */
+.table-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Make PrimeNG table follow the rounded shape */
+:host ::ng-deep .users-table {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Make column filter icons white */
+:host ::ng-deep .users-table .p-column-filter-menu-button {
+  color: white !important;
+}
+
+/* Also ensure the filter icon inside is white */
+:host ::ng-deep .users-table .p-column-filter-menu-button .pi {
+  color: white !important;
+}
