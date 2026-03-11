@@ -1,0 +1,129 @@
+<div class="users-list-container">
+
+  <!-- Header -->
+  <div class="users-header">
+    <div class="title-section">
+      <h2>Reports Dashboard</h2>
+      <button pButton icon="pi pi-download" label="Download Active Leads" class="p-button-success p-button-sm" (click)="downloadActiveLeads()"></button>
+    </div>
+    
+    <div class="header-actions">
+      <div class="date-filter-group">
+        <label>User:</label>
+        <p-dropdown [options]="usersList" [(ngModel)]="selectedUser" optionLabel="emp_first_name" optionValue="emp_id" [showClear]="true" placeholder="All Users" styleClass="p-dropdown-sm"></p-dropdown>
+        
+        <label>Project:</label>
+        <p-dropdown [options]="projectsList" [(ngModel)]="selectedProject" optionLabel="project_name" optionValue="project_id" [showClear]="true" placeholder="All Projects" styleClass="p-dropdown-sm"></p-dropdown>
+
+        <label>From Date:</label>
+        <input type="date" [(ngModel)]="startDate" class="date-input">
+        <label>To Date:</label>
+        <input type="date" [(ngModel)]="endDate" class="date-input">
+        <button pButton label="Apply Filters" class="p-button-primary p-button-sm" (click)="applyFilters()"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <p-card header="Total Leads">{{ summary.total_leads }}</p-card>
+    <p-card header="Active Leads">{{ summary.active_leads }}</p-card>
+    <p-card header="Closed Leads">{{ summary.closed_leads }}</p-card>
+    <p-card header="Lost Leads">{{ summary.lost_leads }}</p-card>
+    <p-card header="Leads Today" class="highlight-card">{{ summary.today_leads }}</p-card>
+  </div>
+
+  <!-- User Performance Section -->
+  <div class="table-container mb-4">
+    <div class="chart-header">
+      <h3>User Performance</h3>
+    </div>
+    <p-table [value]="userPerformance" [rowHover]="true" styleClass="p-datatable-sm primeng-table">
+      <ng-template pTemplate="header">
+          <tr>
+              <th>User Name</th>
+              <th>Completed (Deals Closed)</th>
+              <th>Ongoing (Pipeline)</th>
+              <th>Failed (Lost/Spam)</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-perf>
+          <tr>
+              <td><strong>{{ perf.user_name }}</strong></td>
+              <td class="text-success font-bold">{{ perf.completed }}</td>
+              <td class="text-warning font-bold">{{ perf.ongoing }}</td>
+              <td class="text-danger font-bold">{{ perf.failed }}</td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="4" class="text-center p-4">No user performance data found for selected period.</td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Daily Report Log Section -->
+  <div class="table-container mb-4">
+    <div class="chart-header">
+      <h3>Daily Report Log (Leads Today)</h3>
+    </div>
+    <p-table [value]="dailyLog" [rowHover]="true" [paginator]="true" [rows]="5" styleClass="p-datatable-sm primeng-table">
+      <ng-template pTemplate="header">
+          <tr>
+              <th>Lead ID</th>
+              <th>Description</th>
+              <th>Created On</th>
+              <th>Assigned User</th>
+              <th>Project</th>
+              <th>Status</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-log>
+          <tr>
+              <td>{{ log.lead_id }}</td>
+              <td>{{ log.lead_description }}</td>
+              <td>{{ log.created_on | date:'shortTime' }}</td>
+              <td>{{ log.employee_name }}</td>
+              <td>{{ log.project_name }}</td>
+              <td><span class="status-badge" [ngClass]="log.label?.toLowerCase() || 'unknown'">{{ log.label || 'Unknown' }}</span></td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="6" class="text-center p-4">No leads created today.</td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+
+  <!-- Charts Section -->
+  <div class="charts-wrapper mt-4">
+    <!-- Line Chart with Filters -->
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>Leads Created</h3>
+        <div class="filters">
+          <button class="filter-btn" [class.active]="currentFilter === 'weekly'" (click)="setFilter('weekly')">Weekly</button>
+          <button class="filter-btn" [class.active]="currentFilter === 'monthly'" (click)="setFilter('monthly')">Monthly</button>
+          <button class="filter-btn" [class.active]="currentFilter === 'annual'" (click)="setFilter('annual')">Annual</button>
+        </div>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas #lineChartCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="chart-container chart-pie">
+      <div class="chart-header">
+        <h3>Leads by Status</h3>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas #pieChartCanvas></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>

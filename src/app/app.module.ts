@@ -57,6 +57,7 @@ import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
 import { CallLogsComponent } from './call-logs/call-logs.component';
+import { ReportsComponent } from './reports/reports.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
@@ -82,8 +83,9 @@ import { LeadDetailsComponent } from './leads/lead-details/lead-details.componen
     ProjectListComponent,
     ProjectRegistrationComponent,
     CallLogsComponent,
+    ReportsComponent,
     FilterByPipe,
-  
+
   ],
   imports: [
     BrowserModule,
@@ -135,9 +137,9 @@ import { LeadDetailsComponent } from './leads/lead-details/lead-details.componen
       progressBar: true,
     }),
   ],
-   providers: [
+  providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

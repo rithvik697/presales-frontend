@@ -18,6 +18,7 @@ import { ProjectListComponent } from './projects/project-list/project-list.compo
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
 
 import { CallLogsComponent } from './call-logs/call-logs.component';
+import { ReportsComponent } from './reports/reports.component';
 
 import { AuthGuard } from './guards/auth.guard';
 
@@ -59,7 +60,10 @@ const routes: Routes = [
       { path: 'projects/register', component: ProjectRegistrationComponent },
 
       // CALL LOGS
-      { path: 'call-logs', component: CallLogsComponent }
+      { path: 'call-logs', component: CallLogsComponent },
+
+      // REPORTS
+      { path: 'reports', component: ReportsComponent }
 
     ]
   },

@@ -47,30 +47,43 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Call Logs', icon: 'call', route: '/call-logs' },
   ];
 
-  constructor(private router: Router, private toastr: ToastrService) {}
+  constructor(private router: Router, private toastr: ToastrService) { }
 
- ngOnInit(): void {
+  ngOnInit(): void {
+    this.routerSub = this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe((e: any) => {
 
-  this.menuItems = this.allMenuItems;
+        this.username = localStorage.getItem('username');
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            const payloadUrl = token.split('.')[1];
+            const decodedPayload = JSON.parse(window.atob(payloadUrl));
+            this.role = decodedPayload.role_type || null;
+          } catch (error) {
+            console.error('Error decoding token:', error);
+            this.role = null;
+          }
+        }
 
-  this.routerSub = this.router.events
-    .pipe(filter((e) => e instanceof NavigationEnd))
-    .subscribe((e: any) => {
+        // Conditionally build menu items based on role
+        this.menuItems = [...this.allMenuItems];
+        if (this.role === 'ADMIN' || this.role === 'Sales Manager') {
+          this.menuItems.push({ label: 'Reports', icon: 'bar_chart', route: '/reports' });
+        }
 
-      
-      this.username = localStorage.getItem('username');
+        const url: string = e.urlAfterRedirects || e.url;
 
-      const url: string = e.urlAfterRedirects || e.url;
+        this.isLoginPage = url.startsWith('/login');
+        this.isChangePasswordPage = url.startsWith('/change-password');
 
-      this.isLoginPage = url.startsWith('/login');
-      this.isChangePasswordPage = url.startsWith('/change-password');
+        const found = this.menuItems.find((m) => url.startsWith(m.route));
+        this.selectedItem = found ? found.label : '';
 
-      const found = this.allMenuItems.find((m) => url.startsWith(m.route));
-      this.selectedItem = found ? found.label : '';
-
-      this.updateBreadcrumbs(url);
-    });
-}
+        this.updateBreadcrumbs(url);
+      });
+  }
 
 
   ngOnDestroy(): void {
@@ -90,7 +103,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
       ];
-    } 
+    }
     else if (url === '/users/register') {
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
@@ -118,11 +131,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-  localStorage.removeItem('token');
-  localStorage.removeItem('username');
-  this.username = null;
-  this.router.navigate(['/login']);
- }
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    this.username = null;
+    this.router.navigate(['/login']);
+  }
 
 
   toggleSidebar(sidenav: MatSidenav): void {
