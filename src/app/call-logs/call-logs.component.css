@@ -1,72 +1,212 @@
+/* ---------- PAGE CONTAINER ---------- */
 .page-container {
-  padding: 16px;
+  padding: 1.5rem;
+  margin: 0 auto;
+  width: 100%;
 }
 
-/* ===============================
-   CRM TABLE STYLE (MATCH PROJECTS)
-=============================== */
-
-/* Rounded card container */
-:host ::ng-deep .crm-table.p-datatable {
-  border-radius: 16px;
+/* ---------- TABLE BASE ---------- */
+.call-logs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
   overflow: hidden;
-  background: #ffffff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Blue header */
-:host ::ng-deep .crm-table .p-datatable-thead > tr:first-child > th {
-  background-color: #4c5db6;
+.call-logs-table th,
+.call-logs-table td {
+  padding: 14px 18px !important;
+  text-align: left;
+  font-size: 15px !important;
+}
+
+/* ---------- TABLE HEADER ---------- */
+.call-logs-table thead {
+  background-color: #3f51b5;
   color: #ffffff;
   font-weight: 600;
-  padding: 14px;
-  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
-/* Keep sort icon inline */
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.call-logs-table thead th {
   white-space: nowrap;
+  text-align: center;
+  font-size: 14px;
+  padding: 16px 18px;
 }
 
-/* Filter row */
-:host ::ng-deep .crm-table .filter-row th {
-  background-color: #dfe3f3;
-  padding: 10px;
-  border: none;
+/* ---------- TABLE BODY ---------- */
+.call-logs-table tbody tr {
+  background-color: #ffffff;
+  transition: background-color 0.3s ease;
+  height: 56px;
+  cursor: default;
 }
 
-/* Filter input */
-:host ::ng-deep .crm-table .filter-row input {
+.call-logs-table tbody tr:nth-child(even) {
+  background-color: #f2f6fc;
+}
+
+.call-logs-table tbody tr:hover {
+  background-color: #eef4ff;
+}
+
+.call-logs-table td {
+  white-space: nowrap;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ---------- TABLE WRAPPER ---------- */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 14px;
   width: 100%;
-  border-radius: 6px;
-  border: 1px solid #c5c9e6;
-  padding: 6px 10px;
-  font-size: 13px;
+}
+
+/* ---------- EMPTY STATE ---------- */
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  font-size: 15px;
+  color: #777;
+  font-style: italic;
+}
+
+/* ============================
+   PrimeNG Table – Blue Theme
+   ============================ */
+
+/* Header row */
+:host ::ng-deep .call-logs-table .p-datatable-thead > tr:first-child > th {
+  background-color: #3f51b5;
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  padding: 16px 18px !important;
+  text-align: left;
+  font-size: 14px !important;
 }
 
 /* Body rows */
-:host ::ng-deep .crm-table .p-datatable-tbody > tr {
-  background: #f7f8fc;
-  transition: background 0.2s ease;
+:host ::ng-deep .call-logs-table .p-datatable-tbody > tr {
+  background-color: #ffffff;
+  height: 56px;
 }
 
-:host ::ng-deep .crm-table .p-datatable-tbody > tr:hover {
-  background: #eef2ff;
+:host ::ng-deep .call-logs-table .p-datatable-tbody > tr:hover {
+  background-color: #f3f5ff;
 }
 
-/* Body cells */
-:host ::ng-deep .crm-table .p-datatable-tbody > tr > td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #e5e7eb;
+/* Body cells padding */
+:host ::ng-deep .call-logs-table .p-datatable-tbody > tr > td {
+  padding: 14px 18px !important;
+  font-size: 15px !important;
   vertical-align: middle;
 }
 
-/* Status tags */
-:host ::ng-deep .crm-table .p-tag {
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 12px;
+/* Pagination alignment */
+:host ::ng-deep .p-paginator {
+  border: none;
+  margin-top: 10px;
+}
+
+/* Force PrimeNG table to use full width */
+:host ::ng-deep .call-logs-table .p-datatable-table {
+  table-layout: auto;
+  width: 100%;
+}
+
+/* Force headers to stay in ONE line */
+:host ::ng-deep .call-logs-table .p-datatable-thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Same for body cells */
+:host ::ng-deep .call-logs-table .p-datatable-tbody td {
+  white-space: nowrap;
+}
+
+/* Uniform column width */
+:host ::ng-deep .call-logs-table .p-datatable-thead th,
+:host ::ng-deep .call-logs-table .p-datatable-tbody td {
+  min-width: 140px;
+}
+
+/* Wider columns for date fields */
+:host ::ng-deep .call-logs-table .p-datatable-thead th:nth-child(8),
+:host ::ng-deep .call-logs-table .p-datatable-tbody td:nth-child(8) {
+  min-width: 200px;
+}
+
+/* Make sort icons white */
+:host ::ng-deep .call-logs-table .p-sortable-column .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* Active sorted column */
+:host ::ng-deep .call-logs-table .p-sortable-column.p-highlight .p-sortable-column-icon {
+  color: #ffffff !important;
+}
+
+/* Header cell layout */
+.header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Filter icon below text */
+.filter-icon {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Make filter icon white */
+:host ::ng-deep .p-column-filter-menu-button {
+  color: #ffffff !important;
+  margin-left: 6px;
+}
+
+/* PrimeNG Tag styling */
+:host ::ng-deep .p-tag {
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media screen and (max-width: 992px) {
+  .page-container {
+    padding: 20px;
+  }
+
+  .call-logs-table th,
+  .call-logs-table td {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .page-container {
+    padding: 15px;
+  }
+
+  .call-logs-table th,
+  .call-logs-table td {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
 }

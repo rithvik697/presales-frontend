@@ -24,17 +24,17 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>First Name **</mat-label>
-        <input matInput name="firstName" required [(ngModel)]="model.firstName" />
+        <input matInput name="firstName" required [(ngModel)]="model.firstName"[disabled]="isEditMode" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Middle Name</mat-label>
-        <input matInput name="middleName" [(ngModel)]="model.middleName" />
+        <input matInput name="middleName" [(ngModel)]="model.middleName" [disabled]="isEditMode"/>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Last Name **</mat-label>
-        <input matInput name="lastName" required [(ngModel)]="model.lastName" />
+        <input matInput name="lastName" required [(ngModel)]="model.lastName"[disabled]="isEditMode" />
       </mat-form-field>
     </div>
 
@@ -42,7 +42,7 @@
     <div class="form-row">
       <div class="phone-group" [class.readonly-wrapper]="isEditMode">
         <mat-form-field appearance="outline" class="code-field">
-          <mat-select [(ngModel)]="selectedCountryCode" name="countryCode" [disabled]="isEditMode">
+          <mat-select [(ngModel)]="selectedCountryCode" name="countryCode">
             <mat-select-trigger>
               {{ selectedCountryCode.flag }} {{ selectedCountryCode.code }}
             </mat-select-trigger>
@@ -57,6 +57,7 @@
           <input matInput name="phone" required [(ngModel)]="model.phone"
                  (input)="onPhoneInput($event, true)"
                  [readonly]="isEditMode"
+                 [disabled]="isEditMode"
                  type="tel"
                  pattern="[0-9]*"
                  [maxlength]="selectedCountryCode.limit" />
@@ -71,7 +72,7 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Email</mat-label>
-        <input matInput name="email" type="email" [(ngModel)]="model.email" />
+        <input matInput name="email" type="email" [(ngModel)]="model.email"[disabled]="isEditMode" />
       </mat-form-field>
     </div>
 

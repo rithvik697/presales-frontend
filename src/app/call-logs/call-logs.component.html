@@ -7,108 +7,166 @@
     class="mb-3">
   </p-breadcrumb>
 
-  <h2 class="mb-3">Call Logs</h2>
+  <!-- Toolbar -->
+  <p-toolbar class="mb-3">
+    <div class="p-toolbar-group-left">
+      <h2 class="m-0">Call Logs</h2>
+    </div>
+  </p-toolbar>
 
-  <p-table
-    #dt
-    [value]="callLogs"
-    [paginator]="true"
-    [rows]="5"
-    [rowsPerPageOptions]="[5,10,20]"
-    [loading]="loading"
-    responsiveLayout="scroll"
-    [showCurrentPageReport]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} call logs"
-    styleClass="crm-table"
-  >
+  <!-- Scroll Wrapper -->
+  <div class="table-wrapper">
+
+    <p-table
+      #dt
+      [value]="callLogs"
+      [paginator]="true"
+      [rows]="5"
+      [rowsPerPageOptions]="[5,10,20]"
+      [loading]="loading"
+      sortMode="multiple"
+      class="call-logs-table"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    >
 
     <!-- HEADER -->
     <ng-template pTemplate="header">
       <tr>
 
+        <!-- SL NO -->
+        <th style="width:70px">#</th>
+
+        <!-- USER -->
         <th pSortableColumn="userName">
-          <div class="header-content">
-            User
+          <div class="header-cell">
+            <span>User</span>
             <p-sortIcon field="userName"></p-sortIcon>
           </div>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="userName"
+              display="menu"
+              type="text">
+            </p-columnFilter>
+          </div>
         </th>
 
+        <!-- LEAD -->
         <th pSortableColumn="leadName">
-          <div class="header-content">
-            Lead
+          <div class="header-cell">
+            <span>Lead</span>
             <p-sortIcon field="leadName"></p-sortIcon>
           </div>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="leadName"
+              display="menu"
+              type="text">
+            </p-columnFilter>
+          </div>
         </th>
 
-        <th>Phone</th>
+        <!-- PHONE -->
+        <th pSortableColumn="phoneNumber">
+          <div class="header-cell">
+            <span>Phone</span>
+            <p-sortIcon field="phoneNumber"></p-sortIcon>
+          </div>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="phoneNumber"
+              display="menu"
+              type="text">
+            </p-columnFilter>
+          </div>
+        </th>
 
+        <!-- TYPE -->
         <th pSortableColumn="callType">
-          <div class="header-content">
-            Type
+          <div class="header-cell">
+            <span>Type</span>
             <p-sortIcon field="callType"></p-sortIcon>
           </div>
-        </th>
-
-        <th>Status</th>
-
-        <th>Duration</th>
-
-        <th pSortableColumn="callTime">
-          <div class="header-content">
-            Call Time
-            <p-sortIcon field="callTime"></p-sortIcon>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="callType"
+              display="menu"
+              type="text">
+            </p-columnFilter>
           </div>
         </th>
 
-        <th>Remarks</th>
-
-      </tr>
-
-      <!-- FILTER ROW -->
-      <tr class="filter-row">
-
-        <th>
-          <input pInputText type="text"
-            placeholder="Search user"
-            (input)="dt.filter($any($event.target).value, 'userName', 'contains')" />
+        <!-- STATUS -->
+        <th pSortableColumn="callStatus">
+          <div class="header-cell">
+            <span>Status</span>
+            <p-sortIcon field="callStatus"></p-sortIcon>
+          </div>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="callStatus"
+              display="menu"
+              type="text">
+            </p-columnFilter>
+          </div>
         </th>
 
-        <th>
-          <input pInputText type="text"
-            placeholder="Search lead"
-            (input)="dt.filter($any($event.target).value, 'leadName', 'contains')" />
+        <!-- DURATION -->
+        <th pSortableColumn="callDuration">
+          <div class="header-cell">
+            <span>Duration</span>
+            <p-sortIcon field="callDuration"></p-sortIcon>
+          </div>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="callDuration"
+              display="menu"
+              type="text">
+            </p-columnFilter>
+          </div>
         </th>
 
-        <th></th>
-
-        <th>
-          <input pInputText type="text"
-            placeholder="Search type"
-            (input)="dt.filter($any($event.target).value, 'callType', 'contains')" />
+        <!-- CALL TIME -->
+        <th pSortableColumn="callTime">
+          <div class="header-cell">
+            <span>Call Time</span>
+            <p-sortIcon field="callTime"></p-sortIcon>
+          </div>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="callTime"
+              display="menu"
+              type="text">
+            </p-columnFilter>
+          </div>
         </th>
 
-        <th>
-          <input pInputText type="text"
-            placeholder="Search status"
-            (input)="dt.filter($any($event.target).value, 'callStatus', 'contains')" />
+        <!-- REMARKS -->
+        <th pSortableColumn="remarks">
+          <div class="header-cell">
+            <span>Remarks</span>
+            <p-sortIcon field="remarks"></p-sortIcon>
+          </div>
+          <div class="filter-icon">
+            <p-columnFilter
+              field="remarks"
+              display="menu"
+              type="text">
+            </p-columnFilter>
+          </div>
         </th>
-
-        <th></th>
-
-        <th>
-          <input pInputText type="text"
-            placeholder="Search time"
-            (input)="dt.filter($any($event.target).value, 'callTime', 'contains')" />
-        </th>
-
-        <th></th>
 
       </tr>
     </ng-template>
 
     <!-- BODY -->
-    <ng-template pTemplate="body" let-log>
+    <ng-template pTemplate="body" let-log let-rowIndex="rowIndex">
       <tr>
+
+        <!-- SL NO -->
+        <td>{{ dt.first + rowIndex + 1 }}</td>
+
         <td>{{ log.userName || '-' }}</td>
         <td>{{ log.leadName || '-' }}</td>
         <td>{{ log.phoneNumber || '-' }}</td>
@@ -130,12 +188,14 @@
     <!-- EMPTY STATE -->
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="8" class="text-center">
+        <td colspan="9" class="empty-state">
           No call logs found.
         </td>
       </tr>
     </ng-template>
 
   </p-table>
+
+  </div>
 
 </div>

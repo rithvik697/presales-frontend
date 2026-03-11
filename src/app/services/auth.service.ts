@@ -19,6 +19,13 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/login`, payload);
   }
 
+  changePassword(payload: {
+  old_password: string;
+  new_password: string;
+  }): Observable<any> {
+    return this.http.put(`${this.API_URL}/change-password`, payload);
+  }
+  
   saveToken(token: string) {
     localStorage.setItem('access_token', token);
   }

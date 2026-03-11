@@ -1,218 +1,296 @@
-<p-dialog [(visible)]="visible" [modal]="true" [style]="{width: '80vw', 'max-height': '90vh'}"
-    [header]="'Lead Overview'" (onHide)="close()" [draggable]="true" [resizable]="true" styleClass="lead-details-dialog"
-    appendTo="body">
+<div class="lead-details-page">
 
-    <div class="lead-details-container" *ngIf="lead">
+    <!-- ═══════ BREADCRUMB + BACK ═══════ -->
+    <div class="page-top-bar">
+        <button class="back-btn" (click)="goBack()">
+            <i class="pi pi-arrow-left"></i>
+        </button>
+        <p-breadcrumb [model]="breadcrumbItems" [home]="home" styleClass="lead-breadcrumb"></p-breadcrumb>
+    </div>
 
-        <!-- Main Content Section -->
-        <div class="main-content">
-            <!-- Header Info -->
-            <div class="header-info">
+    <!-- ═══════ LOADING ═══════ -->
+    <div class="loading-page" *ngIf="loading">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-body"></div>
+    </div>
 
-                <div class="primary-details">
-                    <div class="detail-row">
-                        <span class="label">Name</span>
-                        <span class="valueHighlight">: {{lead.name}}</span>
+    <div class="page-content" *ngIf="!loading && lead">
+
+        <!-- ═══════ HEADER CARD ═══════ -->
+        <div class="lead-header-card">
+            <div class="header-left">
+                <div class="lead-avatar">{{ getInitials(lead.name) }}</div>
+                <div class="header-info">
+                    <div class="lead-name-row">
+                        <h2 class="lead-name">{{ lead.name }}</h2>
+                        <span class="status-badge" [ngClass]="getStatusClass(lead.status)">
+                            {{ lead.status || 'New' }}
+                        </span>
                     </div>
-                    <div class="detail-row">
-                        <span class="label">Project</span>
-                        <span class="valueHighlight">: {{lead.project || 'N/A'}}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="label">Assigned To</span>
-                        <span class="valueHighlight">: {{lead.assignedTo || 'Unassigned'}}</span>
+                    <div class="lead-meta">
+                        <span class="meta-item" *ngIf="lead.phone">
+                            <i class="pi pi-phone"></i> {{ lead.phone }}
+                        </span>
+                        <span class="meta-item" *ngIf="lead.email">
+                            <i class="pi pi-envelope"></i> {{ lead.email }}
+                        </span>
+                        <span class="meta-item" *ngIf="lead.project">
+                            <i class="pi pi-building"></i> {{ lead.project }}
+                        </span>
+                        <span class="meta-item" *ngIf="lead.source">
+                            <i class="pi pi-compass"></i> {{ lead.source }}
+                        </span>
                     </div>
                 </div>
+            </div>
+            <div class="header-right">
+                <div class="lead-age-box">
+                    <span class="age-number">{{ getLeadAgeDays(lead.createdAt) }}</span>
+                    <span class="age-label">days old</span>
+                </div>
+                <button class="edit-lead-btn" (click)="editLead()" title="Edit Lead">
+                    <i class="pi pi-pencil"></i> Edit
+                </button>
+            </div>
+        </div>
 
-                <div class="secondary-details">
-                    <div class="detail-row ivr-row">
-                        <span class="icon-circle"><mat-icon>call</mat-icon></span>
-                        <span class="label">IVR</span>
-                        <span class="value ivr-value">: {{lead.phone}}</span>
+        <!-- ═══════ TAB NAV ═══════ -->
+        <div class="tab-nav">
+            <button class="tab-btn" [class.active]="activeTab === 'details'" (click)="activeTab = 'details'">
+                <i class="pi pi-id-card"></i> Lead Details
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'history'" (click)="activeTab = 'history'">
+                <i class="pi pi-history"></i> Status History
+                <span class="activity-count" *ngIf="statusHistory.length">{{ statusHistory.length }}</span>
+            </button>
+        </div>
+
+        <!-- ═══════ TAB: DETAILS ═══════ -->
+        <div class="tab-content" *ngIf="activeTab === 'details'">
+            <div class="info-section">
+                <h3 class="section-heading"><i class="pi pi-user"></i> Contact Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value">{{ lead.name }}</span>
                     </div>
-                    <div class="detail-row">
-                        <span class="label">Source</span>
-                        <span class="value-source">: {{lead.source || 'N/A'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Phone (IVR)</span>
+                        <span class="info-value phone-value"><i class="pi pi-phone"></i> {{ lead.phone }}</span>
                     </div>
-                    <div class="detail-row">
-                        <span class="label">Created Date</span>
-                        <span class="value-date">: {{lead.createdAt | date: 'yyyy-MM-dd'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Alternate Phone</span>
+                        <span class="info-value">{{ lead.alternatePhone || '—' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value email-value">{{ lead.email || '—' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Profession</span>
+                        <span class="info-value">{{ lead.profession || '—' }}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Other Details Section -->
-            <div class="other-details-section">
-                <h3>OTHER DETAILS</h3>
-                <div class="details-grid">
-                    <div class="grid-item">
-                        <span class="label">Lead Name:</span>
-                        <span class="value">{{lead.name}}</span>
+            <div class="info-section">
+                <h3 class="section-heading"><i class="pi pi-briefcase"></i> Lead Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Lead ID</span>
+                        <span class="info-value id-value">{{ lead.id || '—' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">IVR:</span>
-                        <span class="value">{{lead.phone}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Project</span>
+                        <span class="info-value project-value">{{ lead.project || '—' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Project:</span>
-                        <span class="value">{{lead.project || 'N/A'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Source</span>
+                        <span class="info-value source-value">{{ lead.source || '—' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Source:</span>
-                        <span class="value">{{lead.source || 'N/A'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Current Status</span>
+                        <span class="info-value">
+                            <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">
+                                {{ lead.status || 'New' }}
+                            </span>
+                        </span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Assigned To:</span>
-                        <span class="value">{{lead.assignedTo || 'N/A'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Assigned To</span>
+                        <span class="info-value assigned-value">{{ lead.assignedTo || 'Unassigned' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Created Date:</span>
-                        <span class="value">{{lead.createdAt | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Description</span>
+                        <span class="info-value">{{ lead.description || '—' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Created By:</span>
-                        <span class="value">{{lead.createdBy || 'Unknown'}}</span>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3 class="section-heading"><i class="pi pi-clock"></i> Audit Trail</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Created Date</span>
+                        <span class="info-value date-value">{{ lead.createdAt | date: 'dd MMM yyyy, hh:mm a' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Modified Date:</span>
-                        <span class="value">{{lead.modifiedAt | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Created By</span>
+                        <span class="info-value">{{ lead.createdBy || '—' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Modified By:</span>
-                        <span class="value">{{lead.modifiedBy || 'N/A'}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Last Modified</span>
+                        <span class="info-value date-value">{{ lead.modifiedAt | date: 'dd MMM yyyy, hh:mm a' }}</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="label">Lead Age (days):</span>
-                        <span class="value age-tag">{{getLeadAge(lead.createdAt)}}</span>
+                    <div class="info-item">
+                        <span class="info-label">Modified By</span>
+                        <span class="info-value">{{ lead.modifiedBy || '—' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Lead Age</span>
+                        <span class="info-value"><span class="age-tag">{{ getLeadAge(lead.createdAt) }}</span></span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Side Panel (Activities) -->
-        <div class="activities-panel">
-            <div class="activity-header">
-                <div class="flex flex-column">
-                    <span class="date">{{lead.createdAt | date: 'dd-MM-yyyy'}}</span>
-                    <span class="time">{{lead.createdAt | date: 'HH:mm a'}}</span>
-                </div>
-                <div class="flex align-items-center gap-2">
-                    <button class="add-activity-btn" (click)="openEdit()" title="Add Activity">
-                        <i class="pi pi-plus"></i>
-                    </button>
-                </div>
+        <!-- ═══════ TAB: STATUS HISTORY ═══════ -->
+        <div class="tab-content" *ngIf="activeTab === 'history'">
+            <div class="activity-toolbar">
+                <span class="activity-summary">
+                    <span *ngIf="loadingHistory">Loading history...</span>
+                    <span *ngIf="!loadingHistory">
+                        {{ statusHistory.length }} status change{{ statusHistory.length !== 1 ? 's' : '' }} recorded
+                    </span>
+                </span>
+                <button class="add-activity-btn" (click)="openAddDialog()">
+                    <i class="pi pi-plus"></i> Change Status
+                </button>
             </div>
 
-            <div class="activity-table-container">
-                <table class="activity-table">
-                    <thead>
-                        <tr>
-                            <th>Requirement</th>
-                            <th>Activity Type</th>
-                            <th>Activity Data</th>
-                            <th>Updated By</th>
-                            <th class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let act of activityHistory; let i = index">
-                            <td>{{act.requirement}}</td>
-                            <td>{{act.type}}</td>
-                            <td>{{act.date}}</td>
-                            <td>{{act.updatedBy}}</td>
-                            <td class="text-center">
-                                <div class="flex justify-content-center gap-1">
-                                    <button class="edit-activity-row-btn" (click)="openEdit(i)" title="Edit Activity">
-                                        <i class="pi pi-pencil"></i>
-                                    </button>
-                                    <button class="delete-activity-row-btn" (click)="confirmDelete(i)"
-                                        title="Delete Activity">
-                                        <i class="pi pi-minus"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Empty -->
+            <div class="empty-state" *ngIf="!loadingHistory && statusHistory.length === 0">
+                <i class="pi pi-inbox"></i>
+                <p>No status changes recorded yet</p>
+                <button class="add-first-btn" (click)="openAddDialog()">Log First Status Change</button>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-state" *ngIf="loadingHistory">
+                <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="activity-timeline" *ngIf="!loadingHistory && statusHistory.length > 0">
+                <div class="timeline-item" *ngFor="let entry of statusHistory">
+                    <div class="timeline-dot" [ngClass]="getDotClass(entry.new_status_name || '')"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-card-header">
+                            <div class="status-transition">
+                                <span class="activity-type-badge type-default" *ngIf="entry.old_status_name">
+                                    {{ entry.old_status_name }}
+                                </span>
+                                <i class="pi pi-arrow-right transition-arrow" *ngIf="entry.old_status_name"></i>
+                                <span class="activity-type-badge" [ngClass]="getBadgeClass(entry.new_status_name || '')">
+                                    {{ entry.new_status_name }}
+                                </span>
+                            </div>
+                            <span class="activity-date">
+                                <i class="pi pi-calendar"></i>
+                                {{ entry.changed_at | date: 'dd MMM yyyy, hh:mm a' }}
+                            </span>
+                        </div>
+                        <div class="timeline-card-body">
+                            <div class="timeline-detail" *ngIf="entry.remarks">
+                                <span class="detail-label">Remarks:</span>
+                                <span class="detail-value">{{ entry.remarks }}</span>
+                            </div>
+                            <div class="timeline-detail">
+                                <span class="detail-label">Changed by:</span>
+                                <span class="detail-value">{{ entry.changed_by_name || entry.changed_by }}</span>
+                            </div>
+                        </div>
+                        <div class="timeline-card-actions">
+                            <button class="action-btn edit-btn" (click)="openEditDialog(entry)" title="Edit Remarks">
+                                <i class="pi pi-pencil"></i>
+                            </button>
+                            <button class="action-btn delete-btn" (click)="confirmDelete(entry)" title="Delete"
+                                *ngIf="isAdmin">
+                                <i class="pi pi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</p-dialog>
+</div>
 
-<!-- EDIT ACTIVITY POPUP -->
-<p-dialog [header]="editingIndex !== null ? 'Edit Activity' : 'Add Activity'" [(visible)]="showEditActivity"
-    [modal]="true" [style]="{width: '500px'}" appendTo="body" styleClass="edit-activity-dialog">
-    <div class="edit-activity-container" *ngIf="lead">
-        <div class="edit-form-grid">
-            <div class="form-field">
-                <label>Requirement</label>
-                <input type="text" [(ngModel)]="editData.requirement" [disabled]="true"
-                    class="p-inputtext readonly-input" />
-            </div>
-            <div class="form-field">
-                <label>Activity Type</label>
-                <p-dropdown [options]="activityTypes" [(ngModel)]="editData.activityType" optionLabel="label"
-                    optionValue="value" styleClass="w-full" appendTo="body" [filter]="true"
-                    placeholder="Select Activity Type"></p-dropdown>
-            </div>
-            <div class="form-field">
-                <label>Activity Date</label>
-                <input type="date" [(ngModel)]="editData.activityDate" [disabled]="true"
-                    class="p-inputtext readonly-input" />
-            </div>
-            <div class="form-field">
-                <label>Updated By</label>
-                <p-dropdown [options]="employeeOptions" [(ngModel)]="editData.updatedBy" optionLabel="label"
-                    optionValue="value" styleClass="w-full" appendTo="body" [filter]="true"
-                    placeholder="Select User"></p-dropdown>
-            </div>
+<!-- ═══════ CHANGE STATUS DIALOG ═══════ -->
+<p-dialog header="Change Lead Status" [(visible)]="showAddDialog"
+    [modal]="true" [style]="{width: '480px'}" appendTo="body" styleClass="edit-activity-dialog">
+    <div class="dialog-form">
+        <div class="form-field mb-3">
+            <label>New Status *</label>
+            <p-dropdown [options]="statusOptions" [(ngModel)]="newStatusId"
+                optionLabel="status_name" optionValue="status_id"
+                styleClass="w-full" appendTo="body" [filter]="true"
+                placeholder="Select status to move to"></p-dropdown>
         </div>
-
-        <div class="lead-summary-section">
-            <h4 class="section-title">Lead Details</h4>
+        <div class="form-field mb-3">
+            <label>Remarks</label>
+            <textarea [(ngModel)]="newRemarks" class="p-inputtext w-full" rows="3"
+                placeholder="Optional notes about this change"></textarea>
+        </div>
+        <div class="lead-summary-section" *ngIf="lead">
+            <h4 class="section-title">Lead Summary</h4>
             <div class="summary-grid">
-                <div class="summary-item">
-                    <label>Name</label>
-                    <span>: {{lead.name}}</span>
+                <div class="summary-item"><label>Name</label><span>{{ lead.name }}</span></div>
+                <div class="summary-item"><label>Phone</label><span>{{ lead.phone }}</span></div>
+                <div class="summary-item"><label>Current Status</label>
+                    <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A' }}</span>
                 </div>
-                <div class="summary-item">
-                    <label>Phone</label>
-                    <span>: {{lead.phone}}</span>
-                </div>
-                <div class="summary-item">
-                    <label>Project</label>
-                    <span>: {{lead.project || 'N/A'}}</span>
-                </div>
-                <div class="summary-item">
-                    <label>Assigned To</label>
-                    <span>: {{lead.assignedTo || 'Unassigned'}}</span>
-                </div>
+                <div class="summary-item"><label>Assigned To</label><span>{{ lead.assignedTo || 'Unassigned' }}</span></div>
             </div>
         </div>
-
         <div class="form-actions mt-4">
-            <button pButton label="Cancel" icon="pi pi-times" (click)="showEditActivity=false"
+            <button pButton label="Cancel" icon="pi pi-times" (click)="showAddDialog=false"
                 class="p-button-text p-button-secondary"></button>
-            <button pButton label="Save Changes" icon="pi pi-check" (click)="saveActivity()"
+            <button pButton label="Update Status" icon="pi pi-check" (click)="saveNewStatus()"
                 class="p-button-success"></button>
         </div>
     </div>
 </p-dialog>
 
-<!-- DELETE CONFIRMATION DIALOG -->
-<p-dialog header="Confirm Delete?" [(visible)]="showDeleteConfirmation" [modal]="true" [style]="{width: '350px'}"
-    appendTo="body" styleClass="delete-confirm-dialog" [draggable]="false" [resizable]="false">
-    <div class="delete-confirm-body text-center py-3">
-        <div class="flex justify-content-center mb-3">
-            <i class="pi pi-exclamation-triangle text-warning" style="font-size: 3rem"></i>
+<!-- ═══════ EDIT REMARKS DIALOG ═══════ -->
+<p-dialog header="Edit Remarks" [(visible)]="showEditDialog"
+    [modal]="true" [style]="{width: '450px'}" appendTo="body" styleClass="edit-activity-dialog">
+    <div class="dialog-form">
+        <div class="form-field">
+            <label>Remarks</label>
+            <textarea [(ngModel)]="editRemarks" class="p-inputtext w-full" rows="4"></textarea>
         </div>
-        <p class="m-0 font-semibold text-lg text-700">Are you sure you want to delete this activity?</p>
+        <div class="form-actions mt-4">
+            <button pButton label="Cancel" icon="pi pi-times" (click)="showEditDialog=false"
+                class="p-button-text p-button-secondary"></button>
+            <button pButton label="Save" icon="pi pi-check" (click)="saveEditRemarks()"
+                class="p-button-success"></button>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- ═══════ DELETE CONFIRM ═══════ -->
+<p-dialog header="Confirm Delete" [(visible)]="showDeleteConfirmation" [modal]="true"
+    [style]="{width: '400px'}" appendTo="body" styleClass="delete-confirm-dialog">
+    <div class="delete-confirm-content">
+        <i class="pi pi-exclamation-triangle warning-icon"></i>
+        <p>Are you sure you want to delete this history entry?</p>
+        <p class="sub-text">This action cannot be undone.</p>
     </div>
     <ng-template pTemplate="footer">
-        <div class="flex justify-content-center gap-2 w-full">
-            <button pButton label="No" icon="pi pi-times" (click)="showDeleteConfirmation=false"
-                class="p-button-text p-button-secondary"></button>
-            <button pButton label="Yes" icon="pi pi-check" (click)="deleteActivity()" class="p-button-danger"></button>
-        </div>
+        <button pButton label="Cancel" icon="pi pi-times" (click)="showDeleteConfirmation=false"
+            class="p-button-text p-button-secondary"></button>
+        <button pButton label="Delete" icon="pi pi-trash" (click)="deleteEntry()"
+            class="p-button-danger"></button>
     </ng-template>
 </p-dialog>

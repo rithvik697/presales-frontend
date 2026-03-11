@@ -10,9 +10,12 @@ export interface Lead {
   project?: string;
   projectId?: string; 
   source?: string;
+  sourceId?: string;
   profession?: string;
   description?: string;
   assignedTo?: string;
+  assignedToId?: string;
+  statusId?: string;
   status?: string;
   createdAt?: string;
   createdBy?: string;     

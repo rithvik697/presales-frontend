@@ -63,32 +63,37 @@
         </div>
       </div>
 
-      <!-- SETTINGS -->
-      <mat-icon class="icon">settings</mat-icon>
-
-      <!-- PROFILE -->
+      <!-- PROFILE DROPDOWN -->
       <div
         *ngIf="username"
         class="profile-container"
-        (click)="showLogout = !showLogout"
+        (click)="profileMenu.toggle($event)"
       >
         <div class="profile-section">
-          <span class="profile-text">{{ username }}</span>
-          <img
-            src="assets/profile.avif"
-            alt="Profile"
-            class="imageprofile"
-          />
+          <mat-icon class="profile-icon">account_circle</mat-icon>
+          <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
         </div>
 
-        <div
-          *ngIf="showLogout"
-          class="logout-dropdown"
+        <!-- PrimeNG Menu -->
+        <p-menu
+          #profileMenu
+          [model]="profileMenuItems"
+          [popup]="true"
+          appendTo="body"
+          styleClass="profile-dropdown-menu"
         >
-          <div (click)="logout(); $event.stopPropagation()">
-            Logout
-          </div>
-        </div>
+          <ng-template pTemplate="start">
+            <div class="profile-menu-header">
+              <div class="user-info">
+                <mat-icon class="user-avatar">account_circle</mat-icon>
+                <div class="user-details">
+                  <span class="user-name">{{ fullName || username }}</span>
+                  <span class="user-role">{{ role || 'User' }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-menu>
       </div>
 
     </mat-toolbar>

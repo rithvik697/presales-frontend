@@ -40,6 +40,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { MenuModule } from 'primeng/menu';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -64,6 +65,7 @@ import { ProjectRegistrationComponent } from './projects/project-registration/pr
 import { CallLogsComponent } from './call-logs/call-logs.component';
 import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
+import { ProfileComponent } from './profile/profile.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
@@ -92,6 +94,8 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     CallLogsComponent,
     FilterByPipe,
     ProjectDetailsComponent,
+    ProfileComponent,
+  
     AuditTrailComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent
@@ -136,6 +140,8 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     InputNumberModule,
     PanelModule,
     BreadcrumbModule,
+    MenuModule,
+    TooltipModule,
     ToastModule,
     ConfirmDialogModule,
 

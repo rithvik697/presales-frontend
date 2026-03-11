@@ -1,7 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Lead } from '../../models/lead.model';
+import { LeadStatusHistory, StatusOption } from '../../models/lead-status-history.model';
 import { AuthService } from '../../services/auth.service';
 import { LeadsService } from '../../services/leads.service';
+import { ToastrService } from 'ngx-toastr';
+import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-lead-details',
@@ -9,146 +13,236 @@ import { LeadsService } from '../../services/leads.service';
     styleUrls: ['./lead-details.component.css']
 })
 export class LeadDetailsComponent implements OnInit {
-    @Input() lead: Lead | null = null;
-    @Input() visible: boolean = false;
-    @Output() visibleChange = new EventEmitter<boolean>();
 
-    showEditActivity: boolean = false;
+    lead: Lead | null = null;
+    loading: boolean = true;
+    leadId: string = '';
+
+    // Tabs
+    activeTab: 'details' | 'history' = 'details';
+
+    // Status history
+    statusHistory: LeadStatusHistory[] = [];
+    statusOptions: StatusOption[] = [];
+    loadingHistory: boolean = false;
+
+    // Dialogs
+    showAddDialog: boolean = false;
+    showEditDialog: boolean = false;
     showDeleteConfirmation: boolean = false;
-    activityToDeleteIndex: number | null = null;
-    editingIndex: number | null = null;
+    entryToDelete: LeadStatusHistory | null = null;
+    entryToEdit: LeadStatusHistory | null = null;
+
+    // Form
+    newStatusId: string = '';
+    newRemarks: string = '';
+    editRemarks: string = '';
+
+    // Auth
     isAdmin: boolean = false;
     currentUser: string = '';
 
-    activityHistory = [
-        { requirement: 'Not Found', type: 'Site Visit done', date: '2024-12-03', updatedBy: 'Prakash' }
-    ];
-
-    activityTypes: any[] = [
-        { label: 'New Enquiry', value: 'New Enquiry' },
-        { label: 'Phone Call', value: 'Phone Call' },
-        { label: 'WhatsApp', value: 'WhatsApp' },
-        { label: 'Offline Lead', value: 'Offline Lead' },
-        { label: 'NRI', value: 'NRI' },
-        { label: 'Re-Enquire', value: 'Re-Enquire' },
-        { label: 'Expected Site Visit', value: 'Expected Site Visit' },
-        { label: 'Site Visit Done', value: 'Site Visit Done' },
-        { label: 'Expected Office Visit', value: 'Expected Office Visit' },
-        { label: 'Office Visit Done', value: 'Office Visit Done' },
-        { label: 'Pipeline', value: 'Pipeline' },
-        { label: 'Deal Closed', value: 'Deal Closed' },
-        { label: 'Sq. Yards Concern', value: 'Sq. Yards Concern' },
-        { label: 'Sq. Feet Concern', value: 'Sq. Feet Concern' },
-        { label: 'Distance Concern', value: 'Distance Concern' },
-        { label: 'OTP', value: 'OTP' },
-        { label: '50:50', value: '50:50' },
-        { label: 'Pre-Launch', value: 'Pre-Launch' },
-        { label: 'Not Answered', value: 'Not Answered' },
-        { label: 'Not Interested', value: 'Not Interested' },
-        { label: 'Spam', value: 'Spam' },
-        { label: 'Low Budget', value: 'Low Budget' },
-        { label: 'OOS', value: 'OOS' },
-        { label: 'Old Leads', value: 'Old Leads' }
-    ];
-    employeeOptions: any[] = [];
-
-    editData = {
-        requirement: 'Not Found',
-        activityType: 'Site Visit done',
-        activityDate: new Date().toISOString().split('T')[0],
-        updatedBy: ''
-    };
+    // Breadcrumb
+    breadcrumbItems: MenuItem[] = [];
+    home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
     constructor(
+        private route: ActivatedRoute,
+        private router: Router,
         private authService: AuthService,
-        private leadsService: LeadsService
-    ) { }
+        private leadsService: LeadsService,
+        private toastr: ToastrService
+    ) {}
 
     ngOnInit(): void {
         this.isAdmin = this.authService.getRole() === 'ADMIN';
-        this.currentUser = this.authService.getUsername() || 'System';
-        this.loadEmployees();
+        this.currentUser = this.authService.getUsername() || '';
+
+        this.leadId = this.route.snapshot.paramMap.get('id') || '';
+        if (!this.leadId) {
+            this.router.navigate(['/leads']);
+            return;
+        }
+
+        this.loadLead();
+        this.loadStatusOptions();
+        this.loadHistory();
     }
 
-    loadEmployees() {
-        this.leadsService.getEmployees().subscribe({
-            next: (res: any[]) => {
-                this.employeeOptions = res.map(e => ({ label: e.full_name, value: e.full_name }));
+    // ─── Data Loading ───
+
+    loadLead(): void {
+        this.loading = true;
+        this.leadsService.getById(this.leadId).subscribe({
+            next: (lead) => {
+                this.lead = lead;
+                this.loading = false;
+                this.breadcrumbItems = [
+                    { label: 'Leads', routerLink: '/leads' },
+                    { label: lead.name || 'Lead Details' }
+                ];
             },
-            error: () => this.employeeOptions = [{ label: this.currentUser, value: this.currentUser }]
+            error: () => {
+                this.toastr.error('Failed to load lead');
+                this.loading = false;
+                this.router.navigate(['/leads']);
+            }
         });
     }
 
-    openEdit(index?: number) {
-        const today = new Date().toISOString().split('T')[0];
-
-        if (index !== undefined) {
-            // Edit Mode
-            this.editingIndex = index;
-            const act = this.activityHistory[index];
-            this.editData = {
-                requirement: act.requirement,
-                activityType: act.type,
-                activityDate: act.date,
-                updatedBy: act.updatedBy
-            };
-        } else {
-            // Add Mode
-            this.editingIndex = null;
-            this.editData = {
-                requirement: this.lead?.description || 'New Requirement',
-                activityType: 'Site Visit Done',
-                activityDate: today,
-                updatedBy: this.currentUser
-            };
-        }
-        this.showEditActivity = true;
+    loadStatusOptions(): void {
+        // Uses the EXISTING endpoint: GET /api/leads/statuses
+        this.leadsService.getStatuses().subscribe({
+            next: (options) => this.statusOptions = options,
+            error: () => this.statusOptions = []
+        });
     }
 
-    saveActivity() {
-        const activity = {
-            requirement: this.editData.requirement,
-            type: this.editData.activityType,
-            date: this.editData.activityDate,
-            updatedBy: this.editData.updatedBy
-        };
-
-        if (this.editingIndex !== null) {
-            // Update existing
-            this.activityHistory[this.editingIndex] = activity;
-        } else {
-            // Add new
-            this.activityHistory.unshift(activity);
-        }
-
-        this.showEditActivity = false;
-        this.editingIndex = null;
+    loadHistory(): void {
+        if (!this.leadId) return;
+        this.loadingHistory = true;
+        this.leadsService.getStatusHistory(this.leadId).subscribe({
+            next: (data) => {
+                this.statusHistory = data;
+                this.loadingHistory = false;
+            },
+            error: () => {
+                this.statusHistory = [];
+                this.loadingHistory = false;
+            }
+        });
     }
 
-    confirmDelete(index: number) {
-        this.activityToDeleteIndex = index;
-        this.showDeleteConfirmation = true;
+    // ─── Helpers ───
+
+    getInitials(name: string): string {
+        if (!name) return '?';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        return name.substring(0, 2).toUpperCase();
     }
 
-    deleteActivity() {
-        if (this.activityToDeleteIndex !== null) {
-            this.activityHistory.splice(this.activityToDeleteIndex, 1);
-            this.activityToDeleteIndex = null;
-            this.showDeleteConfirmation = false;
-        }
-    }
-
-    close() {
-        this.visible = false;
-        this.visibleChange.emit(false);
+    getLeadAgeDays(createdAt: string | undefined): number {
+        if (!createdAt) return 0;
+        return Math.ceil(Math.abs(new Date().getTime() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24));
     }
 
     getLeadAge(createdAt: string | undefined): string {
-        if (!createdAt) return '0';
-        const createdDate = new Date(createdAt);
-        const today = new Date();
-        const diffTime = Math.abs(today.getTime() - createdDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return `${diffDays} days`;
+        const days = this.getLeadAgeDays(createdAt);
+        return `${days} day${days !== 1 ? 's' : ''}`;
+    }
+
+    getStatusClass(status: string | undefined): string {
+        if (!status) return 'status-default';
+        const s = status.toLowerCase();
+        if (s.includes('new') || s.includes('enquiry')) return 'status-new';
+        if (s.includes('contact') || s.includes('active') || s.includes('call')) return 'status-active';
+        if (s.includes('pipeline') || s.includes('visit') || s.includes('expected')) return 'status-pipeline';
+        if (s.includes('closed') || s.includes('deal') || s.includes('won')) return 'status-closed';
+        if (s.includes('lost') || s.includes('spam') || s.includes('not interested')) return 'status-lost';
+        return 'status-default';
+    }
+
+    getDotClass(name: string): string {
+        const s = (name || '').toLowerCase();
+        if (s.includes('visit')) return 'dot-visit';
+        if (s.includes('call') || s.includes('phone') || s.includes('whatsapp')) return 'dot-call';
+        if (s.includes('enquir') || s.includes('new')) return 'dot-enquiry';
+        if (s.includes('closed') || s.includes('deal') || s.includes('pipeline')) return 'dot-closed';
+        if (s.includes('concern') || s.includes('spam') || s.includes('not')) return 'dot-concern';
+        return 'dot-default';
+    }
+
+    getBadgeClass(name: string): string {
+        const s = (name || '').toLowerCase();
+        if (s.includes('visit')) return 'type-visit';
+        if (s.includes('call') || s.includes('phone') || s.includes('whatsapp')) return 'type-call';
+        if (s.includes('enquir') || s.includes('new')) return 'type-enquiry';
+        if (s.includes('closed') || s.includes('deal') || s.includes('pipeline')) return 'type-closed';
+        if (s.includes('concern') || s.includes('spam') || s.includes('not')) return 'type-concern';
+        return 'type-default';
+    }
+
+    // ─── Navigation ───
+
+    goBack(): void {
+        this.router.navigate(['/leads']);
+    }
+
+    editLead(): void {
+        this.router.navigate(['/leads/edit', this.leadId]);
+    }
+
+    // ─── Add Status Change ───
+
+    openAddDialog(): void {
+        this.newStatusId = '';
+        this.newRemarks = '';
+        this.showAddDialog = true;
+    }
+
+    saveNewStatus(): void {
+        if (!this.leadId || !this.newStatusId) {
+            this.toastr.warning('Please select a status');
+            return;
+        }
+        this.leadsService.createStatusChange(this.leadId, {
+            new_status_id: this.newStatusId,
+            remarks: this.newRemarks
+        }).subscribe({
+            next: () => {
+                this.toastr.success('Status updated successfully');
+                this.showAddDialog = false;
+                this.loadLead();    // Refresh lead to show new current status
+                this.loadHistory(); // Refresh timeline
+            },
+            error: (err) => this.toastr.error(err?.error?.error || 'Failed to update status')
+        });
+    }
+
+    // ─── Edit Remarks ───
+
+    openEditDialog(entry: LeadStatusHistory): void {
+        this.entryToEdit = entry;
+        this.editRemarks = entry.remarks || '';
+        this.showEditDialog = true;
+    }
+
+    saveEditRemarks(): void {
+        if (!this.leadId || !this.entryToEdit) return;
+        this.leadsService.updateStatusHistory(
+            this.leadId, this.entryToEdit.history_id, { remarks: this.editRemarks }
+        ).subscribe({
+            next: () => {
+                this.toastr.success('Remarks updated');
+                this.showEditDialog = false;
+                this.entryToEdit = null;
+                this.loadHistory();
+            },
+            error: () => this.toastr.error('Failed to update remarks')
+        });
+    }
+
+    // ─── Delete ───
+
+    confirmDelete(entry: LeadStatusHistory): void {
+        this.entryToDelete = entry;
+        this.showDeleteConfirmation = true;
+    }
+
+    deleteEntry(): void {
+        if (!this.leadId || !this.entryToDelete) return;
+        this.leadsService.deleteStatusHistory(this.leadId, this.entryToDelete.history_id).subscribe({
+            next: () => {
+                this.toastr.success('Entry deleted');
+                this.showDeleteConfirmation = false;
+                this.entryToDelete = null;
+                this.loadHistory();
+            },
+            error: (err) => {
+                this.toastr.error(err?.error?.error || 'Failed to delete');
+                this.showDeleteConfirmation = false;
+            }
+        });
     }
 }

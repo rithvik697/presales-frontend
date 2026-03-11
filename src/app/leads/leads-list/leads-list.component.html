@@ -1,24 +1,37 @@
-<!-- Main Layout using PrimeNG Card/Panel structure -->
-<div class="grid">
-  <div class="col-12">
-    <div class="card px-4 py-4">
-      <!-- Toolbar -->
-      <p-toolbar styleClass="mb-4 gap-2">
-        <ng-template pTemplate="left">
-          <h2 class="m-0 font-bold text-primary">Leads Management</h2>
-        </ng-template>
+<div class="page-container">
 
-        <ng-template pTemplate="right">
-          <div class="flex gap-2">
-            <!-- Toggle Filters -->
-            <button pButton pRipple label="Lead-Filter View" icon="pi pi-search" class="p-button-help"
-              (click)="toggleFilterView()"></button>
-            <!-- Create Lead -->
-            <button pButton pRipple label="Create Lead" icon="pi pi-plus" class="p-button-primary"
-              (click)="goToCreate()"></button>
-          </div>
-        </ng-template>
-      </p-toolbar>
+  <!-- Breadcrumb -->
+  <p-breadcrumb
+    [model]="breadcrumbItems"
+    [home]="home"
+    class="mb-3">
+  </p-breadcrumb>
+
+  <!-- Toolbar -->
+  <p-toolbar class="mb-3">
+    <div class="p-toolbar-group-left">
+      <h2 class="m-0">Leads Management</h2>
+    </div>
+
+    <div class="p-toolbar-group-right">
+      <div class="flex gap-2">
+        <button
+          pButton
+          label="Lead-Filter View"
+          icon="pi pi-search"
+          class="p-button-help"
+          (click)="toggleFilterView()">
+        </button>
+        <button
+          pButton
+          label="Create Lead"
+          icon="pi pi-plus"
+          class="p-button-primary"
+          (click)="goToCreate()">
+        </button>
+      </div>
+    </div>
+  </p-toolbar>
 
       <!-- Filter Panel -->
       <div *ngIf="showFilterView" class="card mb-4 surface-ground border-round-md p-3">
@@ -71,35 +84,34 @@
               <button pButton label="Apply Filters" icon="pi pi-check" class="p-button-success"
                 (click)="applyFilters()"></button>
               <button pButton label="Clear Filters" icon="pi pi-times" class="p-button-secondary p-button-outlined"
-                (click)="clearFilters(dt)"></button>
+                (click)="clearFilters()"></button>
             </div>
           </div>
         </form>
       </div>
 
-      <!-- Leads Table -->
-      <p-table #dt [value]="filteredLeads" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['name','phone','source','status']" [rowHover]="true" dataKey="id"
-        styleClass="p-datatable-striped" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [showCurrentPageReport]="true" responsiveLayout="scroll" [loading]="loading">
+  <!-- Scroll Wrapper -->
+  <div class="table-wrapper">
+
+    <p-table
+      #dt
+      *ngIf="!loading"
+      [value]="filteredLeads"
+      [rows]="10"
+      [paginator]="true"
+      sortMode="multiple"
+      class="leads-table"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    >
 
         <ng-template pTemplate="caption">
           <div class="flex align-items-center justify-content-between">
             <div class="flex align-items-center gap-2">
-              <!-- Search Bar with Clear -->
-              <span class="p-input-icon-left mr-2">
-                <i class="pi pi-search"></i>
-                <input pInputText type="text" [(ngModel)]="filterText"
-                  (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Global Search..." />
-              </span>
-              <button pButton label="Clear Filters" icon="pi pi-filter-slash"
-                class="p-button-outlined p-button-sm p-button-secondary" (click)="clearFilters(dt)"
-                pTooltip="Reset all search filters" tooltipPosition="bottom"
-                *ngIf="filterText || filterForm.dirty"></button>
+              <h5 class="m-0">Manage Leads</h5>
             </div>
 
             <div class="flex align-items-center gap-2">
-              <h5 class="m-0 hidden md:block">Manage Leads</h5>
               <!-- Dynamic Column Picker -->
               <button pButton icon="pi pi-list" class="p-button-rounded p-button-info p-button-text"
                 (click)="toggleColumnPicker()" title="Show/Hide Columns"></button>
@@ -132,6 +144,9 @@
                 <!-- Status with Tag -->
                 <p-tag *ngSwitchCase="'status'" [value]="lead.status" [severity]="getSeverity(lead.status)"></p-tag>
 
+                <!-- Remarks/Description -->
+                <span *ngSwitchCase="'description'">{{ lead.description || '-' }}</span>
+
                 <!-- Dates -->
                 <span *ngSwitchCase="'createdAt'">{{ lead.createdAt | date:'dd-MM-yyyy' }}</span>
                 <span *ngSwitchCase="'modifiedAt'">{{ lead.modifiedAt ? (lead.modifiedAt | date:'dd-MM-yyyy') : '-'
@@ -155,12 +170,11 @@
             <td [attr.colspan]="activeCols.length + 1" class="text-center p-4">No leads found.</td>
           </tr>
         </ng-template>
-      </p-table>
-    </div>
+
+    </p-table>
+
   </div>
 
-  <!-- Lead Overview Popup -->
-  <app-lead-details [lead]="selectedLead" [(visible)]="showLeadDetails"></app-lead-details>
 
   <!-- Column Picker Dialog -->
   <p-dialog header="Choose Display Columns" [(visible)]="showColumnPicker" [modal]="true" [style]="{width: '350px'}"

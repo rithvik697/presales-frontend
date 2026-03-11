@@ -23,8 +23,8 @@ export class AppComponent implements OnInit, OnDestroy {
   isDesktop: boolean = window.innerWidth > 768;
   selectedItem: string = '';
   username: string | null = null;
+  fullName: string | null = null;
   role: string | null = null;
-  showLogout: boolean = false;
   isLoginPage: boolean = false;
   isChangePasswordPage: boolean = false;
   isForgotPasswordPage:boolean = false;
@@ -60,9 +60,37 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((e: any) => {
 
-        this.username = localStorage.getItem('username');
+  // Initialize profile menu items
+  this.profileMenuItems = [
+    {
+      label: 'Profile',
+      icon: 'pi pi-user',
+      // TODO: Implement profile page
+      command: () => this.router.navigate(['/profile'])
+    },
+    {
+      label: 'Settings',
+      icon: 'pi pi-cog',
+      // TODO: Implement settings page
+      command: () => {}
+    },
+    {
+      separator: true
+    },
+    {
+      label: 'Logout',
+      icon: 'pi pi-sign-out',
+      command: () => this.logout()
+    }
+  ];
 
-        const url: string = e.urlAfterRedirects || e.url;
+  this.routerSub = this.router.events
+    .pipe(filter((e) => e instanceof NavigationEnd))
+    .subscribe((e: any) => {
+
+      this.username = localStorage.getItem('username');
+      this.fullName = localStorage.getItem('fullName');
+      this.role = localStorage.getItem('role');
 
         this.isLoginPage = url.startsWith('/login');
         this.isChangePasswordPage = url.startsWith('/change-password');
@@ -137,9 +165,14 @@ export class AppComponent implements OnInit, OnDestroy {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
+    localStorage.removeItem('fullName');
+    localStorage.removeItem('role');
     this.username = null;
+    this.fullName = null;
+    this.role = null;
     this.router.navigate(['/login']);
   }
+
 
   toggleSidebar(sidenav: MatSidenav): void {
     sidenav.toggle();

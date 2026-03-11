@@ -50,15 +50,19 @@ export class ProjectListComponent implements OnInit {
     this.router.navigate(['/projects/register']);
   }
 
-  statusSeverityMap: { [key: string]: string } = {
-  RERA_APPROVED: 'success',   // Green
-  COMPLETED: 'info',          // Blue
-  PRE_LAUNCH: 'warning'       // Orange
-  };
-
   getStatusSeverity(status: string): string {
-    return this.statusSeverityMap[status] || 'secondary';
+    switch (status) {
+      case 'RERA_APPROVED':
+        return 'success';    // Green
+      case 'COMPLETED':
+        return 'info';       // Blue
+      case 'PRE_LAUNCH':
+        return 'warning';    // Orange
+      default:
+        return 'secondary';  // Gray
+    }
   }
+
   openEditDialog(project: any) {
   this.router.navigate(['/projects/edit', project.project_id]);
 }
