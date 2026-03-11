@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 /* ------------------ PrimeNG ------------------ */
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { PasswordModule} from 'primeng/password';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
@@ -70,6 +71,8 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
 /* ------------------ Interceptors ------------------ */
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AuditTrailComponent } from './audit-trail/audit-trail.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +92,9 @@ import { AuditTrailComponent } from './audit-trail/audit-trail.component';
     CallLogsComponent,
     FilterByPipe,
     ProjectDetailsComponent,
-    AuditTrailComponent
+    AuditTrailComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -114,6 +119,7 @@ import { AuditTrailComponent } from './audit-trail/audit-trail.component';
     /* PrimeNG */
     TableModule,
     ButtonModule,
+    PasswordModule,
     TagModule,
     ToolbarModule,
     InputTextModule,
