@@ -11,32 +11,70 @@ export class ProjectService {
 
   constructor(private http: HttpClient) {}
 
+  // -----------------------------
+  // Create Project
+  // -----------------------------
   createProject(payload: any): Observable<any> {
+
+    const username = localStorage.getItem('username');
+
+    payload.created_by = username || 'ADMIN';
+
     return this.http.post(this.baseUrl, payload);
   }
 
+  // -----------------------------
+  // Get All Projects
+  // -----------------------------
   getProjects(): Observable<any[]> {
     return this.http.get<any[]>(this.baseUrl);
   }
-  
+
+  // -----------------------------
+  // Get Project By ID
+  // -----------------------------
   getProjectById(id: string): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/${id}`);
+    return this.http.get<any>(`${this.baseUrl}/${id}`);
   }
-  
+
+  // -----------------------------
+  // Update Project Details
+  // -----------------------------
   updateProject(id: string, payload: any): Observable<any> {
-  return this.http.put<any>(`${this.baseUrl}/${id}`, payload);
+
+    const username = localStorage.getItem('username');
+
+    payload.modified_by = username || 'ADMIN';
+
+    return this.http.put<any>(`${this.baseUrl}/${id}`, payload);
   }
-  getProjectStatusOptions() {
-  return this.http.get<any[]>(`${this.baseUrl}/status-options`);
-}
-updateProjectStatus(id: string, status: string) {
-  return this.http.put(`${this.baseUrl}/${id}/status`, { status });
-}
-// -----------------------------
-// Get Project Type Options
-// -----------------------------
-getProjectTypeOptions() {
-  return this.http.get<any[]>(`${this.baseUrl}/type-options`);
-}
+
+  // -----------------------------
+  // Update Project Status
+  // -----------------------------
+  updateProjectStatus(id: string, status: string): Observable<any> {
+
+    const username = localStorage.getItem('username');
+
+    return this.http.put<any>(`${this.baseUrl}/${id}/status`, {
+      status: status,
+      modified_by: username || 'ADMIN'
+    });
+
+  }
+
+  // -----------------------------
+  // Get Status Options
+  // -----------------------------
+  getProjectStatusOptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/status-options`);
+  }
+
+  // -----------------------------
+  // Get Project Type Options
+  // -----------------------------
+  getProjectTypeOptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/type-options`);
+  }
 
 }

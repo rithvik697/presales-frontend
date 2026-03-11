@@ -1,5 +1,4 @@
-
-  <div class="users-list-container">
+<div class="users-list-container">
 
   <!-- Header -->
   <div class="users-header">
@@ -11,252 +10,160 @@
   <div class="table-wrapper">
 
     <p-table
-  #dt
-  [value]="users"
-  [paginator]="true"
-  [rows]="5"
-  sortMode="multiple"
-  class="users-table"
-  [showCurrentPageReport]="true"
-  currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
->
+      #dt
+      [value]="users"
+      [paginator]="true"
+      [rows]="5"
+      sortMode="multiple"
+      class="users-table"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    >
 
-  <!-- HEADER -->
-  <ng-template pTemplate="header">
-    <tr>
+      <!-- ================= HEADER ================= -->
+      <ng-template pTemplate="header">
+        <tr>
 
-      <!-- SL NO -->
-      <th style="width:70px">#</th>
+          <th style="width:70px">#</th>
 
-      <!-- EMPLOYEE ID -->
-      <th pSortableColumn="emp_id">
+          <th pSortableColumn="emp_id">
+            <div class="header-cell">
+              <span>Employee ID</span>
+              <p-sortIcon field="emp_id"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="emp_id" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-  <div class="header-cell">
-    <span>Employee ID</span>
-    <p-sortIcon field="emp_id"></p-sortIcon>
-  </div>
+          <!-- ✅ FULL NAME COLUMN -->
+          <th pSortableColumn="emp_first_name">
+            <div class="header-cell">
+              <span>Full Name</span>
+              <p-sortIcon field="emp_first_name"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="emp_first_name" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-  <div class="filter-icon">
-    <p-columnFilter
-      field="emp_id"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
+          <th pSortableColumn="role_id">
+            <div class="header-cell">
+              <span>Role</span>
+              <p-sortIcon field="role_id"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="role_id" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-</th>
+          <th pSortableColumn="emp_status">
+            <div class="header-cell">
+              <span>Status</span>
+              <p-sortIcon field="emp_status"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="emp_status" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-      <!-- FIRST NAME -->
-      <th pSortableColumn="emp_first_name">
+          <th pSortableColumn="phone_num">
+            <div class="header-cell">
+              <span>Phone</span>
+              <p-sortIcon field="phone_num"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="phone_num" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-  <div class="header-cell">
-    <span>First Name</span>
-    <p-sortIcon field="emp_first_name"></p-sortIcon>
-  </div>
+          <th pSortableColumn="created_by">
+            <div class="header-cell">
+              <span>Created By</span>
+              <p-sortIcon field="created_by"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="created_by" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-  <div class="filter-icon">
-    <p-columnFilter
-      field="emp_first_name"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
+          <th pSortableColumn="created_on">
+            <div class="header-cell">
+              <span>Created On</span>
+              <p-sortIcon field="created_on"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="created_on" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-</th>
+          <th pSortableColumn="modified_on">
+            <div class="header-cell">
+              <span>Modified On</span>
+              <p-sortIcon field="modified_on"></p-sortIcon>
+            </div>
+            <div class="filter-icon">
+              <p-columnFilter field="modified_on" display="menu" type="text"></p-columnFilter>
+            </div>
+          </th>
 
-      <!-- MIDDLE NAME -->
-      <th pSortableColumn="emp_middle_name">
+          <th style="width:100px; text-align:center">Action</th>
 
-  <div class="header-cell">
-    <span>Middle Name</span>
-    <p-sortIcon field="emp_middle_name"></p-sortIcon>
-  </div>
+        </tr>
+      </ng-template>
 
-  <div class="filter-icon">
-    <p-columnFilter
-      field="emp_middle_name"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
+      <!-- ================= BODY ================= -->
+      <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+        <tr>
 
-</th>
-      <!-- LAST NAME -->
-      <th pSortableColumn="emp_last_name">
+          <td>{{ dt.first + rowIndex + 1 }}</td>
+          <td>{{ user.emp_id }}</td>
 
-  <div class="header-cell">
-    <span>Last Name</span>
-    <p-sortIcon field="emp_last_name"></p-sortIcon>
-  </div>
+          <!-- ✅ FULL NAME DISPLAY -->
+          <td>
+            {{ getFullName(user) }}
+          </td>
 
-  <div class="filter-icon">
-    <p-columnFilter
-      field="emp_last_name"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
+          <td>{{ user.role_id }}</td>
 
-</th>
-      <!-- ROLE -->
-      <th pSortableColumn="role_id">
+          <!-- STATUS PILL TOGGLE -->
+          <td>
+            <div
+              class="status-toggle-pill"
+              [ngClass]="user.emp_status === 'Active' ? 'active-pill' : 'inactive-pill'"
+              (click)="onStatusToggle(user)"
+            >
+              <span class="dot"></span>
+              {{ user.emp_status }}
+            </div>
+          </td>
 
-  <div class="header-cell">
-    <span>Role</span>
-    <p-sortIcon field="role_id"></p-sortIcon>
-  </div>
+          <td>{{ user.phone_num || '-' }}</td>
+          <td>{{ user.created_by }}</td>
+          <td>{{ user.created_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
+          <td>{{ user.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
 
-  <div class="filter-icon">
-    <p-columnFilter
-      field="role_id"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
+          <td>
+            <p-button
+              icon="pi pi-pencil"
+              class="p-button-text p-button-primary p-button-sm"
+              (onClick)="editUser(user.emp_id)">
+            </p-button>
+          </td>
 
-</th>
-      <!-- STATUS -->
-      <th pSortableColumn="emp_status">
+        </tr>
+      </ng-template>
 
-  <div class="header-cell">
-    <span>Status</span>
-    <p-sortIcon field="emp_status"></p-sortIcon>
-  </div>
+      <!-- ================= EMPTY ================= -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="10" class="empty-state">
+            No employee records available
+          </td>
+        </tr>
+      </ng-template>
 
-  <div class="filter-icon">
-    <p-columnFilter
-      field="emp_status"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
-
-</th>
-      <!-- PHONE -->
-      <th pSortableColumn="phone_num">
-
-  <div class="header-cell">
-    <span>Phone</span>
-    <p-sortIcon field="phone_num"></p-sortIcon>
-  </div>
-
-  <div class="filter-icon">
-    <p-columnFilter
-      field="phone_num"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
-
-</th>
-
-      <!-- CREATED BY -->
-      <th pSortableColumn="created_by">
-
-  <div class="header-cell">
-    <span>Created By</span>
-    <p-sortIcon field="created_by"></p-sortIcon>
-  </div>
-
-  <div class="filter-icon">
-    <p-columnFilter
-      field="created_by"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
-
-</th>
-      <!-- CREATED ON -->
-      <th pSortableColumn="created_on">
-
-  <div class="header-cell">
-    <span>Created On</span>
-    <p-sortIcon field="created_on"></p-sortIcon>
-  </div>
-
-  <div class="filter-icon">
-    <p-columnFilter
-      field="created_on"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
-
-</th>
-
-      <!-- MODIFIED ON -->
-      <th pSortableColumn="modified_on">
-
-  <div class="header-cell">
-    <span>Modified On</span>
-    <p-sortIcon field="modified_on"></p-sortIcon>
-  </div>
-
-  <div class="filter-icon">
-    <p-columnFilter
-      field="modified_on"
-      display="menu"
-      type="text">
-    </p-columnFilter>
-  </div>
-</th>
-  <!-- ACTION -->
-      <th style="width:100px; text-align:center">Action</th>
-
-
-  </ng-template>
-
-  <!-- BODY -->
-  <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
-    <tr>
-
-      <!-- SL NO -->
-      <td>{{ dt.first + rowIndex + 1 }}</td>
-
-      <td>{{ user.emp_id }}</td>
-      <td>{{ user.emp_first_name }}</td>
-      <td>{{ user.emp_middle_name || '-' }}</td>
-      <td>{{ user.emp_last_name }}</td>
-      <td>{{ user.role_id }}</td>
-
-      <td>
-        <span
-          class="status-badge"
-          [ngClass]="user.emp_status === 'Active' ? 'status-active' : 'status-inactive'"
-          (click)="toggleStatus(user)"
-          style="cursor:pointer"
-        >
-          {{ user.emp_status }}
-        </span>
-      </td>
-
-      <td>{{ user.phone_num || '-' }}</td>
-      <td>{{ user.created_by }}</td>
-      <td>{{ user.created_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
-      <td>{{ user.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
-
-      <td>
-        <p-button
-          icon="pi pi-pencil"
-          class="p-button-text p-button-primary p-button-sm"
-          (onClick)="editUser(user.emp_id)">
-        </p-button>
-      </td>
-
-    </tr>
-  </ng-template>
-
-  <!-- EMPTY -->
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="12" class="empty-state">
-        No employee records available
-      </td>
-    </tr>
-  </ng-template>
-
-</p-table>
+    </p-table>
 
   </div>
-  
+</div>

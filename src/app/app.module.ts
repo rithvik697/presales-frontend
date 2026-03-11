@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 /* ------------------ PrimeNG ------------------ */
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { PasswordModule} from 'primeng/password';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
@@ -40,6 +41,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MenuModule } from 'primeng/menu';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -58,16 +63,18 @@ import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
 import { CallLogsComponent } from './call-logs/call-logs.component';
-
-/* ------------------ Pipes ------------------ */
-import { FilterByPipe } from './pipes/filter-by.pipe';
-/* ----- interceptors----*/
-import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
 import { ProfileComponent } from './profile/profile.component';
 
+/* ------------------ Pipes ------------------ */
+import { FilterByPipe } from './pipes/filter-by.pipe';
 
+/* ------------------ Interceptors ------------------ */
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuditTrailComponent } from './audit-trail/audit-trail.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +96,9 @@ import { ProfileComponent } from './profile/profile.component';
     ProjectDetailsComponent,
     ProfileComponent,
   
+    AuditTrailComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -96,7 +106,6 @@ import { ProfileComponent } from './profile/profile.component';
     CommonModule,
     HttpClientModule,
     AppRoutingModule,
-
     FormsModule,
     ReactiveFormsModule,
 
@@ -114,6 +123,7 @@ import { ProfileComponent } from './profile/profile.component';
     /* PrimeNG */
     TableModule,
     ButtonModule,
+    PasswordModule,
     TagModule,
     ToolbarModule,
     InputTextModule,
@@ -132,6 +142,8 @@ import { ProfileComponent } from './profile/profile.component';
     BreadcrumbModule,
     MenuModule,
     TooltipModule,
+    ToastModule,
+    ConfirmDialogModule,
 
     /* Charts & Notifications */
     NgChartsModule,
@@ -142,7 +154,11 @@ import { ProfileComponent } from './profile/profile.component';
       progressBar: true,
     }),
   ],
-   providers: [
+  providers: [
+    MessageService,  // ✅ REQUIRED FOR PRIME TOAST
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+    ConfirmationService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

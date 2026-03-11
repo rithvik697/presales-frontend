@@ -1,4 +1,3 @@
-// users-list-emp.component.ts
 import { Component, OnInit } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { ToastrService } from 'ngx-toastr';
@@ -10,9 +9,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./users-list-emp.component.css'],
 })
 export class UsersListEmpComponent implements OnInit {
+
   users: any[] = [];
   loading = true;
-
 
   constructor(
     private regService: RegistrationService,
@@ -21,6 +20,11 @@ export class UsersListEmpComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  /* ================= LOAD USERS ================= */
+  loadUsers() {
     this.regService.getUsers().subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -38,31 +42,50 @@ export class UsersListEmpComponent implements OnInit {
     });
   }
 
+  /* ================= NAVIGATION ================= */
   addUser() {
     this.router.navigate(['users/register']);
   }
 
-toggleStatus(user: any) {
-  const newStatus =
-    user.emp_status === 'Active' ? 'Inactive' : 'Active';
-
-  this.regService.updateStatus(user.emp_id, newStatus).subscribe({
-    next: () => {
-      user.emp_status = newStatus;
-      this.toastr.success('Status updated successfully');
-    },
-    error: (err) => {
-      console.error(err);
-      this.toastr.error('Failed to update status');
-    }
-  });
-}
-
-  // ✅ ADD THIS METHOD
   editUser(empId: string) {
-    this.router.navigate(
-      ['users/register'],
-      { queryParams: { id: empId } }
-    );
+    this.router.navigate(['users/register'], {
+      queryParams: { id: empId }
+    });
   }
+
+  /* ================= STATUS TOGGLE ================= */
+  onStatusToggle(user: any) {
+
+    const oldStatus = user.emp_status;
+    const newStatus = oldStatus === 'Active' ? 'Inactive' : 'Active';
+
+    // Optimistic UI update
+    user.emp_status = newStatus;
+
+    this.regService.updateStatus(user.emp_id, newStatus).subscribe({
+      next: () => {
+        this.toastr.success('Status updated successfully');
+      },
+      error: (err) => {
+        console.error(err);
+
+        // Revert UI on error
+        user.emp_status = oldStatus;
+
+        this.toastr.error('Failed to update status');
+      }
+    });
+  }
+
+/* ================= FULL NAME================= */
+  getFullName(user: any): string {
+    return [
+      user.emp_first_name,
+      user.emp_middle_name,
+      user.emp_last_name
+    ]
+    .filter(name => name && name.trim() !== '')
+    .join(' ');
+  }
+
 }

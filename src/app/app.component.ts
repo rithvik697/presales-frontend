@@ -10,7 +10,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { MenuItem } from 'primeng/api'; // ✅ ADD
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
   role: string | null = null;
   isLoginPage: boolean = false;
   isChangePasswordPage: boolean = false;
+  isForgotPasswordPage:boolean = false;
+  isResetPasswordPage: boolean = false;
 
   notifications: any[] = [];
   unreadCount: number = 0;
@@ -34,9 +36,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   menuItems: any[] = [];
   breadcrumbs: MenuItem[] = [];
-  profileMenuItems: MenuItem[] = [];
 
-  home = { icon: 'pi pi-home', routerLink: '/' }; 
+  // Home now correctly goes to Dashboard
+  home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
   private routerSub!: Subscription;
 
@@ -46,13 +48,17 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Users', icon: 'people', route: '/users' },
     { label: 'Project', icon: 'assignment', route: '/projects' },
     { label: 'Call Logs', icon: 'call', route: '/call-logs' },
+    { label : 'Audit Trail', icon: 'history', route: '/audit-trail' },
   ];
 
   constructor(private router: Router, private toastr: ToastrService) {}
 
- ngOnInit(): void {
+  ngOnInit(): void {
+    this.menuItems = this.allMenuItems;
 
-  this.menuItems = this.allMenuItems;
+    this.routerSub = this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe((e: any) => {
 
   // Initialize profile menu items
   this.profileMenuItems = [
@@ -86,18 +92,19 @@ export class AppComponent implements OnInit, OnDestroy {
       this.fullName = localStorage.getItem('fullName');
       this.role = localStorage.getItem('role');
 
-      const url: string = e.urlAfterRedirects || e.url;
+        this.isLoginPage = url.startsWith('/login');
+        this.isChangePasswordPage = url.startsWith('/change-password');
+        this.isForgotPasswordPage = url.startsWith('/forgot-password');
+        this.isResetPasswordPage = url.startsWith('/reset-password');
 
-      this.isLoginPage = url.startsWith('/login');
-      this.isChangePasswordPage = url.startsWith('/change-password');
+        const found = this.allMenuItems.find((m) =>
+          url.startsWith(m.route)
+        );
+        this.selectedItem = found ? found.label : '';
 
-      const found = this.allMenuItems.find((m) => url.startsWith(m.route));
-      this.selectedItem = found ? found.label : '';
-
-      this.updateBreadcrumbs(url);
-    });
-}
-
+        this.updateBreadcrumbs(url);
+      });
+  }
 
   ngOnDestroy(): void {
     if (this.routerSub) {
@@ -105,29 +112,38 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ✅ BREADCRUMB LOGIC
+  // ✅ FIXED BREADCRUMB LOGIC
   updateBreadcrumbs(url: string): void {
-    if (this.isLoginPage || this.isChangePasswordPage) {
+
+    if (this.isLoginPage || this.isChangePasswordPage || this.isForgotPasswordPage || this.isResetPasswordPage) {
       this.breadcrumbs = [];
       return;
     }
 
-    if (url === '/users') {
+    // USERS REGISTER (ADD + EDIT)
+    if (url.startsWith('/users/register')) {
+      const isEdit = url.includes('id=');
+
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
-      ];
-    } 
-    else if (url === '/users/register') {
-      this.breadcrumbs = [
-        { label: 'Users', routerLink: '/users' },
-        { label: 'Register User' },
+        { label: isEdit ? 'Edit User' : 'Register User' },
       ];
     }
-    else if (url === '/dashboard') {
+
+    // USERS LIST
+    else if (url.startsWith('/users')) {
+      this.breadcrumbs = [
+        { label: 'Users', routerLink: '/users' },
+      ];
+    }
+
+    // DASHBOARD
+    else if (url.startsWith('/dashboard')) {
       this.breadcrumbs = [
         { label: 'Dashboard' },
       ];
     }
+
     else {
       this.breadcrumbs = [];
     }
@@ -140,7 +156,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   markAllAsRead(): void {
     this.unreadCount = 0;
-    this.notifications = this.notifications.map((n) => ({ ...n, read: true }));
+    this.notifications = this.notifications.map((n) => ({
+      ...n,
+      read: true,
+    }));
   }
 
   logout(): void {
