@@ -1,0 +1,223 @@
+.users-list-container {
+  padding: 24px;
+  background-color: #f8f9fc;
+  min-height: calc(100vh - 64px); /* Assuming header is 64px */
+}
+
+/* Header Styles Matches Users List */
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+
+.title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.users-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* Header Actions & Date Filters */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.date-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.date-filter-group label {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.date-input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  outline: none;
+  color: #7f8c8d; /* Lighter color for 'dd-mm-yyyy' */
+}
+
+/* Chrome/Safari placeholder lighter text */
+.date-input::-webkit-datetime-edit-text,
+.date-input::-webkit-datetime-edit-month-field,
+.date-input::-webkit-datetime-edit-day-field,
+.date-input::-webkit-datetime-edit-year-field {
+    color: #9ba4a5;
+}
+
+.date-input:focus, .date-input:valid {
+  border-color: #1976d2;
+  color: #2c3e50;
+}
+
+
+/* Summary Cards */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+:host ::ng-deep .summary-cards p-card .p-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+:host ::ng-deep .summary-cards p-card .p-card .p-card-title {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+}
+
+:host ::ng-deep .summary-cards p-card .p-card .p-card-content {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2c3e50;
+  padding: 0;
+}
+
+:host ::ng-deep .highlight-card .p-card {
+  background: linear-gradient(135deg, #1976d2, #47a0ff);
+  color: white;
+}
+:host ::ng-deep .highlight-card .p-card .p-card-title, 
+:host ::ng-deep .highlight-card .p-card .p-card-content {
+  color: white;
+}
+
+
+/* Table Container */
+.table-container {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 32px;
+}
+
+/* Charts Wrapper */
+.charts-wrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .charts-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-container {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ecf0f1;
+  padding-bottom: 12px;
+}
+
+.chart-header h3 {
+  font-size: 18px;
+  margin: 0;
+  color: #34495e;
+}
+
+/* Filters for line chart */
+.filters {
+  display: flex;
+  gap: 8px;
+  background: #f1f3f5;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.filter-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #7f8c8d;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  color: #2c3e50;
+}
+
+.filter-btn.active {
+  background: #ffffff;
+  color: #1976d2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+}
+
+/* Pie Chart Container Alignment */
+.chart-pie {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-pie canvas {
+  margin: auto;
+  max-width: 90%;
+}
+
+.canvas-wrapper {
+  position: relative;
+  height: 300px; /* Force a height for chart js rendering */
+  width: 100%;
+}
+
+/* Utility Text Colors */
+.text-success { color: #2e7d32; }
+.text-warning { color: #ed6c02; }
+.text-danger { color: #d32f2f; }
+.text-center { text-align: center; }
+.font-bold { font-weight: 600; }
+.mb-4 { margin-bottom: 24px; }
+.mt-4 { margin-top: 24px; }
+.ml-2 { margin-left: 8px; }
+.p-4 { padding: 24px; }

@@ -66,6 +66,7 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
 import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ReportsComponent } from './reports/reports.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
@@ -95,7 +96,7 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     FilterByPipe,
     ProjectDetailsComponent,
     ProfileComponent,
-  
+    ReportsComponent,
     AuditTrailComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent

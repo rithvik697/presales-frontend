@@ -172,7 +172,10 @@ export class LeadCreateComponent implements OnInit {
             this.toastr.success('Lead updated successfully');
             this.router.navigate(['/leads']);
           },
-          error: () => this.toastr.error('Failed to update lead')
+          error: (err) => {
+            console.error(err);
+            this.toastr.error(err.error?.error || 'Failed to update lead');
+          }
         });
 
     } else {
@@ -183,7 +186,10 @@ export class LeadCreateComponent implements OnInit {
             this.toastr.success('Lead created successfully');
             this.router.navigate(['/leads']);
           },
-          error: () => this.toastr.error('Failed to create lead')
+          error: (err) => {
+            console.error(err);
+            this.toastr.error(err.error?.error || 'Failed to create lead');
+          }
         });
     }
   }

@@ -25,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   username: string | null = null;
   fullName: string | null = null;
   role: string | null = null;
+  showLogout: boolean = false;
   isLoginPage: boolean = false;
   isChangePasswordPage: boolean = false;
   isForgotPasswordPage:boolean = false;
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   menuItems: any[] = [];
   breadcrumbs: MenuItem[] = [];
+  profileMenuItems: MenuItem[] = [];
 
   // Home now correctly goes to Dashboard
   home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
@@ -56,41 +58,45 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.menuItems = this.allMenuItems;
 
+    // Initialize profile menu items
+    this.profileMenuItems = [
+      {
+        label: 'Profile',
+        icon: 'pi pi-user',
+        // TODO: Implement profile page
+        command: () => this.router.navigate(['/profile'])
+      },
+      {
+        label: 'Settings',
+        icon: 'pi pi-cog',
+        // TODO: Implement settings page
+        command: () => {}
+      },
+      {
+        separator: true
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: () => this.logout()
+      }
+    ];
+
     this.routerSub = this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((e: any) => {
 
-  // Initialize profile menu items
-  this.profileMenuItems = [
-    {
-      label: 'Profile',
-      icon: 'pi pi-user',
-      // TODO: Implement profile page
-      command: () => this.router.navigate(['/profile'])
-    },
-    {
-      label: 'Settings',
-      icon: 'pi pi-cog',
-      // TODO: Implement settings page
-      command: () => {}
-    },
-    {
-      separator: true
-    },
-    {
-      label: 'Logout',
-      icon: 'pi pi-sign-out',
-      command: () => this.logout()
-    }
-  ];
+        this.username = localStorage.getItem('username');
+        this.fullName = localStorage.getItem('fullName');
+        this.role = localStorage.getItem('role');
 
-  this.routerSub = this.router.events
-    .pipe(filter((e) => e instanceof NavigationEnd))
-    .subscribe((e: any) => {
+        // Restore Reports menu logic
+        this.menuItems = [...this.allMenuItems];
+        if (this.role === 'ADMIN' || this.role === 'Sales Manager') {
+          this.menuItems.push({ label: 'Reports', icon: 'bar_chart', route: '/reports' });
+        }
 
-      this.username = localStorage.getItem('username');
-      this.fullName = localStorage.getItem('fullName');
-      this.role = localStorage.getItem('role');
+        const url: string = e.urlAfterRedirects || e.url;
 
         this.isLoginPage = url.startsWith('/login');
         this.isChangePasswordPage = url.startsWith('/change-password');

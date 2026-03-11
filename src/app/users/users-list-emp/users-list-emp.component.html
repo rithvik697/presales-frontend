@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="users-header">
     <h2>Employees List</h2>
-    <button class="add-user-btn" (click)="addUser()">+ Add User</button>
+    <button pButton label="Add User" class="add-user-btn" (click)="addUser()"></button>
   </div>
 
   <!-- Scroll Wrapper -->
@@ -121,7 +121,9 @@
 
           <!-- ✅ FULL NAME DISPLAY -->
           <td>
-            {{ getFullName(user) }}
+            <a [routerLink]="['/reports']" [queryParams]="{userId: user.emp_id}" style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
+              {{ getFullName(user) }}
+            </a>
           </td>
 
           <td>{{ user.role_id }}</td>
