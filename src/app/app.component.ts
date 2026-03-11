@@ -60,7 +60,7 @@ export class AppComponent implements OnInit, OnDestroy {
       label: 'Profile',
       icon: 'pi pi-user',
       // TODO: Implement profile page
-      command: () => {}
+      command: () => this.router.navigate(['/profile'])
     },
     {
       label: 'Settings',

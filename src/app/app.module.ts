@@ -65,6 +65,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
+import { ProfileComponent } from './profile/profile.component';
 
 
 
@@ -86,6 +87,7 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
     CallLogsComponent,
     FilterByPipe,
     ProjectDetailsComponent,
+    ProfileComponent,
   
   ],
   imports: [

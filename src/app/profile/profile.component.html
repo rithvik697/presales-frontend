@@ -1,0 +1,117 @@
+<div class="profile-page">
+
+  <div class="p-grid">
+
+    <!-- LEFT USER CARD -->
+    <div class="p-col-12 p-md-4">
+
+      <p-card class="user-card">
+
+        <div class="user-avatar">
+          <i class="pi pi-user"></i>
+        </div>
+
+        <h3>{{ fullName || username }}</h3>
+        <p class="role">{{ role }}</p>
+
+        <div class="user-meta">
+          <div class="meta-item">
+            <i class="pi pi-envelope"></i>
+            {{ email || 'Not available' }}
+          </div>
+
+          <div class="meta-item">
+            <i class="pi pi-id-card"></i>
+            {{ username }}
+          </div>
+        </div>
+
+      </p-card>
+
+    </div>
+
+    <!-- RIGHT SETTINGS -->
+    <div class="p-col-12 p-md-8">
+
+      <p-tabView>
+
+        <!-- ACCOUNT TAB -->
+        <p-tabPanel header="Account Information">
+
+          <p-card>
+
+            <div class="form-grid">
+
+              <div class="field">
+                <label>Full Name</label>
+                <input pInputText [value]="fullName" disabled />
+              </div>
+
+              <div class="field">
+                <label>Username</label>
+                <input pInputText [value]="username" disabled />
+              </div>
+
+              <div class="field">
+                <label>Role</label>
+                <input pInputText [value]="role" disabled />
+              </div>
+
+            </div>
+
+          </p-card>
+
+        </p-tabPanel>
+
+        <!-- SECURITY TAB -->
+        <p-tabPanel header="Security">
+
+          <p-card>
+
+            <h3>Change Password</h3>
+
+            <form (ngSubmit)="changePassword()" class="password-form">
+
+              <div class="field">
+                <label>Current Password</label>
+                <input
+                  pPassword
+                  [(ngModel)]="oldPassword"
+                  name="oldPassword"
+                  toggleMask="true"
+                  required
+                />
+              </div>
+
+              <div class="field">
+                <label>New Password</label>
+                <input
+                  pPassword
+                  [(ngModel)]="newPassword"
+                  name="newPassword"
+                  toggleMask="true"
+                  required
+                />
+              </div>
+
+              <button
+                pButton
+                type="submit"
+                label="Update Password"
+                icon="pi pi-check"
+                class="p-button-primary"
+              ></button>
+
+            </form>
+
+          </p-card>
+
+        </p-tabPanel>
+
+      </p-tabView>
+
+    </div>
+
+  </div>
+
+</div>

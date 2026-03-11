@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { LoginComponent } from './auth/login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProfileComponent } from './profile/profile.component';
 
 import { UsersComponent } from './users/users.component';
 import { UsersListEmpComponent } from './users/users-list-emp/users-list-emp.component';
@@ -37,6 +38,7 @@ const routes: Routes = [
     children: [
 
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'profile', component: ProfileComponent },
 
       // USERS
       {
