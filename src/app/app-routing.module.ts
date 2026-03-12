@@ -27,6 +27,8 @@ import { CallLogsComponent } from './call-logs/call-logs.component';
 import { AuthGuard } from './guards/auth.guard';
 
 import { AuditTrailComponent } from './audit-trail/audit-trail.component';
+import { ReportsComponent } from './reports/reports.component';
+
 
 
 const routes: Routes = [
@@ -36,13 +38,14 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'audit-trail', component: AuditTrailComponent },
   {
-  path: 'forgot-password',
-  component: ForgotPasswordComponent
+    path: 'forgot-password',
+    component: ForgotPasswordComponent
   },
   {
-  path: 'reset-password',
-  component: ResetPasswordComponent
+    path: 'reset-password',
+    component: ResetPasswordComponent
   },
+
 
   // Protected Routes
   {
@@ -77,11 +80,14 @@ const routes: Routes = [
       // PROJECTS
       { path: 'projects', component: ProjectListComponent },
       { path: 'projects/register', component: ProjectRegistrationComponent },
-      { path: 'projects/edit/:id', component: ProjectRegistrationComponent},
+      { path: 'projects/edit/:id', component: ProjectRegistrationComponent },
       { path: 'projects/:id', component: ProjectDetailsComponent },
 
       // CALL LOGS
-      { path: 'call-logs', component: CallLogsComponent }
+      { path: 'call-logs', component: CallLogsComponent },
+
+      // REPORTS
+      { path: 'reports', component: ReportsComponent }
 
     ]
   },

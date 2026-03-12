@@ -22,6 +22,8 @@
     "@angular/router": "^16.0.0",
     "@primeuix/themes": "^2.0.3",
     "chart.js": "^4.3.0",
+    "jspdf": "^4.2.0",
+    "jspdf-autotable": "^5.0.7",
     "ng2-charts": "^4.1.0",
     "ngx-filter-pipe": "^3.0.1",
     "ngx-toastr": "^19.1.0",
