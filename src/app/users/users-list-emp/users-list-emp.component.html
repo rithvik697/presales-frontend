@@ -121,7 +121,10 @@
 
           <!-- ✅ FULL NAME DISPLAY -->
           <td>
-            <a [routerLink]="['/reports']" [queryParams]="{userId: user.emp_id}" style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
+            <a
+              [routerLink]="['/users', user.emp_id]"
+              class="user-link"
+            >
               {{ getFullName(user) }}
             </a>
           </td>
