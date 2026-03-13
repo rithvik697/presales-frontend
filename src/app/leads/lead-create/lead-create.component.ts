@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Lead } from '../../models/lead.model';
 import { LeadsService } from '../../services/leads.service';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'app/services/auth.service';
 
 @Component({
   selector: 'app-lead-create',
@@ -13,6 +14,7 @@ export class LeadCreateComponent implements OnInit {
 
   isEditMode = false;
   isAdmin: boolean = false;
+  isManager: boolean = false;
   leadId: string | null = null;
 
   model: Lead = {
@@ -48,53 +50,55 @@ export class LeadCreateComponent implements OnInit {
     private leadsService: LeadsService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authService: AuthService
+  
   ) { }
 
   ngOnInit(): void {
 
-    const token = localStorage.getItem('token');
+  this.isAdmin = this.authService.isAdmin();
+  this.isManager = this.authService.isManager();
 
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      this.isAdmin = payload.role_type === 'ADMIN';
-    }
-    // Edit mode check
-    this.leadId = this.route.snapshot.paramMap.get('id');
-    if (this.leadId) {
-      this.isEditMode = true;
-      this.loadLead(this.leadId);
-    }
+  // Auto assign lead to sales executive
+  if (!this.isAdmin && !this.isManager) {
+    this.model.assignedTo = this.authService.getUserId() || '';
+  }
 
-    // Load employees
+  // Edit mode check
+  this.leadId = this.route.snapshot.paramMap.get('id');
+  if (this.leadId) {
+    this.isEditMode = true;
+    this.loadLead(this.leadId);
+  }
+
+  // Load employees only for Admin / Manager
+  if (this.isAdmin || this.isManager) {
     this.leadsService.getEmployees().subscribe({
       next: (emps) => this.employees = emps,
       error: () => this.toastr.error('Failed to load employees')
     });
-
-    // 🔥 Load projects dynamically
-    this.leadsService.getProjects().subscribe({
-      next: (data) => this.projects = data,
-      error: () => this.toastr.error('Failed to load projects')
-    });
-    // 🔥 Load Sources
-    this.leadsService.getSources().subscribe({
-      next: (data) => this.sources = data,
-      error: () => this.toastr.error('Failed to load sources')
-    });
-
-    // 🔥 Load Statuses
-    this.leadsService.getStatuses().subscribe({
-      next: (data) => {
-        console.log('Statuses from API:', data);  // 👈 ADD THIS
-        this.statuses = data;
-      },
-      error: (err) => {
-        console.error('Status API error:', err);
-        this.toastr.error('Failed to load statuses');
-      }
-    });
   }
+
+  // Projects
+  this.leadsService.getProjects().subscribe({
+    next: (data) => this.projects = data,
+    error: () => this.toastr.error('Failed to load projects')
+  });
+
+  // Sources
+  this.leadsService.getSources().subscribe({
+    next: (data) => this.sources = data,
+    error: () => this.toastr.error('Failed to load sources')
+  });
+
+  // Statuses
+  this.leadsService.getStatuses().subscribe({
+    next: (data) => this.statuses = data,
+    error: () => this.toastr.error('Failed to load statuses')
+  });
+
+}
 
   loadLead(id: string) {
   this.leadsService.getById(id).subscribe({

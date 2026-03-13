@@ -132,15 +132,29 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="form-field">
+     <!-- ADMIN / SALES MANAGER -->
+      <mat-form-field appearance="outline" class="form-field"
+        *ngIf="isAdmin || isManager">
+
         <mat-label>Assigned To</mat-label>
-        <mat-select name="assignedTo" [(ngModel)]="model.assignedTo" [disabled]="!isAdmin && isEditMode">
+
+        <mat-select name="assignedTo" [(ngModel)]="model.assignedTo">
           <mat-option value="">Select Employee</mat-option>
+
           <mat-option *ngFor="let emp of employees" [value]="emp.emp_id">
             {{ emp.full_name }}
           </mat-option>
+
         </mat-select>
+
       </mat-form-field>
+
+
+      <!-- SALES EXECUTIVE -->
+      <div class="form-field assigned-self" *ngIf="!isAdmin && !isManager">
+        <label class="assigned-label">Assigned To</label>
+        <div class="assigned-value">You</div>
+      </div>
     </div>
 
     <!-- Description -->
