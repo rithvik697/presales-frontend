@@ -38,7 +38,6 @@ export class AppComponent implements OnInit, OnDestroy {
   unreadCount: number = 0;
   showNotificationDropdown: boolean = false;
 
-
   menuItems: any[] = [];
   breadcrumbs: MenuItem[] = [];
   profileMenuItems: MenuItem[] = [];
@@ -66,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.menuItems = this.allMenuItems;
 
-    // Initialize profile menu items
+    // Profile menu
     this.profileMenuItems = [
       {
         label: 'Profile',
@@ -76,12 +75,9 @@ export class AppComponent implements OnInit, OnDestroy {
       {
         label: 'Settings',
         icon: 'pi pi-cog',
-        // TODO: Implement settings page
         command: () => {}
       },
-      {
-        separator: true
-      },
+      { separator: true },
       {
         label: 'Logout',
         icon: 'pi pi-sign-out',
@@ -99,8 +95,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
         // Restore Reports menu logic
         this.menuItems = [...this.allMenuItems];
+
         if (this.role === 'ADMIN' || this.role === 'Sales Manager') {
-          this.menuItems.push({ label: 'Reports', icon: 'bar_chart', route: '/reports' });
+          this.menuItems.push({
+            label: 'Reports',
+            icon: 'bar_chart',
+            route: '/reports'
+          });
         }
 
         const url: string = e.urlAfterRedirects || e.url;
@@ -139,6 +140,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     if (url.startsWith('/users/register')) {
+
       const isEdit = url.includes('id=');
 
       this.breadcrumbs = [
@@ -169,21 +171,20 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isDesktop = event.target.innerWidth > 768;
   }
 
-  markAllAsRead(): void {
-    this.unreadCount = 0;
-
-    this.notifications = this.notifications.map((n) => ({
-      ...n,
-      is_read: true,
-    }));
-  }
+  /* =========================
+     LOAD NOTIFICATIONS
+     ========================= */
 
   loadNotifications(): void {
+
     this.notificationService.getNotifications().subscribe(
       (data: any[]) => {
+
         this.notifications = data;
 
-        this.unreadCount = data.filter(n => !n.is_read).length;
+        this.unreadCount =
+          data.filter(n => !n.is_read).length;
+
       },
       (error) => {
         console.error('Failed to load notifications', error);
@@ -191,16 +192,51 @@ export class AppComponent implements OnInit, OnDestroy {
     );
   }
 
+  /* =========================
+     TOGGLE DROPDOWN
+     ========================= */
+
   toggleNotifications(): void {
-    this.showNotificationDropdown = !this.showNotificationDropdown;
+
+    this.showNotificationDropdown =
+      !this.showNotificationDropdown;
 
     if (this.showNotificationDropdown) {
       this.loadNotifications();
     }
   }
 
+  /* =========================
+     MARK SINGLE NOTIFICATION READ
+     ========================= */
+
+  markAsRead(notificationId: number): void {
+
+    this.notificationService.markAsRead(notificationId)
+      .subscribe(() => {
+
+        const note = this.notifications.find(
+          n => n.notification_id === notificationId
+        );
+
+        if (note) {
+          note.is_read = 1;
+        }
+
+        this.unreadCount =
+          this.notifications.filter(n => !n.is_read).length;
+
+      }, (error) => {
+        console.error('Failed to mark notification as read', error);
+      });
+  }
+
+  /* =========================
+     LOGOUT
+     ========================= */
 
   logout(): void {
+
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('fullName');
@@ -220,4 +256,5 @@ export class AppComponent implements OnInit, OnDestroy {
   selectItem(label: string): void {
     this.selectedItem = label;
   }
+
 }
