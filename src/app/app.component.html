@@ -28,24 +28,44 @@
 
       <span class="spacer"></span>
 
-      <!-- NOTIFICATIONS -->
+      <!-- ===================== NOTIFICATIONS ===================== -->
       <div
         class="notification-wrapper"
-        (click)="showNotificationDropdown = !showNotificationDropdown"
+        (click)="toggleNotifications()"
       >
         <mat-icon class="notification-icon">notifications</mat-icon>
+
+        <!-- Notification Count Badge -->
         <span class="notification-badge" *ngIf="unreadCount">
           {{ unreadCount }}
         </span>
 
-        <div class="notification-dropdown" *ngIf="showNotificationDropdown">
+        <!-- Notification Dropdown -->
+        <div
+          class="notification-dropdown"
+          *ngIf="showNotificationDropdown"
+          (click)="$event.stopPropagation()"
+        >
+
           <div *ngIf="notifications.length; else noNotification">
+
             <div
               *ngFor="let note of notifications"
               class="notification-item"
             >
-              {{ note.message }}
+              <div class="notification-title">
+                {{ note.title }}
+              </div>
+
+              <div class="notification-message">
+                {{ note.message }}
+              </div>
+
+              <div class="notification-time">
+                {{ note.created_on | date:'short' }}
+              </div>
             </div>
+
             <button
               mat-flat-button
               class="mark-read-btn"
@@ -53,6 +73,7 @@
             >
               Mark all as read
             </button>
+
           </div>
 
           <ng-template #noNotification>
@@ -60,10 +81,11 @@
               No new notifications
             </div>
           </ng-template>
+
         </div>
       </div>
 
-      <!-- PROFILE DROPDOWN -->
+      <!-- ===================== PROFILE DROPDOWN ===================== -->
       <div
         *ngIf="username"
         class="profile-container"

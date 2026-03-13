@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
+import { NotificationService } from './services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -53,7 +54,11 @@ export class AppComponent implements OnInit, OnDestroy {
     { label : 'Audit Trail', icon: 'history', route: '/audit-trail' },
   ];
 
-  constructor(private router: Router, private toastr: ToastrService) {}
+  constructor(
+    private router: Router,
+    private toastr: ToastrService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.menuItems = this.allMenuItems;
@@ -162,11 +167,34 @@ export class AppComponent implements OnInit, OnDestroy {
 
   markAllAsRead(): void {
     this.unreadCount = 0;
+
     this.notifications = this.notifications.map((n) => ({
       ...n,
-      read: true,
+      is_read: true,
     }));
   }
+
+  loadNotifications(): void {
+    this.notificationService.getNotifications().subscribe(
+      (data: any[]) => {
+        this.notifications = data;
+
+        this.unreadCount = data.filter(n => !n.is_read).length;
+      },
+      (error) => {
+        console.error('Failed to load notifications', error);
+      }
+    );
+  }
+
+  toggleNotifications(): void {
+    this.showNotificationDropdown = !this.showNotificationDropdown;
+
+    if (this.showNotificationDropdown) {
+      this.loadNotifications();
+    }
+  }
+
 
   logout(): void {
     localStorage.removeItem('token');
