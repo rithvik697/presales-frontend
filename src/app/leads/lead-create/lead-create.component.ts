@@ -4,6 +4,7 @@ import { Lead } from '../../models/lead.model';
 import { LeadsService } from '../../services/leads.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'app/services/auth.service';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-lead-create',
@@ -36,6 +37,8 @@ export class LeadCreateComponent implements OnInit {
   employees: any[] = [];
   sources: any[] = [];
   statuses: any[] = [];
+  breadcrumbItems: MenuItem[] = [];
+  home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
   countryCodes = [
     { code: '+91', flag: '🇮🇳', limit: 10 },
     { code: '+1', flag: '🇺🇸', limit: 10 },
@@ -69,7 +72,17 @@ export class LeadCreateComponent implements OnInit {
   this.leadId = this.route.snapshot.paramMap.get('id');
   if (this.leadId) {
     this.isEditMode = true;
+    this.breadcrumbItems = [
+      { label: 'Leads', routerLink: '/leads' },
+      { label: 'Lead Details', routerLink: ['/leads/details', this.leadId] },
+      { label: 'Edit Lead' }
+    ];
     this.loadLead(this.leadId);
+  } else {
+    this.breadcrumbItems = [
+      { label: 'Leads', routerLink: '/leads' },
+      { label: 'Create Lead' }
+    ];
   }
 
   // Load employees only for Admin / Manager
