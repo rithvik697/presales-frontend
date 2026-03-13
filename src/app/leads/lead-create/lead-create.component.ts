@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class LeadCreateComponent implements OnInit {
 
   isEditMode = false;
+  isAdmin: boolean = false;
   leadId: string | null = null;
 
   model: Lead = {
@@ -52,6 +53,12 @@ export class LeadCreateComponent implements OnInit {
 
   ngOnInit(): void {
 
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      this.isAdmin = payload.role_type === 'ADMIN';
+    }
     // Edit mode check
     this.leadId = this.route.snapshot.paramMap.get('id');
     if (this.leadId) {
