@@ -160,7 +160,7 @@
                 <span class="activity-summary">
                     <span *ngIf="loadingHistory">Loading history...</span>
                     <span *ngIf="!loadingHistory">
-                        {{ statusHistory.length }} status change{{ statusHistory.length !== 1 ? 's' : '' }} recorded
+                        {{ getEntryCountLabel() }}
                     </span>
                 </span>
                 <button class="add-activity-btn" (click)="openAddDialog()">
@@ -171,7 +171,7 @@
             <!-- Empty -->
             <div class="empty-state" *ngIf="!loadingHistory && statusHistory.length === 0">
                 <i class="pi pi-inbox"></i>
-                <p>No status changes recorded yet</p>
+                <p>No history recorded yet</p>
                 <button class="add-first-btn" (click)="openAddDialog()">Log First Status Change</button>
             </div>
 
@@ -183,10 +183,10 @@
             <!-- Timeline -->
             <div class="activity-timeline" *ngIf="!loadingHistory && statusHistory.length > 0">
                 <div class="timeline-item" *ngFor="let entry of statusHistory">
-                    <div class="timeline-dot" [ngClass]="getDotClass(entry.new_status_name || '')"></div>
+                    <div class="timeline-dot" [ngClass]="getEntryDotClass(entry)"></div>
                     <div class="timeline-card">
                         <div class="timeline-card-header">
-                            <div class="status-transition">
+                            <div class="status-transition" *ngIf="!isAssignmentEvent(entry)">
                                 <span class="activity-type-badge type-default" *ngIf="entry.old_status_name">
                                     {{ entry.old_status_name }}
                                 </span>
@@ -195,13 +195,26 @@
                                     {{ entry.new_status_name }}
                                 </span>
                             </div>
+                            <div class="status-transition" *ngIf="isAssignmentEvent(entry)">
+                                <span class="activity-type-badge type-default">
+                                    {{ entry.old_assigned_to || 'Unassigned' }}
+                                </span>
+                                <i class="pi pi-arrow-right transition-arrow"></i>
+                                <span class="activity-type-badge type-enquiry">
+                                    {{ entry.new_assigned_to || 'Unassigned' }}
+                                </span>
+                            </div>
                             <span class="activity-date">
                                 <i class="pi pi-calendar"></i>
                                 {{ entry.changed_at | date: 'dd MMM yyyy, hh:mm a' }}
                             </span>
                         </div>
                         <div class="timeline-card-body">
-                            <div class="timeline-detail" *ngIf="entry.remarks">
+                            <div class="timeline-detail" *ngIf="isAssignmentEvent(entry)">
+                                <span class="detail-label">Assignment:</span>
+                                <span class="detail-value">Lead reassigned</span>
+                            </div>
+                            <div class="timeline-detail" *ngIf="entry.remarks && !isAssignmentEvent(entry)">
                                 <span class="detail-label">Remarks:</span>
                                 <span class="detail-value">{{ entry.remarks }}</span>
                             </div>

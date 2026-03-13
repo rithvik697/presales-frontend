@@ -165,6 +165,20 @@ export class LeadDetailsComponent implements OnInit {
 
     // ─── Navigation ───
 
+    isAssignmentEvent(entry: LeadStatusHistory): boolean {
+        return entry.event_type === 'assignment_change';
+    }
+
+    getEntryCountLabel(): string {
+        const count = this.statusHistory.length;
+        return `${count} history ${count === 1 ? 'event' : 'events'} recorded`;
+    }
+
+    getEntryDotClass(entry: LeadStatusHistory): string {
+        if (this.isAssignmentEvent(entry)) return 'dot-default';
+        return this.getDotClass(entry.new_status_name || '');
+    }
+
     goBack(): void {
         this.router.navigate(['/leads']);
     }
