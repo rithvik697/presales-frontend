@@ -33,6 +33,7 @@
         class="notification-wrapper"
         (click)="toggleNotifications()"
       >
+
         <mat-icon class="notification-icon">notifications</mat-icon>
 
         <!-- Notification Count Badge -->
@@ -49,33 +50,55 @@
 
           <div *ngIf="notifications.length; else noNotification">
 
+            <!-- Notification Item -->
             <div
               *ngFor="let note of notifications"
               class="notification-item"
+              [ngClass]="{ 'unread-item': !note.is_read }"
             >
-              <div class="notification-title">
-                {{ note.title }}
+
+              <!-- Header -->
+              <div class="notification-header">
+
+                <div class="notification-title">
+                  {{ note.title }}
+                </div>
+
+                <!-- Mark as Read Button -->
+                <button
+                  mat-stroked-button
+                  class="notification-status-btn"
+                  *ngIf="!note.is_read"
+                  (click)="markAsRead(note.notification_id)"
+                >
+                  Mark as Read
+                </button>
+
+                <!-- Already Read -->
+                <span
+                  class="notification-status read"
+                  *ngIf="note.is_read"
+                >
+                  READ
+                </span>
+
               </div>
 
+              <!-- Message -->
               <div class="notification-message">
                 {{ note.message }}
               </div>
 
+              <!-- Time -->
               <div class="notification-time">
-                {{ note.created_on | date:'short' }}
+                {{ note.created_on | date:'MMM d, y h:mm a' }}
               </div>
-            </div>
 
-            <button
-              mat-flat-button
-              class="mark-read-btn"
-              (click)="markAllAsRead()"
-            >
-              Mark all as read
-            </button>
+            </div>
 
           </div>
 
+          <!-- No Notifications -->
           <ng-template #noNotification>
             <div class="notification-item no-data">
               No new notifications
@@ -83,6 +106,7 @@
           </ng-template>
 
         </div>
+
       </div>
 
       <!-- ===================== PROFILE DROPDOWN ===================== -->
@@ -91,6 +115,7 @@
         class="profile-container"
         (click)="profileMenu.toggle($event)"
       >
+
         <div class="profile-section">
           <mat-icon class="profile-icon">account_circle</mat-icon>
           <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
@@ -107,15 +132,19 @@
           <ng-template pTemplate="start">
             <div class="profile-menu-header">
               <div class="user-info">
+
                 <mat-icon class="user-avatar">account_circle</mat-icon>
+
                 <div class="user-details">
                   <span class="user-name">{{ fullName || username }}</span>
                   <span class="user-role">{{ role || 'User' }}</span>
                 </div>
+
               </div>
             </div>
           </ng-template>
         </p-menu>
+
       </div>
 
     </mat-toolbar>
@@ -130,7 +159,9 @@
         [opened]="isDesktop"
         class="sidenav"
       >
+
         <mat-nav-list class="sidebarbg">
+
           <mat-list-item
             *ngFor="let item of menuItems"
             [routerLink]="item.route"
@@ -138,16 +169,21 @@
             [ngClass]="{ 'active-item': selectedItem === item.label }"
             class="menu-item-wrapper"
           >
+
             <div class="menu-item-content">
               <mat-icon class="menu-icon">
                 {{ item.icon }}
               </mat-icon>
+
               <span class="menu-label">
                 {{ item.label }}
               </span>
             </div>
+
           </mat-list-item>
+
         </mat-nav-list>
+
       </mat-sidenav>
 
       <!-- ===================== MAIN CONTENT ===================== -->
