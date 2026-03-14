@@ -1,7 +1,7 @@
 export interface LeadStatusHistory {
     history_id: number;
     lead_id: string;
-    event_type?: 'status_change' | 'assignment_change';
+    event_type?: 'status_change' | 'assignment_change' | 'scheduled_activity' | 'comment';
     old_status_id: string | null;
     new_status_id: string | null;
     old_status_name?: string;
@@ -12,6 +12,10 @@ export interface LeadStatusHistory {
     changed_by: string;
     changed_by_name?: string;
     changed_at: string;
+    scheduled_at?: string;
+    schedule_status?: string;
+    scheduled_status_id?: string;
+    scheduled_status_name?: string;
 }
 
 export interface StatusOption {

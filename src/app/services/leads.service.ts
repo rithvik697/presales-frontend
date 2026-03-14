@@ -66,6 +66,24 @@ export class LeadsService {
     );
   }
 
+  scheduleActivity(leadId: string, data: { status_id: string; scheduled_at: string; remarks?: string }): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/${leadId}/scheduled-activities`, data
+    );
+  }
+
+  addComment(leadId: string, data: { comment_text: string }): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/${leadId}/comments`, data
+    );
+  }
+
+  getCallHistory(leadId: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `http://localhost:5000/api/calls/ui/lead/${leadId}`
+    );
+  }
+
   updateStatusHistory(leadId: string, historyId: number, data: { remarks: string }): Observable<LeadStatusHistory> {
     return this.http.put<LeadStatusHistory>(
       `${this.baseUrl}/${leadId}/status-history/${historyId}`, data

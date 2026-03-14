@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Lead } from '../../models/lead.model';
 import { LeadStatusHistory, StatusOption } from '../../models/lead-status-history.model';
@@ -7,6 +7,19 @@ import { LeadsService } from '../../services/leads.service';
 import { ToastrService } from 'ngx-toastr';
 import { MenuItem } from 'primeng/api';
 
+interface LeadCallHistoryEntry {
+    callId: number;
+    callDate: string;
+    startTime: string | null;
+    endTime: string | null;
+    duration: string;
+    callStatus: string;
+    callSource: string;
+    callTime: string;
+    madeBy: string;
+    remarks: string;
+}
+
 @Component({
     selector: 'app-lead-details',
     templateUrl: './lead-details.component.html',
@@ -14,20 +27,25 @@ import { MenuItem } from 'primeng/api';
 })
 export class LeadDetailsComponent implements OnInit {
 
+    @ViewChild('historyTimeline') historyTimeline?: ElementRef<HTMLDivElement>;
+
     lead: Lead | null = null;
     loading: boolean = true;
     leadId: string = '';
 
     // Tabs
-    activeTab: 'details' | 'history' = 'details';
+    activeTab: 'details' | 'history' | 'calls' = 'details';
 
     // Status history
     statusHistory: LeadStatusHistory[] = [];
     statusOptions: StatusOption[] = [];
     loadingHistory: boolean = false;
+    callHistory: LeadCallHistoryEntry[] = [];
+    loadingCalls: boolean = false;
 
     // Dialogs
     showAddDialog: boolean = false;
+    showScheduleActivityDialog: boolean = false;
     showEditDialog: boolean = false;
     showDeleteConfirmation: boolean = false;
     entryToDelete: LeadStatusHistory | null = null;
@@ -36,6 +54,11 @@ export class LeadDetailsComponent implements OnInit {
     // Form
     newStatusId: string = '';
     newRemarks: string = '';
+    scheduledStatusId: string = '';
+    scheduledActivityDate: string = '';
+    scheduledActivityTime: string = '';
+    scheduledActivityRemarks: string = '';
+    newCommentText: string = '';
     editRemarks: string = '';
 
     // Auth
@@ -67,6 +90,7 @@ export class LeadDetailsComponent implements OnInit {
         this.loadLead();
         this.loadStatusOptions();
         this.loadHistory();
+        this.loadCallHistory();
     }
 
     // ─── Data Loading ───
@@ -103,12 +127,28 @@ export class LeadDetailsComponent implements OnInit {
         this.loadingHistory = true;
         this.leadsService.getStatusHistory(this.leadId).subscribe({
             next: (data) => {
-                this.statusHistory = data;
+                this.statusHistory = [...data].reverse();
                 this.loadingHistory = false;
+                setTimeout(() => this.scrollHistoryToBottom());
             },
             error: () => {
                 this.statusHistory = [];
                 this.loadingHistory = false;
+            }
+        });
+    }
+
+    loadCallHistory(): void {
+        if (!this.leadId) return;
+        this.loadingCalls = true;
+        this.leadsService.getCallHistory(this.leadId).subscribe({
+            next: (data) => {
+                this.callHistory = data;
+                this.loadingCalls = false;
+            },
+            error: () => {
+                this.callHistory = [];
+                this.loadingCalls = false;
             }
         });
     }
@@ -169,14 +209,90 @@ export class LeadDetailsComponent implements OnInit {
         return entry.event_type === 'assignment_change';
     }
 
+    isScheduledActivityEvent(entry: LeadStatusHistory): boolean {
+        return entry.event_type === 'scheduled_activity';
+    }
+
+    isCommentEvent(entry: LeadStatusHistory): boolean {
+        return entry.event_type === 'comment';
+    }
+
     getEntryCountLabel(): string {
         const count = this.statusHistory.length;
         return `${count} history ${count === 1 ? 'event' : 'events'} recorded`;
     }
 
+    getCallCountLabel(): string {
+        const count = this.callHistory.length;
+        return `${count} ${count === 1 ? 'call' : 'calls'} recorded`;
+    }
+
     getEntryDotClass(entry: LeadStatusHistory): string {
+        if (this.isCommentEvent(entry)) return 'dot-comment';
         if (this.isAssignmentEvent(entry)) return 'dot-default';
+        if (this.isScheduledActivityEvent(entry)) return this.getDotClass(entry.scheduled_status_name || '');
         return this.getDotClass(entry.new_status_name || '');
+    }
+
+    getEventHeading(entry: LeadStatusHistory): string {
+        if (this.isScheduledActivityEvent(entry)) {
+            return `${entry.scheduled_status_name || 'Activity'} Scheduled`;
+        }
+        if (this.isCommentEvent(entry)) return 'Comment Added';
+        if (this.isAssignmentEvent(entry)) return 'Lead Reassigned';
+        return '';
+    }
+
+    getScheduledActivityDisplay(entry: LeadStatusHistory): string {
+        if (!entry.scheduled_at) return '';
+        return new Date(entry.scheduled_at).toLocaleString();
+    }
+
+    getEntryDateLabel(entry: LeadStatusHistory): string {
+        return new Date(entry.changed_at).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    getEntryTimeLabel(entry: LeadStatusHistory): string {
+        return new Date(entry.changed_at).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    formatCallTime(value: string | null): string {
+        if (!value) return '-';
+
+        const raw = value.includes('T') ? value.split('T')[1] : value;
+        const [hours, minutes, seconds = '00'] = raw.split(':');
+        const date = new Date();
+        date.setHours(Number(hours), Number(minutes), Number(seconds), 0);
+
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+    }
+
+    shouldShowDateDivider(index: number): boolean {
+        if (index === 0) return true;
+
+        const currentDate = new Date(this.statusHistory[index].changed_at).toDateString();
+        const previousDate = new Date(this.statusHistory[index - 1].changed_at).toDateString();
+
+        return currentDate !== previousDate;
+    }
+
+    scrollHistoryToBottom(): void {
+        const container = this.historyTimeline?.nativeElement;
+        if (!container) return;
+        container.scrollTop = container.scrollHeight;
     }
 
     goBack(): void {
@@ -193,6 +309,56 @@ export class LeadDetailsComponent implements OnInit {
         this.newStatusId = '';
         this.newRemarks = '';
         this.showAddDialog = true;
+    }
+
+    openScheduleActivityDialog(): void {
+        this.scheduledStatusId = '';
+        this.scheduledActivityDate = '';
+        this.scheduledActivityTime = '';
+        this.scheduledActivityRemarks = '';
+        this.showScheduleActivityDialog = true;
+    }
+
+    saveScheduledActivity(): void {
+        if (!this.leadId || !this.scheduledStatusId || !this.scheduledActivityDate || !this.scheduledActivityTime) {
+            this.toastr.warning('Please select a status, date, and time');
+            return;
+        }
+
+        const scheduledAt = `${this.scheduledActivityDate}T${this.scheduledActivityTime}:00`;
+
+        this.leadsService.scheduleActivity(this.leadId, {
+            status_id: this.scheduledStatusId,
+            scheduled_at: scheduledAt,
+            remarks: this.scheduledActivityRemarks
+        }).subscribe({
+            next: () => {
+                this.toastr.success('Activity scheduled successfully');
+                this.showScheduleActivityDialog = false;
+                this.loadLead();
+                this.loadHistory();
+            },
+            error: (err) => this.toastr.error(err?.error?.error || 'Failed to schedule activity')
+        });
+    }
+
+    saveComment(): void {
+        const commentText = this.newCommentText.trim();
+        if (!this.leadId || !commentText) {
+            this.toastr.warning('Please enter a comment');
+            return;
+        }
+
+        this.leadsService.addComment(this.leadId, {
+            comment_text: commentText
+        }).subscribe({
+            next: () => {
+                this.toastr.success('Comment added');
+                this.newCommentText = '';
+                this.loadHistory();
+            },
+            error: (err) => this.toastr.error(err?.error?.error || 'Failed to add comment')
+        });
     }
 
     saveNewStatus(): void {
