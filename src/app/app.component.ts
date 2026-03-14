@@ -53,6 +53,21 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Project', icon: 'assignment', route: '/projects' },
     { label: 'Call Logs', icon: 'call', route: '/call-logs' },
     { label: 'Audit Trail', icon: 'history', route: '/audit-trail' },
+
+    {
+      label: 'Configure',
+      icon: 'settings',
+      children: [
+        {
+          label: 'Add Activity',
+          route: '/configure/add-activity'
+        },
+        {
+          label: 'Add Source',
+          route: '/configure/add-source'
+        }
+      ]
+    }
   ];
 
   constructor(
@@ -65,7 +80,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.menuItems = this.allMenuItems;
 
-    // Profile menu
     this.profileMenuItems = [
       {
         label: 'Profile',
@@ -93,7 +107,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.fullName = localStorage.getItem('fullName');
         this.role = localStorage.getItem('role');
 
-        // Restore Reports menu logic
         this.menuItems = [...this.allMenuItems];
 
         if (this.role === 'ADMIN' || this.role === 'Sales Manager') {
@@ -111,8 +124,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isForgotPasswordPage = url.startsWith('/forgot-password');
         this.isResetPasswordPage = url.startsWith('/reset-password');
 
+        /* FIXED LINE */
         const found = this.allMenuItems.find((m) =>
-          url.startsWith(m.route)
+          (m.route && url.startsWith(m.route)) ||
+          (m.children && m.children.some((child: any) => child.route && url.startsWith(child.route)))
         );
 
         this.selectedItem = found ? found.label : '';
@@ -161,6 +176,26 @@ export class AppComponent implements OnInit, OnDestroy {
       ];
     }
 
+    else if (url.startsWith('/configure/add-activity')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Add Activity' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/add-source')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Add Source' }
+      ];
+    }
+
+    else if (url.startsWith('/configure')) {
+      this.breadcrumbs = [
+        { label: 'Configure' }
+      ];
+    }
+
     else {
       this.breadcrumbs = [];
     }
@@ -170,10 +205,6 @@ export class AppComponent implements OnInit, OnDestroy {
   onResize(event: any) {
     this.isDesktop = event.target.innerWidth > 768;
   }
-
-  /* =========================
-     LOAD NOTIFICATIONS
-     ========================= */
 
   loadNotifications(): void {
 
@@ -192,10 +223,6 @@ export class AppComponent implements OnInit, OnDestroy {
     );
   }
 
-  /* =========================
-     TOGGLE DROPDOWN
-     ========================= */
-
   toggleNotifications(): void {
 
     this.showNotificationDropdown =
@@ -205,10 +232,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.loadNotifications();
     }
   }
-
-  /* =========================
-     MARK SINGLE NOTIFICATION READ
-     ========================= */
 
   markAsRead(notificationId: number): void {
 
@@ -230,10 +253,6 @@ export class AppComponent implements OnInit, OnDestroy {
         console.error('Failed to mark notification as read', error);
       });
   }
-
-  /* =========================
-     LOGOUT
-     ========================= */
 
   logout(): void {
 

@@ -14,7 +14,10 @@ import { UserRegistrationComponent } from './users/users-registration/user-regis
 import { UserDetailsComponent } from './users/user-details/user-details.component';
 
 import { DatabackupsComponent } from './databackups/databackups.component';
+
 import { ConfigureComponent } from './configure/configure.component';
+import { AddActivityComponent } from './configure/add-activity/add-activity.component';
+import { AddSourceComponent } from './configure/add-source/add-source.component';
 
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
@@ -65,8 +68,16 @@ const routes: Routes = [
       // DATA BACKUPS
       { path: 'databackups', component: DatabackupsComponent },
 
-      // CONFIGURE
-      { path: 'configure', component: ConfigureComponent },
+      // CONFIGURE MODULE
+      {
+        path: 'configure',
+        component: ConfigureComponent,
+        children: [
+          { path: 'add-activity', component: AddActivityComponent },
+          { path: 'add-source', component: AddSourceComponent },
+          { path: '', redirectTo: 'add-activity', pathMatch: 'full' }
+        ]
+      },
 
       // LEADS
       { path: 'leads', component: LeadsListComponent },

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { ConfigureComponent } from './configure.component';
+import { AddActivityComponent } from './add-activity.component';
 
-describe('ConfigureComponent', () => {
-  let component: ConfigureComponent;
-  let fixture: ComponentFixture<ConfigureComponent>;
+describe('AddActivityComponent', () => {
+  let component: AddActivityComponent;
+  let fixture: ComponentFixture<AddActivityComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfigureComponent],
+      declarations: [AddActivityComponent],
       schemas: [NO_ERRORS_SCHEMA]
     });
-    fixture = TestBed.createComponent(ConfigureComponent);
+    fixture = TestBed.createComponent(AddActivityComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
