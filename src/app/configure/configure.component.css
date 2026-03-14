@@ -1,6 +1,8 @@
 .page-container {
   padding: 24px;
-  max-width: 1200px;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 }
 
 .page-header {

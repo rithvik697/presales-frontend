@@ -1,0 +1,115 @@
+<div class="source-page">
+  <div class="card source-card">
+    <div class="page-header">
+      <h2>Add Source</h2>
+      <p class="subtitle">
+        Add a new lead source for lead creation and tracking.
+      </p>
+    </div>
+
+    <div class="summary-row">
+      <span>Existing Sources</span>
+      <strong>{{ sources.length }}</strong>
+    </div>
+
+    <form (ngSubmit)="saveSource()" #sourceForm="ngForm">
+      <div class="section">
+        <h3>Source Details</h3>
+
+        <div class="grid">
+          <div class="form-row">
+            <label for="sourceName">Source Name *</label>
+            <input
+              id="sourceName"
+              type="text"
+              name="sourceName"
+              [(ngModel)]="sourceName"
+              #nameField="ngModel"
+              required
+              maxlength="100"
+              placeholder="Enter source name" />
+            <small class="error" *ngIf="nameField.invalid && nameField.touched">
+              Source name is required
+            </small>
+          </div>
+
+          <div class="form-row">
+            <label for="sourceCategory">Source Category *</label>
+            <select
+              id="sourceCategory"
+              name="sourceCategory"
+              [(ngModel)]="sourceCategory"
+              #categoryField="ngModel"
+              required>
+              <option value="">Select category</option>
+              <option *ngFor="let category of sourceCategories" [value]="category">
+                {{ category }}
+              </option>
+            </select>
+            <small class="error" *ngIf="categoryField.invalid && categoryField.touched">
+              Source category is required
+            </small>
+          </div>
+
+          <div class="form-row full">
+            <label for="sourceDescription">Description</label>
+            <textarea
+              id="sourceDescription"
+              name="sourceDescription"
+              [(ngModel)]="sourceDescription"
+              rows="4"
+              maxlength="180"
+              placeholder="Add a short description for this lead source">
+            </textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="message success" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <div class="message error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="resetForm(sourceForm)">
+          Reset
+        </button>
+        <button
+          type="submit"
+          [disabled]="sourceForm.invalid">
+          Save Source
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card summary-card">
+    <div class="summary-header">
+      <h3>Existing Lead Sources</h3>
+    </div>
+
+    <div class="source-list" *ngIf="sources.length; else emptyState">
+      <div class="source-item" *ngFor="let source of sources">
+        <div class="source-main">
+          <div class="source-title-row">
+            <span class="source-name">{{ source.name }}</span>
+            <span class="source-code">{{ source.id }}</span>
+          </div>
+          <p class="source-description">{{ source.category }}</p>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        No sources added yet.
+      </div>
+    </ng-template>
+  </div>
+</div>

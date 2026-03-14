@@ -1,8 +1,9 @@
-.activity-page {
+.source-page {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.95fr);
   gap: 20px;
   align-items: start;
+  min-height: 540px;
   width: 100%;
 }
 
@@ -13,11 +14,7 @@
   border: 1px solid #e5e7eb;
 }
 
-.activity-page {
-  min-height: 540px;
-}
-
-.activity-card,
+.source-card,
 .summary-card {
   align-self: start;
   height: 540px;
@@ -97,6 +94,7 @@
 }
 
 .form-row input,
+.form-row select,
 .form-row textarea {
   width: 100%;
   padding: 8px 10px;
@@ -105,9 +103,11 @@
   border: 1px solid #d1d5db;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   resize: vertical;
+  background: #ffffff;
 }
 
 .form-row input:focus,
+.form-row select:focus,
 .form-row textarea:focus {
   outline: none;
   border-color: #2563eb;
@@ -170,59 +170,41 @@ small.error {
   color: #111827;
 }
 
-.status-list {
+.source-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: 540px;
+  max-height: 460px;
   overflow-y: auto;
   padding-right: 6px;
 }
 
-.status-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  min-height: 96px;
+.source-item {
   padding: 14px 16px;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
   background: #f9fafb;
 }
 
-.status-order {
-  width: 28px;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #e5e7eb;
-  color: #374151;
-  font-size: 12px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.status-main {
+.source-main {
   min-width: 0;
   flex: 1;
 }
 
-.status-title-row {
+.source-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-.status-name {
+.source-name {
   font-size: 15px;
   font-weight: 600;
   color: #111827;
 }
 
-.status-code {
+.source-code {
   padding: 4px 8px;
   border-radius: 4px;
   background: #eef2ff;
@@ -231,7 +213,7 @@ small.error {
   font-weight: 700;
 }
 
-.status-description {
+.source-description {
   margin: 6px 0 0;
   font-size: 12px;
   color: #6b7280;
@@ -247,33 +229,33 @@ small.error {
 }
 
 @media (max-width: 1100px) {
-  .activity-page {
+  .source-page {
     grid-template-columns: 1fr;
     min-height: auto;
   }
 
-  .activity-card,
+  .source-card,
   .summary-card {
     height: auto;
     overflow-y: visible;
   }
 
-  .status-list {
+  .source-list {
     max-height: 420px;
   }
 }
 
 @media (max-width: 768px) {
-  .activity-page {
+  .source-page {
     min-height: auto;
   }
 
-  .activity-card,
+  .source-card,
   .summary-card {
     overflow-y: visible;
   }
 
-  .status-list {
+  .source-list {
     max-height: none;
     overflow-y: visible;
     padding-right: 0;

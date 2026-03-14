@@ -84,6 +84,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
 /* ------------------ Interceptors ------------------ */
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AddActivityComponent } from './configure/add-activity/add-activity.component';
+import { AddSourceComponent } from './configure/add-source/add-source.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +99,7 @@ import { AddActivityComponent } from './configure/add-activity/add-activity.comp
     DashboardComponent,
     ConfigureComponent,
     AddActivityComponent,
+    AddSourceComponent,
     DatabackupsComponent,
 
     LeadsListComponent,

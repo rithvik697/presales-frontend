@@ -61,6 +61,10 @@ export class AppComponent implements OnInit, OnDestroy {
         {
           label: 'Add Activity',
           route: '/configure/add-activity'
+        },
+        {
+          label: 'Add Source',
+          route: '/configure/add-source'
         }
       ]
     }
@@ -176,6 +180,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Configure', routerLink: '/configure' },
         { label: 'Add Activity' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/add-source')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Add Source' }
       ];
     }
 
