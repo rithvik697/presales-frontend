@@ -1,0 +1,281 @@
+.activity-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.9fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.activity-page {
+  min-height: 540px;
+}
+
+.activity-card,
+.summary-card {
+  align-self: start;
+  height: 540px;
+  overflow: hidden;
+}
+
+.page-header {
+  margin-bottom: 16px;
+}
+
+.page-header h2,
+.summary-header h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.summary-header {
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  margin-bottom: 24px;
+  background: #f9fafb;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.summary-row span,
+.summary-row strong {
+  font-size: 14px;
+  color: #111827;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section h3 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row.full {
+  grid-column: 1 / -1;
+}
+
+.form-row label {
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  resize: vertical;
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.message {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.message.success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.message.error,
+.error {
+  color: #b91c1c;
+}
+
+.message.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+small.error {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 4px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-actions button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.form-actions .secondary-btn {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 540px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.status-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 96px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #f9fafb;
+}
+
+.status-order {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.status-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.status-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.status-code {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #eef2ff;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.status-description {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.empty-state {
+  padding: 18px;
+  border-radius: 4px;
+  background: #f9fafb;
+  color: #6b7280;
+  text-align: center;
+  border: 1px dashed #d1d5db;
+}
+
+@media (max-width: 768px) {
+  .activity-page {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .activity-card,
+  .summary-card {
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .status-list {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row.full {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

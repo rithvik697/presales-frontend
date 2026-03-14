@@ -1,0 +1,25 @@
+.page-container {
+  padding: 24px;
+  max-width: 1200px;
+}
+
+.page-header {
+  margin-bottom: 16px;
+}
+
+.configure-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.configure-content {
+  min-height: 0;
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 16px;
+  }
+}

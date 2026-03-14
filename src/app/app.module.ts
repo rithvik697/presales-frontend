@@ -75,6 +75,7 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
 import { CallLogsComponent } from './call-logs/call-logs.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ReportsComponent } from './reports/reports.component';
+
 import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 
 /* ------------------ Pipes ------------------ */
@@ -82,6 +83,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
 
 /* ------------------ Interceptors ------------------ */
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AddActivityComponent } from './configure/add-activity/add-activity.component';
 
 @NgModule({
   declarations: [
@@ -95,6 +97,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 
     DashboardComponent,
     ConfigureComponent,
+    AddActivityComponent,
     DatabackupsComponent,
 
     LeadsListComponent,
