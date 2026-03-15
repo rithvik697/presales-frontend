@@ -28,17 +28,17 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>First Name **</mat-label>
-        <input matInput name="firstName" required [(ngModel)]="model.firstName"[disabled]="!isAdmin && isEditMode" />
+        <input matInput name="firstName" required [(ngModel)]="model.firstName" [disabled]="!isAdmin && isEditMode" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Middle Name</mat-label>
-        <input matInput name="middleName" [(ngModel)]="model.middleName" [disabled]="!isAdmin && isEditMode"/>
+        <input matInput name="middleName" [(ngModel)]="model.middleName" [disabled]="!isAdmin && isEditMode" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Last Name **</mat-label>
-        <input matInput name="lastName" required [(ngModel)]="model.lastName"[disabled]="!isAdmin && isEditMode" />
+        <input matInput name="lastName" required [(ngModel)]="model.lastName" [disabled]="!isAdmin && isEditMode" />
       </mat-form-field>
     </div>
 
@@ -58,13 +58,9 @@
 
         <mat-form-field appearance="outline" class="phone-field" [class.readonly-field]="!isAdmin && isEditMode">
           <mat-label>Phone Number **</mat-label>
-          <input matInput name="phone" required [(ngModel)]="model.phone"
-                 (input)="onPhoneInput($event, true)"
-                 [readonly]="isEditMode"
-                 [disabled]="!isAdmin && isEditMode"
-                 type="tel"
-                 pattern="[0-9]*"
-                 [maxlength]="selectedCountryCode.limit" />
+          <input matInput name="phone" required [(ngModel)]="model.phone" (input)="onPhoneInput($event, true)"
+            [readonly]="isEditMode" [disabled]="!isAdmin && isEditMode" type="tel" pattern="[0-9]*"
+            [maxlength]="selectedCountryCode.limit" />
           <mat-hint align="end">
             {{model.phone.length || 0}} / {{selectedCountryCode.limit}}
           </mat-hint>
@@ -76,7 +72,7 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Email</mat-label>
-        <input matInput name="email" type="email" [(ngModel)]="model.email"[disabled]="!isAdmin && isEditMode" />
+        <input matInput name="email" type="email" [(ngModel)]="model.email" [disabled]="!isAdmin && isEditMode" />
       </mat-form-field>
     </div>
 
@@ -84,12 +80,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Alternate Number</mat-label>
-        <input matInput name="alternatePhone"
-               [(ngModel)]="model.alternatePhone"
-               type="tel"
-               pattern="[0-9]*"
-               (input)="onPhoneInput($event, false)"
-               [maxlength]="selectedCountryCode.limit" />
+        <input matInput name="alternatePhone" [(ngModel)]="model.alternatePhone" type="tel" pattern="[0-9]*"
+          (input)="onPhoneInput($event, false)" [maxlength]="selectedCountryCode.limit" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
@@ -136,9 +128,8 @@
         </mat-select>
       </mat-form-field>
 
-     <!-- ADMIN / SALES MANAGER -->
-      <mat-form-field appearance="outline" class="form-field"
-        *ngIf="isAdmin || isManager">
+      <!-- ADMIN / SALES MANAGER -->
+      <mat-form-field appearance="outline" class="form-field" *ngIf="isAdmin || isManager">
 
         <mat-label>Assigned To</mat-label>
 
@@ -165,8 +156,7 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Description</mat-label>
-        <textarea matInput name="description" rows="3"
-                  [(ngModel)]="model.description"></textarea>
+        <textarea matInput name="description" rows="3" [(ngModel)]="model.description"></textarea>
       </mat-form-field>
     </div>
 

@@ -224,23 +224,23 @@ export class LeadsListComponent implements OnInit, OnDestroy {
         if (!lead.createdAt) return false;
 
         const leadDate = new Date(lead.createdAt);
-        leadDate.setHours(0,0,0,0);
+        leadDate.setHours(0, 0, 0, 0);
 
         if (filters.fromDate) {
           const from = new Date(filters.fromDate);
-          from.setHours(0,0,0,0);
+          from.setHours(0, 0, 0, 0);
 
           if (leadDate < from) return false;
         }
 
         if (filters.toDate) {
           const to = new Date(filters.toDate);
-          to.setHours(23,59,59,999);
+          to.setHours(23, 59, 59, 999);
 
           if (leadDate > to) return false;
         }
       }
-      
+
       return true;
     });
   }
@@ -295,4 +295,3 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
-

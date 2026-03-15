@@ -210,12 +210,14 @@
                                             {{ getEventHeading(entry) }}
                                         </span>
                                     </div>
-                                    <div class="status-transition" *ngIf="!isAssignmentEvent(entry) && !isScheduledActivityEvent(entry) && !isCommentEvent(entry)">
+                                    <div class="status-transition"
+                                        *ngIf="!isAssignmentEvent(entry) && !isScheduledActivityEvent(entry) && !isCommentEvent(entry)">
                                         <span class="activity-type-badge type-default" *ngIf="entry.old_status_name">
                                             {{ entry.old_status_name }}
                                         </span>
                                         <i class="pi pi-arrow-right transition-arrow" *ngIf="entry.old_status_name"></i>
-                                        <span class="activity-type-badge" [ngClass]="getBadgeClass(entry.new_status_name || '')">
+                                        <span class="activity-type-badge"
+                                            [ngClass]="getBadgeClass(entry.new_status_name || '')">
                                             {{ entry.new_status_name }}
                                         </span>
                                     </div>
@@ -237,8 +239,8 @@
                                     <div class="timeline-detail" *ngIf="isCommentEvent(entry)">
                                         <span class="detail-label">Current Status:</span>
                                         <span class="detail-value">
-                                            <span class="status-badge-sm" [ngClass]="getStatusClass(lead?.status)">
-                                                {{ lead?.status || 'N/A' }}
+                                            <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">
+                                                {{ lead.status || 'N/A' }}
                                             </span>
                                         </span>
                                     </div>
@@ -250,13 +252,16 @@
                                         <span class="detail-label">Assignment:</span>
                                         <span class="detail-value">Lead reassigned</span>
                                     </div>
-                                    <div class="timeline-detail" *ngIf="entry.remarks && !isAssignmentEvent(entry) && !isCommentEvent(entry)">
+                                    <div class="timeline-detail"
+                                        *ngIf="entry.remarks && !isAssignmentEvent(entry) && !isCommentEvent(entry)">
                                         <span class="detail-label">Remarks:</span>
                                         <span class="detail-value">{{ entry.remarks }}</span>
                                     </div>
                                     <div class="timeline-detail">
-                                        <span class="detail-label">{{ isCommentEvent(entry) ? 'Posted by:' : 'Changed by:' }}</span>
-                                        <span class="detail-value">{{ entry.changed_by_name || entry.changed_by }}</span>
+                                        <span class="detail-label">{{ isCommentEvent(entry) ? 'Posted by:' : 'Changed
+                                            by:' }}</span>
+                                        <span class="detail-value">{{ entry.changed_by_name || entry.changed_by
+                                            }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -266,10 +271,7 @@
 
                 <div class="comment-composer comment-composer-sticky">
                     <div class="comment-composer-shell">
-                        <textarea
-                            [(ngModel)]="newCommentText"
-                            class="comment-textarea"
-                            rows="1"
+                        <textarea [(ngModel)]="newCommentText" class="comment-textarea" rows="1"
                             placeholder="Enter a comment..."></textarea>
                         <button class="post-comment-btn" (click)="saveComment()" title="Post Comment">
                             <i class="pi pi-send"></i>
@@ -336,14 +338,13 @@
 </div>
 
 <!-- ═══════ CHANGE STATUS DIALOG ═══════ -->
-<p-dialog header="Change Lead Status" [(visible)]="showAddDialog"
-    [modal]="true" [style]="{width: '480px'}" appendTo="body" styleClass="edit-activity-dialog">
+<p-dialog header="Change Lead Status" [(visible)]="showAddDialog" [modal]="true" [style]="{width: '480px'}"
+    appendTo="body" styleClass="edit-activity-dialog">
     <div class="dialog-form">
         <div class="form-field mb-3">
             <label>New Status *</label>
-            <p-dropdown [options]="statusOptions" [(ngModel)]="newStatusId"
-                optionLabel="status_name" optionValue="status_id"
-                styleClass="w-full" appendTo="body" [filter]="true"
+            <p-dropdown [options]="statusOptions" [(ngModel)]="newStatusId" optionLabel="status_name"
+                optionValue="status_id" styleClass="w-full" appendTo="body" [filter]="true"
                 placeholder="Select status to move to"></p-dropdown>
         </div>
         <div class="form-field mb-3">
@@ -357,9 +358,11 @@
                 <div class="summary-item"><label>Name</label><span>{{ lead.name }}</span></div>
                 <div class="summary-item"><label>Phone</label><span>{{ lead.phone }}</span></div>
                 <div class="summary-item"><label>Current Status</label>
-                    <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A' }}</span>
+                    <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A'
+                        }}</span>
                 </div>
-                <div class="summary-item"><label>Assigned To</label><span>{{ lead.assignedTo || 'Unassigned' }}</span></div>
+                <div class="summary-item"><label>Assigned To</label><span>{{ lead.assignedTo || 'Unassigned' }}</span>
+                </div>
             </div>
         </div>
         <div class="form-actions mt-4">
@@ -371,14 +374,13 @@
     </div>
 </p-dialog>
 
-<p-dialog header="Schedule Activity" [(visible)]="showScheduleActivityDialog"
-    [modal]="true" [style]="{width: '480px'}" appendTo="body" styleClass="edit-activity-dialog">
+<p-dialog header="Schedule Activity" [(visible)]="showScheduleActivityDialog" [modal]="true" [style]="{width: '480px'}"
+    appendTo="body" styleClass="edit-activity-dialog">
     <div class="dialog-form">
         <div class="form-field mb-3">
             <label>Status *</label>
-            <p-dropdown [options]="statusOptions" [(ngModel)]="scheduledStatusId"
-                optionLabel="status_name" optionValue="status_id"
-                styleClass="w-full" appendTo="body" [filter]="true"
+            <p-dropdown [options]="statusOptions" [(ngModel)]="scheduledStatusId" optionLabel="status_name"
+                optionValue="status_id" styleClass="w-full" appendTo="body" [filter]="true"
                 placeholder="Select activity/status"></p-dropdown>
         </div>
         <div class="form-field mb-3">
@@ -400,9 +402,11 @@
                 <div class="summary-item"><label>Name</label><span>{{ lead.name }}</span></div>
                 <div class="summary-item"><label>Phone</label><span>{{ lead.phone }}</span></div>
                 <div class="summary-item"><label>Current Status</label>
-                    <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A' }}</span>
+                    <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A'
+                        }}</span>
                 </div>
-                <div class="summary-item"><label>Assigned To</label><span>{{ lead.assignedTo || 'Unassigned' }}</span></div>
+                <div class="summary-item"><label>Assigned To</label><span>{{ lead.assignedTo || 'Unassigned' }}</span>
+                </div>
             </div>
         </div>
         <div class="form-actions mt-4">

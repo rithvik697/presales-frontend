@@ -55,80 +55,80 @@ export class LeadCreateComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private authService: AuthService
-  
+
   ) { }
 
   ngOnInit(): void {
 
-  this.isAdmin = this.authService.isAdmin();
-  this.isManager = this.authService.isManager();
+    this.isAdmin = this.authService.isAdmin();
+    this.isManager = this.authService.isManager();
 
-  // Auto assign lead to sales executive
-  if (!this.isAdmin && !this.isManager) {
-    this.model.assignedTo = this.authService.getUserId() || '';
-  }
+    // Auto assign lead to sales executive
+    if (!this.isAdmin && !this.isManager) {
+      this.model.assignedTo = this.authService.getUserId() || '';
+    }
 
-  // Edit mode check
-  this.leadId = this.route.snapshot.paramMap.get('id');
-  if (this.leadId) {
-    this.isEditMode = true;
-    this.breadcrumbItems = [
-      { label: 'Leads', routerLink: '/leads' },
-      { label: 'Lead Details', routerLink: ['/leads/details', this.leadId] },
-      { label: 'Edit Lead' }
-    ];
-    this.loadLead(this.leadId);
-  } else {
-    this.breadcrumbItems = [
-      { label: 'Leads', routerLink: '/leads' },
-      { label: 'Create Lead' }
-    ];
-  }
+    // Edit mode check
+    this.leadId = this.route.snapshot.paramMap.get('id');
+    if (this.leadId) {
+      this.isEditMode = true;
+      this.breadcrumbItems = [
+        { label: 'Leads', routerLink: '/leads' },
+        { label: 'Lead Details', routerLink: ['/leads/details', this.leadId] },
+        { label: 'Edit Lead' }
+      ];
+      this.loadLead(this.leadId);
+    } else {
+      this.breadcrumbItems = [
+        { label: 'Leads', routerLink: '/leads' },
+        { label: 'Create Lead' }
+      ];
+    }
 
-  // Load employees only for Admin / Manager
-  if (this.isAdmin || this.isManager) {
-    this.leadsService.getEmployees().subscribe({
-      next: (emps) => this.employees = emps,
-      error: () => this.toastr.error('Failed to load employees')
+    // Load employees only for Admin / Manager
+    if (this.isAdmin || this.isManager) {
+      this.leadsService.getEmployees().subscribe({
+        next: (emps) => this.employees = emps,
+        error: () => this.toastr.error('Failed to load employees')
+      });
+    }
+
+    // Projects
+    this.leadsService.getProjects().subscribe({
+      next: (data) => this.projects = data,
+      error: () => this.toastr.error('Failed to load projects')
     });
+
+    // Sources
+    this.leadsService.getSources().subscribe({
+      next: (data) => this.sources = data,
+      error: () => this.toastr.error('Failed to load sources')
+    });
+
+    // Statuses
+    this.leadsService.getStatuses().subscribe({
+      next: (data) => this.statuses = data,
+      error: () => this.toastr.error('Failed to load statuses')
+    });
+
   }
-
-  // Projects
-  this.leadsService.getProjects().subscribe({
-    next: (data) => this.projects = data,
-    error: () => this.toastr.error('Failed to load projects')
-  });
-
-  // Sources
-  this.leadsService.getSources().subscribe({
-    next: (data) => this.sources = data,
-    error: () => this.toastr.error('Failed to load sources')
-  });
-
-  // Statuses
-  this.leadsService.getStatuses().subscribe({
-    next: (data) => this.statuses = data,
-    error: () => this.toastr.error('Failed to load statuses')
-  });
-
-}
 
   loadLead(id: string) {
-  this.leadsService.getById(id).subscribe({
+    this.leadsService.getById(id).subscribe({
       next: (lead) => {
         this.model = lead;
 
         // Bind dropdowns to IDs (not names) so mat-select can match them
-      if (lead.projectId)    { this.model.project    = lead.projectId; }
-      if (lead.sourceId)     { this.model.source     = lead.sourceId; }
-      if (lead.statusId)     { this.model.status     = lead.statusId; }
-      if (lead.assignedToId) { this.model.assignedTo = lead.assignedToId; }
+        if (lead.projectId) { this.model.project = lead.projectId; }
+        if (lead.sourceId) { this.model.source = lead.sourceId; }
+        if (lead.statusId) { this.model.status = lead.statusId; }
+        if (lead.assignedToId) { this.model.assignedTo = lead.assignedToId; }
 
         // Parse full name into first/last
         if (lead.name) {
-        const parts = lead.name.split(' ');
-        this.model.firstName = parts[0] || '';
-        this.model.lastName = parts.slice(1).join(' ') || '';
+          const parts = lead.name.split(' ');
+          this.model.firstName = parts[0] || '';
+          this.model.lastName = parts.slice(1).join(' ') || '';
         }
 
         // Extract country code from phone
@@ -137,12 +137,12 @@ export class LeadCreateComponent implements OnInit {
             .sort((a, b) => b.code.length - a.code.length)
             .find(c => this.model.phone.startsWith(c.code));
 
-        if (found) {
+          if (found) {
             this.selectedCountryCode = found;
             this.model.phone = this.model.phone.replace(found.code, '').trim();
+          }
         }
-      }
-    },
+      },
       error: () => this.toastr.error('Failed to load lead')
     });
   }
