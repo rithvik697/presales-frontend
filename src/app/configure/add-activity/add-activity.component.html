@@ -1,0 +1,110 @@
+<div class="activity-page">
+  <div class="card activity-card">
+    <div class="page-header">
+      <h2>Add Activity</h2>
+      <p class="subtitle">
+        Add a new activity status for lead status updates.
+      </p>
+    </div>
+
+    <div class="summary-row">
+      <span>Existing Activities</span>
+      <strong>{{ activityStatuses.length }}</strong>
+    </div>
+
+    <form (ngSubmit)="saveActivity()" #activityForm="ngForm">
+      <div class="section">
+        <h3>Activity Details</h3>
+
+        <div class="grid">
+          <div class="form-row">
+            <label for="activityStatus">Activity Status *</label>
+            <input
+              id="activityStatus"
+              type="text"
+              name="activityStatus"
+              [(ngModel)]="activityStatus"
+              #statusField="ngModel"
+              required
+              maxlength="50"
+              placeholder="Enter activity status" />
+            <small class="error" *ngIf="statusField.invalid && statusField.touched">
+              Activity status is required
+            </small>
+          </div>
+
+          <div class="form-row">
+            <label for="pipelineOrder">Pipeline Order *</label>
+            <input
+              id="pipelineOrder"
+              type="number"
+              name="pipelineOrder"
+              [(ngModel)]="pipelineOrder"
+              min="1"
+              required
+              placeholder="Enter pipeline order" />
+          </div>
+
+          <div class="form-row full">
+            <label for="activityDescription">Description</label>
+            <textarea
+              id="activityDescription"
+              name="activityDescription"
+              [(ngModel)]="activityDescription"
+              rows="4"
+              maxlength="180"
+              placeholder="Add a short description for when this status should be used">
+            </textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="message success" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <div class="message error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="resetForm(activityForm)">
+          Reset
+        </button>
+        <button
+          type="submit"
+          [disabled]="activityForm.invalid">
+          Save Activity Status
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card summary-card">
+    <div class="summary-header">
+      <h3>Existing Activity Statuses</h3>
+    </div>
+
+    <div class="status-list" *ngIf="activityStatuses.length; else emptyState">
+      <div class="status-item" *ngFor="let status of activityStatuses">
+        <div class="status-order">{{ status.pipelineOrder }}</div>
+        <div class="status-main">
+          <div class="status-title-row">
+            <span class="status-name">{{ status.name }}</span>
+            <span class="status-code">{{ status.id }}</span>
+          </div>
+          <p class="status-description">{{ status.category }}</p>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        No activity statuses added yet.
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -397,3 +397,11 @@
 .status-toggle-pill:hover {
   transform: scale(1.05);
 }
+
+
+.user-link {
+  text-decoration: underline;
+  color: #1976d2;
+  font-weight: 500;
+  cursor: pointer;
+}

@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
+import { NotificationService } from './services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -18,17 +19,19 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy {
+
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
   isDesktop: boolean = window.innerWidth > 768;
   selectedItem: string = '';
+
   username: string | null = null;
   fullName: string | null = null;
   role: string | null = null;
   showLogout: boolean = false;
   isLoginPage: boolean = false;
   isChangePasswordPage: boolean = false;
-  isForgotPasswordPage:boolean = false;
+  isForgotPasswordPage: boolean = false;
   isResetPasswordPage: boolean = false;
 
   notifications: any[] = [];
@@ -39,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy {
   breadcrumbs: MenuItem[] = [];
   profileMenuItems: MenuItem[] = [];
 
-  // Home now correctly goes to Dashboard
   home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
   private routerSub!: Subscription;
@@ -50,31 +52,46 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Users', icon: 'people', route: '/users' },
     { label: 'Project', icon: 'assignment', route: '/projects' },
     { label: 'Call Logs', icon: 'call', route: '/call-logs' },
-    { label : 'Audit Trail', icon: 'history', route: '/audit-trail' },
+    { label: 'Audit Trail', icon: 'history', route: '/audit-trail' },
+
+    {
+      label: 'Configure',
+      icon: 'settings',
+      children: [
+        {
+          label: 'Add Activity',
+          route: '/configure/add-activity'
+        },
+        {
+          label: 'Add Source',
+          route: '/configure/add-source'
+        }
+      ]
+    }
   ];
 
-  constructor(private router: Router, private toastr: ToastrService) {}
+  constructor(
+    private router: Router,
+    private toastr: ToastrService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
+
     this.menuItems = this.allMenuItems;
 
-    // Initialize profile menu items
     this.profileMenuItems = [
       {
         label: 'Profile',
         icon: 'pi pi-user',
-        // TODO: Implement profile page
         command: () => this.router.navigate(['/profile'])
       },
       {
         label: 'Settings',
         icon: 'pi pi-cog',
-        // TODO: Implement settings page
         command: () => {}
       },
-      {
-        separator: true
-      },
+      { separator: true },
       {
         label: 'Logout',
         icon: 'pi pi-sign-out',
@@ -90,10 +107,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.fullName = localStorage.getItem('fullName');
         this.role = localStorage.getItem('role');
 
-        // Restore Reports menu logic
         this.menuItems = [...this.allMenuItems];
+
         if (this.role === 'ADMIN' || this.role === 'Sales Manager') {
-          this.menuItems.push({ label: 'Reports', icon: 'bar_chart', route: '/reports' });
+          this.menuItems.push({
+            label: 'Reports',
+            icon: 'bar_chart',
+            route: '/reports'
+          });
         }
 
         const url: string = e.urlAfterRedirects || e.url;
@@ -103,9 +124,12 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isForgotPasswordPage = url.startsWith('/forgot-password');
         this.isResetPasswordPage = url.startsWith('/reset-password');
 
+        /* FIXED LINE */
         const found = this.allMenuItems.find((m) =>
-          url.startsWith(m.route)
+          (m.route && url.startsWith(m.route)) ||
+          (m.children && m.children.some((child: any) => child.route && url.startsWith(child.route)))
         );
+
         this.selectedItem = found ? found.label : '';
 
         this.updateBreadcrumbs(url);
@@ -118,16 +142,20 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ✅ FIXED BREADCRUMB LOGIC
   updateBreadcrumbs(url: string): void {
 
-    if (this.isLoginPage || this.isChangePasswordPage || this.isForgotPasswordPage || this.isResetPasswordPage) {
+    if (
+      this.isLoginPage ||
+      this.isChangePasswordPage ||
+      this.isForgotPasswordPage ||
+      this.isResetPasswordPage
+    ) {
       this.breadcrumbs = [];
       return;
     }
 
-    // USERS REGISTER (ADD + EDIT)
     if (url.startsWith('/users/register')) {
+
       const isEdit = url.includes('id=');
 
       this.breadcrumbs = [
@@ -136,17 +164,35 @@ export class AppComponent implements OnInit, OnDestroy {
       ];
     }
 
-    // USERS LIST
     else if (url.startsWith('/users')) {
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
       ];
     }
 
-    // DASHBOARD
     else if (url.startsWith('/dashboard')) {
       this.breadcrumbs = [
         { label: 'Dashboard' },
+      ];
+    }
+
+    else if (url.startsWith('/configure/add-activity')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Add Activity' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/add-source')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Add Source' }
+      ];
+    }
+
+    else if (url.startsWith('/configure')) {
+      this.breadcrumbs = [
+        { label: 'Configure' }
       ];
     }
 
@@ -160,25 +206,67 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isDesktop = event.target.innerWidth > 768;
   }
 
-  markAllAsRead(): void {
-    this.unreadCount = 0;
-    this.notifications = this.notifications.map((n) => ({
-      ...n,
-      read: true,
-    }));
+  loadNotifications(): void {
+
+    this.notificationService.getNotifications().subscribe(
+      (data: any[]) => {
+
+        this.notifications = data;
+
+        this.unreadCount =
+          data.filter(n => !n.is_read).length;
+
+      },
+      (error) => {
+        console.error('Failed to load notifications', error);
+      }
+    );
+  }
+
+  toggleNotifications(): void {
+
+    this.showNotificationDropdown =
+      !this.showNotificationDropdown;
+
+    if (this.showNotificationDropdown) {
+      this.loadNotifications();
+    }
+  }
+
+  markAsRead(notificationId: number): void {
+
+    this.notificationService.markAsRead(notificationId)
+      .subscribe(() => {
+
+        const note = this.notifications.find(
+          n => n.notification_id === notificationId
+        );
+
+        if (note) {
+          note.is_read = 1;
+        }
+
+        this.unreadCount =
+          this.notifications.filter(n => !n.is_read).length;
+
+      }, (error) => {
+        console.error('Failed to mark notification as read', error);
+      });
   }
 
   logout(): void {
+
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('fullName');
     localStorage.removeItem('role');
+
     this.username = null;
     this.fullName = null;
     this.role = null;
+
     this.router.navigate(['/login']);
   }
-
 
   toggleSidebar(sidenav: MatSidenav): void {
     sidenav.toggle();
@@ -187,4 +275,5 @@ export class AppComponent implements OnInit, OnDestroy {
   selectItem(label: string): void {
     this.selectedItem = label;
   }
+
 }

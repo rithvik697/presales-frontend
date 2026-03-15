@@ -1,0 +1,108 @@
+/* Page Container */
+.page-container {
+  padding: 20px;
+}
+
+/* Breadcrumb */
+.breadcrumb-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6c757d;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.breadcrumb-separator {
+  color: #9aa0a6;
+}
+
+/* Header */
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.title-section h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-active {
+  background: #28a745;
+  color: white;
+}
+
+.status-inactive {
+  background: #dc3545;
+  color: white;
+}
+
+Buttons
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Grid Layout */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Card Styling */
+:host ::ng-deep .p-card {
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+:host ::ng-deep .p-card-header {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+/* Info Rows */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span:first-child {
+  color: #6c757d;
+}
+
+.info-row span:last-child {
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+}

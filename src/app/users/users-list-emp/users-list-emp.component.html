@@ -113,7 +113,9 @@
 
           <!-- ✅ FULL NAME DISPLAY -->
           <td>
-            {{ getFullName(user) }}
+            <a [routerLink]="['/users', user.emp_id]" class="user-link">
+              {{ getFullName(user) }}
+            </a>
           </td>
 
           <td>{{ user.role_id }}</td>
@@ -129,8 +131,8 @@
 
           <td>{{ user.phone_num || '-' }}</td>
           <td>{{ user.created_by }}</td>
-          <td>{{ user.created_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
-          <td>{{ user.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
+          <td>{{ user.created_on | date:'dd MMM yyyy, hh:mm a':'Asia/Kolkata' }}</td>
+          <td>{{ user.modified_on | date:'dd MMM yyyy, hh:mm a':'Asia/Kolkata' }}</td>
 
           <td>
             <p-button icon="pi pi-pencil" class="p-button-text p-button-primary p-button-sm"

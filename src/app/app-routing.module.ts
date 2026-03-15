@@ -4,15 +4,20 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
 
 import { UsersComponent } from './users/users.component';
 import { UsersListEmpComponent } from './users/users-list-emp/users-list-emp.component';
 import { UserRegistrationComponent } from './users/users-registration/user-registration.component';
+import { UserDetailsComponent } from './users/user-details/user-details.component';
 
 import { DatabackupsComponent } from './databackups/databackups.component';
+
 import { ConfigureComponent } from './configure/configure.component';
+import { AddActivityComponent } from './configure/add-activity/add-activity.component';
+import { AddSourceComponent } from './configure/add-source/add-source.component';
 
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
@@ -24,52 +29,55 @@ import { ProjectDetailsComponent } from './projects/project-details/project-deta
 
 import { CallLogsComponent } from './call-logs/call-logs.component';
 
-import { AuthGuard } from './guards/auth.guard';
-
 import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 import { ReportsComponent } from './reports/reports.component';
 
-
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
 
-  // Public Route
+  // ================= PUBLIC ROUTES =================
   { path: '', redirectTo: 'login', pathMatch: 'full' },
+
   { path: 'login', component: LoginComponent },
-  { path: 'audit-trail', component: AuditTrailComponent },
-  {
-    path: 'forgot-password',
-    component: ForgotPasswordComponent
-  },
-  {
-    path: 'reset-password',
-    component: ResetPasswordComponent
-  },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
 
-
-  // Protected Routes
+  // ================= PROTECTED ROUTES =================
   {
     path: '',
-    canActivate: [AuthGuard],       // Protect everything below
-    canActivateChild: [AuthGuard],  // Protect all children
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [
 
+      // DASHBOARD
       { path: 'dashboard', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
 
-      // USERS
+      // USERS MODULE
       {
         path: 'users',
         component: UsersComponent,
         children: [
           { path: '', component: UsersListEmpComponent },
-          { path: 'register', component: UserRegistrationComponent }
+          { path: 'register', component: UserRegistrationComponent },
+          { path: ':id', component: UserDetailsComponent }
         ]
       },
 
-      // OTHER MODULES
-      { path: 'datbackups', component: DatabackupsComponent },
-      { path: 'configure', component: ConfigureComponent },
+      // DATA BACKUPS
+      { path: 'databackups', component: DatabackupsComponent },
+
+      // CONFIGURE MODULE
+      {
+        path: 'configure',
+        component: ConfigureComponent,
+        children: [
+          { path: 'add-activity', component: AddActivityComponent },
+          { path: 'add-source', component: AddSourceComponent },
+          { path: '', redirectTo: 'add-activity', pathMatch: 'full' }
+        ]
+      },
 
       // LEADS
       { path: 'leads', component: LeadsListComponent },
@@ -86,13 +94,16 @@ const routes: Routes = [
       // CALL LOGS
       { path: 'call-logs', component: CallLogsComponent },
 
+      // AUDIT TRAIL
+      { path: 'audit-trail', component: AuditTrailComponent },
+
       // REPORTS
       { path: 'reports', component: ReportsComponent }
 
     ]
   },
 
-  // Fallback
+  // ================= FALLBACK =================
   { path: '**', redirectTo: 'login' }
 
 ];

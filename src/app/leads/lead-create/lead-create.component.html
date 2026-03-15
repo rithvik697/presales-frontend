@@ -1,4 +1,8 @@
 <div class="lead-create-container mat-elevation-z4">
+  <div class="page-top-bar">
+    <p-breadcrumb [model]="breadcrumbItems" [home]="home" styleClass="lead-breadcrumb"></p-breadcrumb>
+  </div>
+
   <div class="header-row">
     <button mat-icon-button (click)="cancel()" class="back-btn">
       <mat-icon>arrow_back</mat-icon>
@@ -24,17 +28,17 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>First Name **</mat-label>
-        <input matInput name="firstName" required [(ngModel)]="model.firstName"[disabled]="isEditMode" />
+        <input matInput name="firstName" required [(ngModel)]="model.firstName"[disabled]="!isAdmin && isEditMode" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Middle Name</mat-label>
-        <input matInput name="middleName" [(ngModel)]="model.middleName" [disabled]="isEditMode"/>
+        <input matInput name="middleName" [(ngModel)]="model.middleName" [disabled]="!isAdmin && isEditMode"/>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Last Name **</mat-label>
-        <input matInput name="lastName" required [(ngModel)]="model.lastName"[disabled]="isEditMode" />
+        <input matInput name="lastName" required [(ngModel)]="model.lastName"[disabled]="!isAdmin && isEditMode" />
       </mat-form-field>
     </div>
 
@@ -52,12 +56,12 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="phone-field" [class.readonly-field]="isEditMode">
+        <mat-form-field appearance="outline" class="phone-field" [class.readonly-field]="!isAdmin && isEditMode">
           <mat-label>Phone Number **</mat-label>
           <input matInput name="phone" required [(ngModel)]="model.phone"
                  (input)="onPhoneInput($event, true)"
                  [readonly]="isEditMode"
-                 [disabled]="isEditMode"
+                 [disabled]="!isAdmin && isEditMode"
                  type="tel"
                  pattern="[0-9]*"
                  [maxlength]="selectedCountryCode.limit" />
@@ -72,7 +76,7 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Email</mat-label>
-        <input matInput name="email" type="email" [(ngModel)]="model.email"[disabled]="isEditMode" />
+        <input matInput name="email" type="email" [(ngModel)]="model.email"[disabled]="!isAdmin && isEditMode" />
       </mat-form-field>
     </div>
 
@@ -103,7 +107,7 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Lead Source **</mat-label>
-        <mat-select name="source" required [(ngModel)]="model.source">
+        <mat-select name="source" required [(ngModel)]="model.source" [disabled]="!isAdmin && isEditMode">
           <mat-option value="">Select Source</mat-option>
           <mat-option *ngFor="let s of sources" [value]="s.source_id">
             {{ s.source_name }}
@@ -132,15 +136,29 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="form-field">
+     <!-- ADMIN / SALES MANAGER -->
+      <mat-form-field appearance="outline" class="form-field"
+        *ngIf="isAdmin || isManager">
+
         <mat-label>Assigned To</mat-label>
+
         <mat-select name="assignedTo" [(ngModel)]="model.assignedTo">
           <mat-option value="">Select Employee</mat-option>
+
           <mat-option *ngFor="let emp of employees" [value]="emp.emp_id">
             {{ emp.full_name }}
           </mat-option>
+
         </mat-select>
+
       </mat-form-field>
+
+
+      <!-- SALES EXECUTIVE -->
+      <div class="form-field assigned-self" *ngIf="!isAdmin && !isManager">
+        <label class="assigned-label">Assigned To</label>
+        <div class="assigned-value">You</div>
+      </div>
     </div>
 
     <!-- Description -->
