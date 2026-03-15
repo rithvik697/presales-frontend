@@ -9,16 +9,8 @@
   <!-- Scroll Wrapper -->
   <div class="table-wrapper">
 
-    <p-table
-      #dt
-      [value]="users"
-      [paginator]="true"
-      [rows]="5"
-      sortMode="multiple"
-      class="users-table"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-    >
+    <p-table #dt [value]="users" [paginator]="true" [rows]="5" sortMode="multiple" class="users-table"
+      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords}">
 
       <!-- ================= HEADER ================= -->
       <ng-template pTemplate="header">
@@ -121,20 +113,15 @@
 
           <!-- ✅ FULL NAME DISPLAY -->
           <td>
-            <a [routerLink]="['/reports']" [queryParams]="{userId: user.emp_id}" style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
-              {{ getFullName(user) }}
-            </a>
+            {{ getFullName(user) }}
           </td>
 
           <td>{{ user.role_id }}</td>
 
           <!-- STATUS PILL TOGGLE -->
           <td>
-            <div
-              class="status-toggle-pill"
-              [ngClass]="user.emp_status === 'Active' ? 'active-pill' : 'inactive-pill'"
-              (click)="onStatusToggle(user)"
-            >
+            <div class="status-toggle-pill" [ngClass]="user.emp_status === 'Active' ? 'active-pill' : 'inactive-pill'"
+              (click)="onStatusToggle(user)">
               <span class="dot"></span>
               {{ user.emp_status }}
             </div>
@@ -146,9 +133,7 @@
           <td>{{ user.modified_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
 
           <td>
-            <p-button
-              icon="pi pi-pencil"
-              class="p-button-text p-button-primary p-button-sm"
+            <p-button icon="pi pi-pencil" class="p-button-text p-button-primary p-button-sm"
               (onClick)="editUser(user.emp_id)">
             </p-button>
           </td>

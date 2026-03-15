@@ -45,6 +45,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -145,6 +146,7 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     TooltipModule,
     ToastModule,
     ConfirmDialogModule,
+    TieredMenuModule,
 
     /* Charts & Notifications */
     NgChartsModule,
