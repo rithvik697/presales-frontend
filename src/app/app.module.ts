@@ -44,7 +44,9 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MenuModule } from 'primeng/menu';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
+import { TieredMenuModule } from 'primeng/tieredmenu';
+import { MessageService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -168,6 +170,7 @@ import { ProjectAssignmentComponent } from './configure/project-assignment/proje
     TooltipModule,
     ToastModule,
     ConfirmDialogModule,
+    TieredMenuModule,
 
     /* Charts & Notifications */
     NgChartsModule,

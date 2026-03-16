@@ -9,16 +9,8 @@
   <!-- Scroll Wrapper -->
   <div class="table-wrapper">
 
-    <p-table
-      #dt
-      [value]="users"
-      [paginator]="true"
-      [rows]="5"
-      sortMode="multiple"
-      class="users-table"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-    >
+    <p-table #dt [value]="users" [paginator]="true" [rows]="5" sortMode="multiple" class="users-table"
+      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords}">
 
       <!-- ================= HEADER ================= -->
       <ng-template pTemplate="header">
@@ -133,11 +125,8 @@
 
           <!-- STATUS PILL TOGGLE -->
           <td>
-            <div
-              class="status-toggle-pill"
-              [ngClass]="user.emp_status === 'Active' ? 'active-pill' : 'inactive-pill'"
-              (click)="onStatusToggle(user)"
-            >
+            <div class="status-toggle-pill" [ngClass]="user.emp_status === 'Active' ? 'active-pill' : 'inactive-pill'"
+              (click)="onStatusToggle(user)">
               <span class="dot"></span>
               {{ user.emp_status }}
             </div>
@@ -149,9 +138,7 @@
           <td>{{ user.modified_on | date:'dd MMM yyyy, hh:mm a':'Asia/Kolkata' }}</td>
 
           <td>
-            <p-button
-              icon="pi pi-pencil"
-              class="p-button-text p-button-primary p-button-sm"
+            <p-button icon="pi pi-pencil" class="p-button-text p-button-primary p-button-sm"
               (onClick)="editUser(user.emp_id)">
             </p-button>
           </td>

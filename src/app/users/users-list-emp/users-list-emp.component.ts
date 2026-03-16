@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RegistrationService } from '../../services/registration.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-users-list-emp',
@@ -10,13 +10,16 @@ import { Router } from '@angular/router';
 })
 export class UsersListEmpComponent implements OnInit {
 
+  @ViewChild('dt') table: any;
+
   users: any[] = [];
   loading = true;
 
   constructor(
     private regService: RegistrationService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -29,6 +32,15 @@ export class UsersListEmpComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.users = res.data;
+          
+          this.route.queryParams.subscribe(params => {
+            const empId = params['empId'];
+            if (empId && this.table) {
+              setTimeout(() => {
+                this.table.filter(empId, 'emp_id', 'equals');
+              });
+            }
+          });
         } else {
           this.toastr.error('Failed to fetch users');
         }
