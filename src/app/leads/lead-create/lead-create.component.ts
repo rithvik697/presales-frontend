@@ -133,14 +133,21 @@ export class LeadCreateComponent implements OnInit {
 
         // Extract country code from phone
         if (this.model.phone) {
+          const phoneStr = String(this.model.phone);
           const found = this.countryCodes
             .sort((a, b) => b.code.length - a.code.length)
-            .find(c => this.model.phone.startsWith(c.code));
+            .find(c => phoneStr.startsWith(c.code));
 
           if (found) {
             this.selectedCountryCode = found;
-            this.model.phone = this.model.phone.replace(found.code, '').trim();
+            this.model.phone = phoneStr.replace(found.code, '').trim();
+          } else {
+            this.model.phone = phoneStr;
           }
+        }
+
+        if (this.model.alternatePhone) {
+          this.model.alternatePhone = String(this.model.alternatePhone);
         }
       },
       error: () => this.toastr.error('Failed to load lead')
@@ -185,8 +192,7 @@ export class LeadCreateComponent implements OnInit {
 
     const submissionModel: any = { ...this.model };
 
-    submissionModel.phone =
-      `${this.selectedCountryCode.code} ${this.model.phone}`;
+    submissionModel.phone = this.model.phone;
 
     if (this.isEditMode && this.leadId) {
       // actorId is NOT sent — the backend reads it from the JWT token

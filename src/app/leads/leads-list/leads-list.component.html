@@ -127,6 +127,9 @@
               <!-- Status with Tag -->
               <p-tag *ngSwitchCase="'status'" [value]="lead.status" [severity]="getSeverity(lead.status)"></p-tag>
 
+              <!-- Phone with Country Code -->
+              <span *ngSwitchCase="'phone'">+91 {{ lead.phone }}</span>
+
               <!-- Remarks/Description -->
               <span *ngSwitchCase="'description'">{{ lead.description || '-' }}</span>
 
