@@ -1,0 +1,104 @@
+<div class="page-container" *ngIf="user">
+
+  <!-- Header Section -->
+  <div class="details-header">
+
+    <div class="title-section">
+      <h2>{{ user.emp_first_name }} {{ user.emp_last_name }}</h2>
+
+      <span
+        class="status-badge"
+        [ngClass]="user.emp_status === 'Active' ? 'status-active' : 'status-inactive'">
+        {{ user.emp_status }}
+      </span>
+    </div>
+
+    <!-- Only Back Button -->
+    <div class="action-buttons">
+      <a
+        pButton
+        label="Back"
+        icon="pi pi-arrow-left"
+        class="p-button-outlined"
+        routerLink="/users">
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Cards Layout -->
+  <div class="details-grid">
+
+    <!-- User Information -->
+    <p-card header="User Information">
+
+      <div class="info-row">
+        <span>Employee ID</span>
+        <span>{{ user.emp_id }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Username</span>
+        <span>{{ user.username }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Email</span>
+        <span>{{ user.email }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Phone</span>
+        <span>{{ user.phone_num || '-' }}</span>
+      </div>
+
+    </p-card>
+
+    <!-- Role Information -->
+    <p-card header="Role Information">
+
+      <div class="info-row">
+        <span>Role</span>
+        <span>{{ user.role_id }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Status</span>
+        <span>{{ user.emp_status }}</span>
+      </div>
+
+    </p-card>
+
+    <!-- Timeline -->
+    <p-card header="Timeline">
+
+      <div class="info-row">
+        <span>Created On</span>
+        <span>{{ user.created_on ? (user.created_on | date:'dd MMM yyyy') : '-' }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Created By</span>
+        <span>{{ user.created_by || '-' }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Modified On</span>
+        <span>{{ user.modified_on ? (user.modified_on | date:'dd MMM yyyy, h:mm a') : '-' }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Modified By</span>
+        <span>{{ user.modified_by || '-' }}</span>
+      </div>
+
+      <div class="info-row">
+        <span>Last Login</span>
+        <span>{{ user.last_login ? (user.last_login | date:'dd MMM yyyy, h:mm a') : '-' }}</span>
+      </div>
+
+    </p-card>
+
+  </div>
+
+</div>

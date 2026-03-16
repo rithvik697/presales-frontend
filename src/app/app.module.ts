@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,7 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 /* ------------------ PrimeNG ------------------ */
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { PasswordModule} from 'primeng/password';
+import { PasswordModule } from 'primeng/password';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
@@ -42,10 +43,10 @@ import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MenuModule } from 'primeng/menu';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TieredMenuModule } from 'primeng/tieredmenu';
+import { MessageService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -55,58 +56,81 @@ import { ToastrModule } from 'ngx-toastr';
 import { UsersComponent } from './users/users.component';
 import { UsersListEmpComponent } from './users/users-list-emp/users-list-emp.component';
 import { UserRegistrationComponent } from './users/users-registration/user-registration.component';
+import { UserDetailsComponent } from './users/user-details/user-details.component';
+
 import { LoginComponent } from './auth/login/login.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ConfigureComponent } from './configure/configure.component';
 import { DatabackupsComponent } from './databackups/databackups.component';
+
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
+import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
+
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { ProjectRegistrationComponent } from './projects/project-registration/project-registration.component';
-import { CallLogsComponent } from './call-logs/call-logs.component';
-import { LeadDetailsComponent } from './leads/lead-details/lead-details.component';
 import { ProjectDetailsComponent } from './projects/project-details/project-details.component';
+
+import { CallLogsComponent } from './call-logs/call-logs.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ReportsComponent } from './reports/reports.component';
+
+import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
 
 /* ------------------ Interceptors ------------------ */
 import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { AuditTrailComponent } from './audit-trail/audit-trail.component';
-import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { AddActivityComponent } from './configure/add-activity/add-activity.component';
+import { AddSourceComponent } from './configure/add-source/add-source.component';
+import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 
 @NgModule({
   declarations: [
-    LoginComponent,
     AppComponent,
+    LoginComponent,
+
     UsersComponent,
     UsersListEmpComponent,
     UserRegistrationComponent,
+    UserDetailsComponent,
+
     DashboardComponent,
     ConfigureComponent,
+    AddActivityComponent,
+    AddSourceComponent,
+    ProjectAssignmentComponent,
     DatabackupsComponent,
+
     LeadsListComponent,
     LeadDetailsComponent,
     LeadCreateComponent,
+
     ProjectListComponent,
     ProjectRegistrationComponent,
-    CallLogsComponent,
-    FilterByPipe,
     ProjectDetailsComponent,
+
+    CallLogsComponent,
     ProfileComponent,
     ReportsComponent,
     AuditTrailComponent,
+
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+
+    FilterByPipe
   ],
+
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
     HttpClientModule,
+    RouterModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
@@ -155,15 +179,16 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
       timeOut: 3000,
       closeButton: true,
       progressBar: true,
-    }),
+    })
   ],
-  providers: [
-    MessageService,  // ✅ REQUIRED FOR PRIME TOAST
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
 
+  providers: [
+    MessageService,
     ConfirmationService,
+
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule {}

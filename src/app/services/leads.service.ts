@@ -48,8 +48,11 @@ export class LeadsService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  getEmployees(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/employees`);
+  getEmployees(role?: string): Observable<any[]> {
+    const url = role
+      ? `${this.baseUrl}/employees?role=${encodeURIComponent(role)}`
+      : `${this.baseUrl}/employees`;
+    return this.http.get<any[]>(url);
   }
 
   // ─── Status History (Timeline) ────────────────────────────
@@ -63,6 +66,24 @@ export class LeadsService {
   createStatusChange(leadId: string, data: { new_status_id: string; remarks?: string }): Observable<LeadStatusHistory> {
     return this.http.post<LeadStatusHistory>(
       `${this.baseUrl}/${leadId}/status-history`, data
+    );
+  }
+
+  scheduleActivity(leadId: string, data: { status_id: string; scheduled_at: string; remarks?: string }): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/${leadId}/scheduled-activities`, data
+    );
+  }
+
+  addComment(leadId: string, data: { comment_text: string }): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/${leadId}/comments`, data
+    );
+  }
+
+  getCallHistory(leadId: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `http://localhost:5000/api/calls/ui/lead/${leadId}`
     );
   }
 

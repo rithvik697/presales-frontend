@@ -1,0 +1,89 @@
+<div class="assignment-page">
+  <div class="card assignment-form-card">
+    <div class="page-header">
+      <h2>Lead Assigning</h2>
+      <p class="subtitle">
+        Map active sales executives to projects for lead routing and future round-robin assignment.
+      </p>
+    </div>
+
+    <div class="summary-row">
+      <span>Active Mappings</span>
+      <strong>{{ assignments.length }}</strong>
+    </div>
+
+    <div class="section">
+      <h3>Create Lead Assignment Rule</h3>
+
+      <div class="grid">
+        <div class="form-row">
+          <label for="project">Project *</label>
+          <select id="project" [(ngModel)]="selectedProjectId" name="project">
+            <option value="">Select Project</option>
+            <option *ngFor="let project of projects" [value]="project.project_id">
+              {{ project.project_name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="employee">Sales Executive *</label>
+          <select id="employee" [(ngModel)]="selectedEmpId" name="employee">
+            <option value="">Select Sales Executive</option>
+            <option *ngFor="let user of salesExecutives" [value]="user.emp_id">
+              {{ user.full_name }} ({{ user.emp_id }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-btn" (click)="selectedProjectId=''; selectedEmpId=''">
+          Reset
+        </button>
+        <button type="button" (click)="saveAssignment()" [disabled]="saving">
+          {{ saving ? 'Saving...' : 'Save Mapping' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card assignment-list-card">
+    <div class="summary-header">
+      <h3>Current Lead Assigning Rules</h3>
+    </div>
+
+    <div class="assignment-table-wrap" *ngIf="assignments.length; else emptyState">
+      <table class="assignment-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Sales Executive</th>
+            <th>Employee ID</th>
+            <th>Created On</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let assignment of assignments">
+            <td>{{ assignment.project_name }}</td>
+            <td>{{ assignment.employee_name }}</td>
+            <td>{{ assignment.emp_id }}</td>
+            <td>{{ assignment.created_on | date: 'dd MMM yyyy, hh:mm a' }}</td>
+            <td>
+              <button type="button" class="icon-btn danger-btn" (click)="removeAssignment(assignment.mapping_id)">
+                Remove
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="empty-state" *ngIf="!loading">
+        No lead assigning rules created yet.
+      </div>
+    </ng-template>
+  </div>
+</div>

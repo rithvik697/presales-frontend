@@ -61,7 +61,8 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       project: new FormControl(''),
       status: new FormControl(''),
       assignedEmployee: new FormControl(''),
-      scheduledDate: new FormControl(''),
+      fromDate: new FormControl(''),
+      toDate: new FormControl(''),
     });
   }
 
@@ -218,16 +219,28 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       // Scheduled Date filter
       // Assuming lead.createdAt varies format. Simple string match for now as per previous logic.
       // Better to check date equality if needed.
-      if (filters.scheduledDate) {
-        // Convert input date to comparable string or match
-        // Note: input type=date gives YYYY-MM-DD
-        // lead.createdAt might be full timestamp. 
-        // Simple includes check as placeholder or previous behavior logic
-        if (lead.createdAt && !lead.createdAt.toString().includes(filters.scheduledDate)) {
-          return false;
+      if (filters.fromDate || filters.toDate) {
+
+        if (!lead.createdAt) return false;
+
+        const leadDate = new Date(lead.createdAt);
+        leadDate.setHours(0,0,0,0);
+
+        if (filters.fromDate) {
+          const from = new Date(filters.fromDate);
+          from.setHours(0,0,0,0);
+
+          if (leadDate < from) return false;
+        }
+
+        if (filters.toDate) {
+          const to = new Date(filters.toDate);
+          to.setHours(23,59,59,999);
+
+          if (leadDate > to) return false;
         }
       }
-
+      
       return true;
     });
   }

@@ -1,58 +1,74 @@
 <!-- PrimeNG Global Toast -->
 <p-toast position="top-center"></p-toast>
 
-<!-- ✅ PrimeNG Confirm Dialog (GLOBAL) -->
+<!-- PrimeNG Confirm Dialog -->
 <p-confirmDialog></p-confirmDialog>
 
 <!-- Show toolbar and sidenav only if NOT on login or change-password page -->
 <ng-container *ngIf="!isLoginPage && !isChangePasswordPage && !isForgotPasswordPage && !isResetPasswordPage">
+
   <div class="crm" (mouseleave)="showLogout = false">
 
     <!-- ===================== TOOLBAR ===================== -->
     <mat-toolbar class="app-toolbar">
 
-      <button
-        mat-icon-button
-        class="menu-toggle"
-        (click)="toggleSidebar(sidenav)"
-      >
+      <button mat-icon-button class="menu-toggle" (click)="toggleSidebar(sidenav)">
         <mat-icon>menu</mat-icon>
       </button>
 
       <!-- LOGO -->
-      <img
-        src="assets/tagfinal-logo.png"
-        alt="Logo"
-        class="logo"
-      />
+      <img src="assets/tagfinal-logo.png" alt="Logo" class="logo" />
 
       <span class="spacer"></span>
 
-      <!-- NOTIFICATIONS -->
-      <div
-        class="notification-wrapper"
-        (click)="showNotificationDropdown = !showNotificationDropdown"
-      >
+      <!-- ===================== NOTIFICATIONS ===================== -->
+      <div class="notification-wrapper" (click)="toggleNotifications()">
+
         <mat-icon class="notification-icon">notifications</mat-icon>
+
         <span class="notification-badge" *ngIf="unreadCount">
           {{ unreadCount }}
         </span>
 
-        <div class="notification-dropdown" *ngIf="showNotificationDropdown">
+        <div class="notification-dropdown"
+             *ngIf="showNotificationDropdown"
+             (click)="$event.stopPropagation()">
+
           <div *ngIf="notifications.length; else noNotification">
-            <div
-              *ngFor="let note of notifications"
-              class="notification-item"
-            >
-              {{ note.message }}
+
+            <div *ngFor="let note of notifications"
+                 class="notification-item"
+                 [ngClass]="{ 'unread-item': !note.is_read }">
+
+              <div class="notification-header">
+
+                <div class="notification-title">
+                  {{ note.title }}
+                </div>
+
+                <button mat-stroked-button
+                        class="notification-status-btn"
+                        *ngIf="!note.is_read"
+                        (click)="markAsRead(note.notification_id)">
+                  Mark as Read
+                </button>
+
+                <span class="notification-status read" *ngIf="note.is_read">
+                  READ
+                </span>
+
+              </div>
+
+              <div class="notification-message">
+                {{ note.message }}
+              </div>
+
+              <div class="notification-time">
+                {{ note.created_on | date:'MMM d, y h:mm a' }}
+              </div>
+
             </div>
-            <button
-              mat-flat-button
-              class="mark-read-btn"
-              (click)="markAllAsRead()"
-            >
-              Mark all as read
-            </button>
+
           </div>
 
           <ng-template #noNotification>
@@ -60,40 +76,48 @@
               No new notifications
             </div>
           </ng-template>
+
         </div>
+
       </div>
 
-      <!-- PROFILE DROPDOWN -->
-      <div
-        *ngIf="username"
-        class="profile-container"
-        (click)="profileMenu.toggle($event)"
-      >
+      <!-- ===================== PROFILE DROPDOWN ===================== -->
+      <div *ngIf="username"
+           class="profile-container"
+           (click)="profileMenu.toggle($event)">
+
         <div class="profile-section">
           <mat-icon class="profile-icon">account_circle</mat-icon>
           <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
         </div>
 
-        <!-- PrimeNG Menu -->
-        <p-menu
-          #profileMenu
-          [model]="profileMenuItems"
-          [popup]="true"
-          appendTo="body"
-          styleClass="profile-dropdown-menu"
-        >
+        <p-menu #profileMenu
+                [model]="profileMenuItems"
+                [popup]="true"
+                appendTo="body"
+                styleClass="profile-dropdown-menu">
+
           <ng-template pTemplate="start">
+
             <div class="profile-menu-header">
+
               <div class="user-info">
+
                 <mat-icon class="user-avatar">account_circle</mat-icon>
+
                 <div class="user-details">
                   <span class="user-name">{{ fullName || username }}</span>
                   <span class="user-role">{{ role || 'User' }}</span>
                 </div>
+
               </div>
+
             </div>
+
           </ng-template>
+
         </p-menu>
+
       </div>
 
     </mat-toolbar>
@@ -101,31 +125,87 @@
     <!-- ===================== SIDENAV LAYOUT ===================== -->
     <mat-sidenav-container class="sidenav-container">
 
-      <!-- SIDEBAR -->
-      <mat-sidenav
-        #sidenav
-        [mode]="isDesktop ? 'side' : 'over'"
-        [opened]="isDesktop"
-        class="sidenav"
-      >
+      <!-- ===================== SIDEBAR ===================== -->
+      <mat-sidenav #sidenav
+                   [mode]="isDesktop ? 'side' : 'over'"
+                   [opened]="isDesktop"
+                   class="sidenav">
+
         <mat-nav-list class="sidebarbg">
-          <mat-list-item
-            *ngFor="let item of menuItems"
-            [routerLink]="item.route"
-            (click)="selectItem(item.label)"
-            [ngClass]="{ 'active-item': selectedItem === item.label }"
-            class="menu-item-wrapper"
-          >
-            <div class="menu-item-content">
-              <mat-icon class="menu-icon">
-                {{ item.icon }}
-              </mat-icon>
-              <span class="menu-label">
-                {{ item.label }}
-              </span>
+
+          <ng-container *ngFor="let item of menuItems">
+
+            <!-- ================= NORMAL MENU ITEM ================= -->
+            <mat-list-item *ngIf="!item.children"
+                           [routerLink]="item.route || null"
+                           (click)="selectItem(item.label)"
+                           [ngClass]="{ 'active-item': selectedItem === item.label }"
+                           class="menu-item-wrapper">
+
+              <div class="menu-item-content">
+
+                <mat-icon class="menu-icon">
+                  {{ item.icon }}
+                </mat-icon>
+
+                <span class="menu-label">
+                  {{ item.label }}
+                </span>
+
+              </div>
+
+            </mat-list-item>
+
+            <!-- ================= DROPDOWN MENU ================= -->
+            <div *ngIf="item.children" class="menu-dropdown">
+
+              <!-- Parent -->
+              <div class="menu-item-wrapper"
+                   (click)="item.expanded = !item.expanded">
+
+                <div class="menu-item-content">
+
+                  <mat-icon class="menu-icon">
+                    {{ item.icon }}
+                  </mat-icon>
+
+                  <span class="menu-label">
+                    {{ item.label }}
+                  </span>
+
+                  <mat-icon class="dropdown-icon">
+                    {{ item.expanded ? 'expand_less' : 'expand_more' }}
+                  </mat-icon>
+
+                </div>
+
+              </div>
+
+              <!-- Children -->
+              <div *ngIf="item.expanded" class="submenu">
+
+                <mat-list-item *ngFor="let child of item.children"
+                               [routerLink]="child.route || null"
+                               class="submenu-item">
+
+                  <mat-icon class="menu-icon">
+                    {{ child.icon }}
+                  </mat-icon>
+
+                  <span class="menu-label">
+                    {{ child.label }}
+                  </span>
+
+                </mat-list-item>
+
+              </div>
+
             </div>
-          </mat-list-item>
+
+          </ng-container>
+
         </mat-nav-list>
+
       </mat-sidenav>
 
       <!-- ===================== MAIN CONTENT ===================== -->
@@ -133,10 +213,7 @@
 
         <!-- GLOBAL BREADCRUMB -->
         <div class="breadcrumb-wrapper" *ngIf="breadcrumbs.length">
-          <p-breadcrumb
-            [model]="breadcrumbs"
-            [home]="home"
-          ></p-breadcrumb>
+          <p-breadcrumb [model]="breadcrumbs" [home]="home"></p-breadcrumb>
         </div>
 
         <!-- PAGE CONTENT -->
@@ -147,9 +224,10 @@
     </mat-sidenav-container>
 
   </div>
+
 </ng-container>
 
-<!-- ===================== LOGIN / CHANGE PASSWORD ===================== -->
+<!-- ===================== LOGIN / PASSWORD PAGES ===================== -->
 <ng-container *ngIf="isLoginPage || isChangePasswordPage || isForgotPasswordPage || isResetPasswordPage">
   <router-outlet></router-outlet>
 </ng-container>

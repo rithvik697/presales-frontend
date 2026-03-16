@@ -70,16 +70,20 @@
               <p-dropdown [options]="employeeOptions" formControlName="assignedEmployee" placeholder="All"
                 styleClass="w-full" [showClear]="true"></p-dropdown>
             </div>
-
+            
             <div class="field col-12 md:col-6 lg:col-2">
-              <label class="font-semibold" for="scheduledDate">Scheduled Date</label>
-              <!-- Use basic input type date for compatibility if p-calendar isn't working perfectly with string dates, but user asked for p-calendar -->
-              <!-- We need to ensure date format matches. For now using basic input to be safe per logic, or p-calendar if safe -->
-              <!-- Using pInputText type=date for safety with existing logic string match -->
-              <input pInputText type="date" id="scheduledDate" formControlName="scheduledDate" class="w-full" />
+              <label class="font-semibold" for="fromDate">From Date</label>
+              <input pInputText type="date" id="fromDate" formControlName="fromDate" class="w-full" />
             </div>
 
-            <!-- Actions -->
+            <div class="field col-12 md:col-6 lg:col-2">
+              <label class="font-semibold" for="toDate">To Date</label>
+              <input pInputText type="date" id="toDate" formControlName="toDate" class="w-full" />
+            </div>
+
+            
+
+          <!-- Actions -->
             <div class="field col-12 md:col-6 lg:col-4 flex align-items-end gap-2">
               <button pButton label="Apply Filters" icon="pi pi-check" class="p-button-success"
                 (click)="applyFilters()"></button>
