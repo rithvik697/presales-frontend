@@ -91,127 +91,134 @@ export class LeadCreateComponent implements OnInit {
         next: (emps) => this.employees = emps,
         error: () => this.toastr.error('Failed to load employees')
       });
-
-      // Sources
-      this.leadsService.getSources().subscribe({
-        next: (data) => this.sources = data,
-        error: () => this.toastr.error('Failed to load sources')
-      });
-
-      // Statuses
-      this.leadsService.getStatuses().subscribe({
-        next: (data) => this.statuses = data,
-        error: () => this.toastr.error('Failed to load statuses')
-      });
-
     }
 
-    loadLead(id: string) {
-      this.leadsService.getById(id).subscribe({
-        next: (lead) => {
-          this.model = lead;
+    // Projects
+    this.leadsService.getProjects().subscribe({
+      next: (data) => this.projects = data,
+      error: () => this.toastr.error('Failed to load projects')
+    });
 
-          // Bind dropdowns to IDs (not names) so mat-select can match them
-          if (lead.projectId) { this.model.project = lead.projectId; }
-          if (lead.sourceId) { this.model.source = lead.sourceId; }
-          if (lead.statusId) { this.model.status = lead.statusId; }
-          if (lead.assignedToId) { this.model.assignedTo = lead.assignedToId; }
+    // Sources
+    this.leadsService.getSources().subscribe({
+      next: (data) => this.sources = data,
+      error: () => this.toastr.error('Failed to load sources')
+    });
 
-          // Parse full name into first/last
-          if (lead.name) {
-            const parts = lead.name.split(' ');
-            this.model.firstName = parts[0] || '';
-            this.model.lastName = parts.slice(1).join(' ') || '';
+    // Statuses
+    this.leadsService.getStatuses().subscribe({
+      next: (data) => this.statuses = data,
+      error: () => this.toastr.error('Failed to load statuses')
+    });
+
+  }
+
+  loadLead(id: string) {
+    this.leadsService.getById(id).subscribe({
+      next: (lead) => {
+        this.model = lead;
+
+        // Bind dropdowns to IDs (not names) so mat-select can match them
+        if (lead.projectId) { this.model.project = lead.projectId; }
+        if (lead.sourceId) { this.model.source = lead.sourceId; }
+        if (lead.statusId) { this.model.status = lead.statusId; }
+        if (lead.assignedToId) { this.model.assignedTo = lead.assignedToId; }
+
+        // Parse full name into first/last
+        if (lead.name) {
+          const parts = lead.name.split(' ');
+          this.model.firstName = parts[0] || '';
+          this.model.lastName = parts.slice(1).join(' ') || '';
+        }
+
+        // Extract country code from phone
+        if (this.model.phone) {
+          const found = this.countryCodes
+            .sort((a, b) => b.code.length - a.code.length)
+            .find(c => this.model.phone.startsWith(c.code));
+
+          if (found) {
+            this.selectedCountryCode = found;
+            this.model.phone = this.model.phone.replace(found.code, '').trim();
           }
+        }
+      },
+      error: () => this.toastr.error('Failed to load lead')
+    });
+  }
 
-          // Extract country code from phone
-          if (this.model.phone) {
-            const found = this.countryCodes
-              .sort((a, b) => b.code.length - a.code.length)
-              .find(c => this.model.phone.startsWith(c.code));
+  onPhoneInput(event: any, isMain: boolean) {
+    const input = event.target;
+    let val = input.value.replace(/[^0-9]/g, '');
 
-            if (found) {
-              this.selectedCountryCode = found;
-              this.model.phone = this.model.phone.replace(found.code, '').trim();
-            }
+    const limit = this.selectedCountryCode.limit;
+    if (val.length > limit) {
+      val = val.slice(0, limit);
+    }
+
+    if (isMain) {
+      this.model.phone = val;
+    } else {
+      this.model.alternatePhone = val;
+    }
+
+    input.value = val;
+  }
+
+  submit() {
+
+    if (!this.model.phone) {
+      this.toastr.error('Phone number is required');
+      return;
+    }
+
+    if (this.model.phone.length !== this.selectedCountryCode.limit) {
+      this.toastr.error(
+        `Phone number must be exactly ${this.selectedCountryCode.limit} digits`
+      );
+      return;
+    }
+
+    // Construct full name
+    this.model.name =
+      `${this.model.firstName} ${this.model.lastName}`.trim();
+
+    const submissionModel: any = { ...this.model };
+
+    submissionModel.phone =
+      `${this.selectedCountryCode.code} ${this.model.phone}`;
+
+    if (this.isEditMode && this.leadId) {
+      // actorId is NOT sent — the backend reads it from the JWT token
+      this.leadsService.update(this.leadId, submissionModel)
+        .subscribe({
+          next: () => {
+            this.toastr.success('Lead updated successfully');
+            this.router.navigate(['/leads']);
+          },
+          error: (err) => {
+            console.error(err);
+            this.toastr.error(err.error?.error || 'Failed to update lead');
           }
-        },
-        error: () => this.toastr.error('Failed to load lead')
-      });
-    }
+        });
 
-    onPhoneInput(event: any, isMain: boolean) {
-      const input = event.target;
-      let val = input.value.replace(/[^0-9]/g, '');
-
-      const limit = this.selectedCountryCode.limit;
-      if (val.length > limit) {
-        val = val.slice(0, limit);
-      }
-
-      if (isMain) {
-        this.model.phone = val;
-      } else {
-        this.model.alternatePhone = val;
-      }
-
-      input.value = val;
-    }
-
-    submit() {
-
-      if (!this.model.phone) {
-        this.toastr.error('Phone number is required');
-        return;
-      }
-
-      if (this.model.phone.length !== this.selectedCountryCode.limit) {
-        this.toastr.error(
-          `Phone number must be exactly ${this.selectedCountryCode.limit} digits`
-        );
-        return;
-      }
-
-      // Construct full name
-      this.model.name =
-        `${this.model.firstName} ${this.model.lastName}`.trim();
-
-      const submissionModel: any = { ...this.model };
-
-      submissionModel.phone =
-        `${this.selectedCountryCode.code} ${this.model.phone}`;
-
-      if (this.isEditMode && this.leadId) {
-        // actorId is NOT sent — the backend reads it from the JWT token
-        this.leadsService.update(this.leadId, submissionModel)
-          .subscribe({
-            next: () => {
-              this.toastr.success('Lead updated successfully');
-              this.router.navigate(['/leads']);
-            },
-            error: (err) => {
-              console.error(err);
-              this.toastr.error(err.error?.error || 'Failed to update lead');
-            }
-          });
-
-      } else {
-        // actorId is NOT sent — the backend reads it from the JWT token
-        this.leadsService.create(submissionModel)
-          .subscribe({
-            next: () => {
-              this.toastr.success('Lead created successfully');
-              this.router.navigate(['/leads']);
-            },
-            error: (err) => {
-              console.error(err);
-              this.toastr.error(err.error?.error || 'Failed to create lead');
-            }
-          });
-      }
-    }
-
-    cancel() {
-      this.router.navigate(['/leads']);
+    } else {
+      // actorId is NOT sent — the backend reads it from the JWT token
+      this.leadsService.create(submissionModel)
+        .subscribe({
+          next: () => {
+            this.toastr.success('Lead created successfully');
+            this.router.navigate(['/leads']);
+          },
+          error: (err) => {
+            console.error(err);
+            this.toastr.error(err.error?.error || 'Failed to create lead');
+          }
+        });
     }
   }
+
+  cancel() {
+    this.router.navigate(['/leads']);
+  }
+}
