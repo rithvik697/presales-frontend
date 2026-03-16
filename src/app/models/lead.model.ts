@@ -13,6 +13,10 @@ export interface Lead {
   sourceId?: string;
   profession?: string;
   description?: string;
+  firstContacted?: string;
+  originallyCreatedBy?: string;
+  firstAssignedTo?: string;
+  currentAssignedTo?: string;
   assignedTo?: string;
   assignedToId?: string;
   statusId?: string;

@@ -121,8 +121,8 @@
                         </span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Assigned To</span>
-                        <span class="info-value assigned-value">{{ lead.assignedTo || 'Unassigned' }}</span>
+                        <span class="info-label">Current Assigned To</span>
+                        <span class="info-value assigned-value">{{ lead.currentAssignedTo || lead.assignedTo || 'Unassigned' }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Description</span>
@@ -153,6 +153,24 @@
                     <div class="info-item">
                         <span class="info-label">Lead Age</span>
                         <span class="info-value"><span class="age-tag">{{ getLeadAge(lead.createdAt) }}</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3 class="section-heading"><i class="pi pi-users"></i> Ownership Details</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">First Assigned To</span>
+                        <span class="info-value assigned-value">{{ lead.firstAssignedTo || lead.assignedTo || '—' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Originally Created</span>
+                        <span class="info-value">{{ lead.originallyCreatedBy || lead.createdBy || '—' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">First Contacted</span>
+                        <span class="info-value date-value">{{ lead.firstContacted ? (lead.firstContacted | date: 'dd MMM yyyy, hh:mm a') : '—' }}</span>
                     </div>
                 </div>
             </div>

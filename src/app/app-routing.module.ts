@@ -18,6 +18,7 @@ import { DatabackupsComponent } from './databackups/databackups.component';
 import { ConfigureComponent } from './configure/configure.component';
 import { AddActivityComponent } from './configure/add-activity/add-activity.component';
 import { AddSourceComponent } from './configure/add-source/add-source.component';
+import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
@@ -75,6 +76,7 @@ const routes: Routes = [
         children: [
           { path: 'add-activity', component: AddActivityComponent },
           { path: 'add-source', component: AddSourceComponent },
+          { path: 'lead-assigning', component: ProjectAssignmentComponent },
           { path: '', redirectTo: 'add-activity', pathMatch: 'full' }
         ]
       },

@@ -85,6 +85,7 @@ export class LeadCreateComponent implements OnInit {
       ];
     }
 
+<<<<<<< HEAD
     // Load employees only for Admin / Manager
     if (this.isAdmin || this.isManager) {
       this.leadsService.getEmployees().subscribe({
@@ -97,6 +98,13 @@ export class LeadCreateComponent implements OnInit {
     this.leadsService.getProjects().subscribe({
       next: (data) => this.projects = data,
       error: () => this.toastr.error('Failed to load projects')
+=======
+  // Load employees only for Admin / Manager
+  if (this.isAdmin || this.isManager) {
+    this.leadsService.getEmployees('SALES_EXEC').subscribe({
+      next: (emps) => this.employees = emps,
+      error: () => this.toastr.error('Failed to load employees')
+>>>>>>> e4d4ccdf18599793170025e053b0187b26079897
     });
 
     // Sources

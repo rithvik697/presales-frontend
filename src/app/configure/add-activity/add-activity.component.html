@@ -12,7 +12,7 @@
       <strong>{{ activityStatuses.length }}</strong>
     </div>
 
-    <form (ngSubmit)="saveActivity()" #activityForm="ngForm">
+    <form (ngSubmit)="saveActivity(activityForm)" #activityForm="ngForm">
       <div class="section">
         <h3>Activity Details</h3>
 
@@ -94,7 +94,10 @@
         <div class="status-main">
           <div class="status-title-row">
             <span class="status-name">{{ status.name }}</span>
-            <span class="status-code">{{ status.id }}</span>
+            <div class="status-actions">
+              <span class="status-code">{{ status.id }}</span>
+              <button type="button" class="delete-btn" (click)="deleteActivity(status.id)">Delete</button>
+            </div>
           </div>
           <p class="status-description">{{ status.category }}</p>
         </div>

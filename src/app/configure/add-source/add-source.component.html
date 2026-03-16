@@ -12,7 +12,7 @@
       <strong>{{ sources.length }}</strong>
     </div>
 
-    <form (ngSubmit)="saveSource()" #sourceForm="ngForm">
+    <form (ngSubmit)="saveSource(sourceForm)" #sourceForm="ngForm">
       <div class="section">
         <h3>Source Details</h3>
 
@@ -30,24 +30,6 @@
               placeholder="Enter source name" />
             <small class="error" *ngIf="nameField.invalid && nameField.touched">
               Source name is required
-            </small>
-          </div>
-
-          <div class="form-row">
-            <label for="sourceCategory">Source Category *</label>
-            <select
-              id="sourceCategory"
-              name="sourceCategory"
-              [(ngModel)]="sourceCategory"
-              #categoryField="ngModel"
-              required>
-              <option value="">Select category</option>
-              <option *ngFor="let category of sourceCategories" [value]="category">
-                {{ category }}
-              </option>
-            </select>
-            <small class="error" *ngIf="categoryField.invalid && categoryField.touched">
-              Source category is required
             </small>
           </div>
 
@@ -99,9 +81,12 @@
         <div class="source-main">
           <div class="source-title-row">
             <span class="source-name">{{ source.name }}</span>
-            <span class="source-code">{{ source.id }}</span>
+            <div class="source-actions">
+              <span class="source-code">{{ source.id }}</span>
+              <button type="button" class="delete-btn" (click)="deleteSource(source.id)">Delete</button>
+            </div>
           </div>
-          <p class="source-description">{{ source.category }}</p>
+          <p class="source-description">{{ source.description || 'No description added' }}</p>
         </div>
       </div>
     </div>

@@ -44,8 +44,9 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MenuModule } from 'primeng/menu';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { TieredMenuModule } from 'primeng/tieredmenu';
+import { MessageService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -86,6 +87,7 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AddActivityComponent } from './configure/add-activity/add-activity.component';
 import { AddSourceComponent } from './configure/add-source/add-source.component';
+import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +103,7 @@ import { AddSourceComponent } from './configure/add-source/add-source.component'
     ConfigureComponent,
     AddActivityComponent,
     AddSourceComponent,
+    ProjectAssignmentComponent,
     DatabackupsComponent,
 
     LeadsListComponent,
