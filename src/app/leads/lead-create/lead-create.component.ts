@@ -87,7 +87,7 @@ export class LeadCreateComponent implements OnInit {
 
   // Load employees only for Admin / Manager
   if (this.isAdmin || this.isManager) {
-    this.leadsService.getEmployees().subscribe({
+    this.leadsService.getEmployees('SALES_EXEC').subscribe({
       next: (emps) => this.employees = emps,
       error: () => this.toastr.error('Failed to load employees')
     });

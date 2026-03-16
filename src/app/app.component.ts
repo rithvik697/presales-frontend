@@ -65,6 +65,10 @@ export class AppComponent implements OnInit, OnDestroy {
         {
           label: 'Add Source',
           route: '/configure/add-source'
+        },
+        {
+          label: 'Lead Assigning',
+          route: '/configure/lead-assigning'
         }
       ]
     }
@@ -187,6 +191,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Configure', routerLink: '/configure' },
         { label: 'Add Source' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/lead-assigning')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Lead Assigning' }
       ];
     }
 

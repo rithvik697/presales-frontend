@@ -48,8 +48,11 @@ export class LeadsService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  getEmployees(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/employees`);
+  getEmployees(role?: string): Observable<any[]> {
+    const url = role
+      ? `${this.baseUrl}/employees?role=${encodeURIComponent(role)}`
+      : `${this.baseUrl}/employees`;
+    return this.http.get<any[]>(url);
   }
 
   // ─── Status History (Timeline) ────────────────────────────

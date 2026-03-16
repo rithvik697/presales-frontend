@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { ConfigureService, LeadSourceOption } from '../../services/configure.service';
 
 interface LeadSourceItem {
   id: string;
   name: string;
-  category: string;
   description: string;
 }
 
@@ -13,24 +14,40 @@ interface LeadSourceItem {
   templateUrl: './add-source.component.html',
   styleUrls: ['./add-source.component.css']
 })
-export class AddSourceComponent {
+export class AddSourceComponent implements OnInit {
   sourceName: string = '';
-  sourceCategory: string = '';
   sourceDescription: string = '';
   successMessage: string = '';
   errorMessage: string = '';
 
-  sourceCategories: string[] = ['Online', 'Offline'];
+  sources: LeadSourceItem[] = [];
 
-  sources: LeadSourceItem[] = [
-    { id: 'S001', name: 'Google', category: 'Online', description: '' },
-    { id: 'S002', name: 'Website', category: 'Online', description: '' },
-    { id: 'S003', name: 'Walk-in', category: 'Offline', description: '' }
-  ];
+  constructor(
+    private configureService: ConfigureService,
+    private toastr: ToastrService
+  ) {}
 
-  saveSource(): void {
+  ngOnInit(): void {
+    this.loadSources();
+  }
+
+  loadSources(): void {
+    this.configureService.getLeadSources().subscribe({
+      next: (sources: LeadSourceOption[]) => {
+        this.sources = sources.map((source) => ({
+          id: source.source_id,
+          name: source.source_name,
+          description: source.description || ''
+        })).sort((a, b) => b.id.localeCompare(a.id));
+      },
+      error: () => {
+        this.errorMessage = 'Failed to load sources.';
+      }
+    });
+  }
+
+  saveSource(form: NgForm): void {
     const name = this.sourceName.trim();
-    const category = this.sourceCategory.trim();
     const description = this.sourceDescription.trim();
 
     this.successMessage = '';
@@ -41,44 +58,37 @@ export class AddSourceComponent {
       return;
     }
 
-    if (!category) {
-      this.errorMessage = 'Source category is required.';
-      return;
-    }
-
-    const duplicate = this.sources.some(
-      (source) => source.name.toLowerCase() === name.toLowerCase()
-    );
-
-    if (duplicate) {
-      this.errorMessage = 'This source already exists in the list.';
-      return;
-    }
-
-    this.sources.push({
-      id: this.getNextSourceId(),
-      name,
-      category,
+    this.configureService.createLeadSource({
+      source_name: name,
       description
+    }).subscribe({
+      next: () => {
+        this.toastr.success(`Source "${name}" added successfully.`);
+        this.successMessage = `Source "${name}" added successfully.`;
+        form.resetForm();
+        this.loadSources();
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.error || 'Failed to save source.';
+      }
     });
+  }
 
-    this.successMessage = `Source "${name}" added successfully.`;
-    this.sourceName = '';
-    this.sourceCategory = '';
-    this.sourceDescription = '';
+  deleteSource(sourceId: string): void {
+    this.configureService.deleteLeadSource(sourceId).subscribe({
+      next: () => {
+        this.toastr.success('Source deleted successfully.');
+        this.loadSources();
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.error || 'Failed to delete source.';
+      }
+    });
   }
 
   resetForm(form: NgForm): void {
     form.resetForm();
     this.successMessage = '';
     this.errorMessage = '';
-  }
-
-  private getNextSourceId(): string {
-    const maxId = Math.max(
-      ...this.sources.map((source) => Number(source.id.replace('S', '')))
-    );
-
-    return `S${(maxId + 1).toString().padStart(3, '0')}`;
   }
 }

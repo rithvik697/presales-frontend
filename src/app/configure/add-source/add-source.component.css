@@ -17,7 +17,13 @@
 .source-card,
 .summary-card {
   align-self: start;
-  height: 540px;
+  min-height: 540px;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 220px);
   overflow: hidden;
 }
 
@@ -174,7 +180,8 @@ small.error {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: 460px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 6px;
 }
@@ -198,6 +205,12 @@ small.error {
   gap: 10px;
 }
 
+.source-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .source-name {
   font-size: 15px;
   font-weight: 600;
@@ -211,6 +224,21 @@ small.error {
   color: #374151;
   font-size: 11px;
   font-weight: 700;
+}
+
+.delete-btn {
+  border: none;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #fecaca;
 }
 
 .source-description {
@@ -236,8 +264,9 @@ small.error {
 
   .source-card,
   .summary-card {
-    height: auto;
-    overflow-y: visible;
+    min-height: auto;
+    max-height: none;
+    overflow: visible;
   }
 
   .source-list {
@@ -252,7 +281,7 @@ small.error {
 
   .source-card,
   .summary-card {
-    overflow-y: visible;
+    overflow: visible;
   }
 
   .source-list {
