@@ -1,0 +1,191 @@
+<div class="transfer-page">
+  <div class="card transfer-form-card">
+    <div class="page-header">
+      <h2>Lead Transfer</h2>
+      <p class="subtitle">
+        Transfer active leads from one sales executive to another when ownership needs to change.
+      </p>
+    </div>
+
+    <div class="transfer-sections">
+      <div class="section">
+        <h3>From Employee</h3>
+        <div class="grid">
+          <div class="form-row">
+            <label for="fromEmployee">Sales Executive *</label>
+            <select id="fromEmployee" [(ngModel)]="fromEmpId" name="fromEmployee">
+              <option value="">Select Employee</option>
+              <option *ngFor="let user of fromEmployees" [value]="user.emp_id">
+                {{ user.full_name }} ({{ user.emp_status }})
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="fromProject">Project</label>
+            <select id="fromProject" [(ngModel)]="fromProjectId" name="fromProject">
+              <option value="">All Projects</option>
+              <option *ngFor="let project of projects" [value]="project.project_id">
+                {{ project.project_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="fromSource">Source</label>
+            <select id="fromSource" [(ngModel)]="fromSourceId" name="fromSource">
+              <option value="">All Sources</option>
+              <option *ngFor="let source of sources" [value]="source.source_id">
+                {{ source.source_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="fromStatus">Status</label>
+            <select id="fromStatus" [(ngModel)]="fromStatusId" name="fromStatus">
+              <option value="">All Statuses</option>
+              <option *ngFor="let status of statuses" [value]="status.status_id">
+                {{ status.status_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="dateType">Date Type</label>
+            <select id="dateType" [(ngModel)]="dateType" name="dateType">
+              <option *ngFor="let option of dateTypes" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="fromDate">From Date</label>
+            <input id="fromDate" type="date" [(ngModel)]="fromDate" name="fromDate" />
+          </div>
+
+          <div class="form-row">
+            <label for="toDate">To Date</label>
+            <input id="toDate" type="date" [(ngModel)]="toDate" name="toDate" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>To Employee</h3>
+        <div class="grid">
+          <div class="form-row">
+            <label for="toEmployee">Sales Executive *</label>
+            <select id="toEmployee" [(ngModel)]="toEmpId" name="toEmployee">
+              <option value="">Select Employee</option>
+              <option *ngFor="let user of toEmployees" [value]="user.emp_id">
+                {{ user.full_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="limit">How Many Leads</label>
+            <input
+              id="limit"
+              type="number"
+              min="1"
+              [(ngModel)]="transferLimit"
+              name="limit"
+              placeholder="Leave empty to transfer all matching leads" />
+          </div>
+
+          <div class="form-row">
+            <label for="toProject">Project Name</label>
+            <select id="toProject" [(ngModel)]="toProjectId" name="toProject">
+              <option value="">Keep Existing Project</option>
+              <option *ngFor="let project of projects" [value]="project.project_id">
+                {{ project.project_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="toSource">Source Name</label>
+            <select id="toSource" [(ngModel)]="toSourceId" name="toSource">
+              <option value="">Keep Existing Source</option>
+              <option *ngFor="let source of sources" [value]="source.source_id">
+                {{ source.source_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="toStatus">Status Name</label>
+            <select id="toStatus" [(ngModel)]="toStatusId" name="toStatus">
+              <option value="">Keep Existing Status</option>
+              <option *ngFor="let status of statuses" [value]="status.status_id">
+                {{ status.status_name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span>Available Leads To Transfer</span>
+      <strong>{{ availableLeadCount }}</strong>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="secondary-btn" (click)="resetFilters()">
+        Reset
+      </button>
+      <button type="button" class="preview-btn" (click)="previewTransfer()" [disabled]="previewLoading">
+        {{ previewLoading ? 'Checking...' : 'Check Available Leads' }}
+      </button>
+      <button type="button" (click)="runTransfer()" [disabled]="transferLoading">
+        {{ transferLoading ? 'Transferring...' : 'Transfer Leads' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="card transfer-history-card">
+    <div class="summary-header">
+      <h3>Recent Transfer History</h3>
+    </div>
+
+    <div class="history-table-wrap" *ngIf="history.length; else emptyState">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Lead Count</th>
+            <th>Filters</th>
+            <th>Transferred By</th>
+            <th>Transferred On</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of history">
+            <td>{{ item.from_employee_name || item.from_emp_id }}</td>
+            <td>{{ item.to_employee_name || item.to_emp_id }}</td>
+            <td>{{ item.lead_count }}</td>
+            <td>
+              <div>From: {{ item.from_project_name || 'All Projects' }} / {{ item.from_source_name || 'All Sources' }} / {{ item.from_status_name || 'All Statuses' }}</div>
+              <div>To: {{ item.to_project_name || 'Keep Project' }} / {{ item.to_source_name || 'Keep Source' }} / {{ item.to_status_name || 'Keep Status' }}</div>
+              <div>{{ item.date_type === 'modified_on' ? 'Modified Date' : 'Created Date' }}:
+                {{ item.from_date || 'Any' }} to {{ item.to_date || 'Any' }}</div>
+            </td>
+            <td>{{ item.created_by_name || item.created_by }}</td>
+            <td>{{ item.created_on | date: 'dd MMM yyyy, hh:mm a' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="empty-state" *ngIf="!historyLoading">
+        No lead transfers recorded yet.
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -37,7 +37,7 @@ export class AuthService {
   // --------------------------------------------------
   saveToken(token: string) {
 
-    localStorage.setItem('access_token', token);
+    localStorage.setItem('token', token);
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -55,17 +55,19 @@ export class AuthService {
   // TOKEN
   // --------------------------------------------------
   getToken(): string | null {
-    return localStorage.getItem('access_token');
+    return localStorage.getItem('token');
   }
 
   // --------------------------------------------------
   // LOGOUT
   // --------------------------------------------------
   logout() {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('role');
     localStorage.removeItem('username');
+    localStorage.removeItem('fullName');
+    localStorage.removeItem('email');
   }
 
   // --------------------------------------------------

@@ -49,11 +49,9 @@ export class ResetPasswordComponent implements OnInit {
 
     if (password !== confirmPassword) {
       this.errorMessage = 'Passwords do not match';
+      this.isLoading = false;
       return;
     }
-
-    this.isLoading = true;
-    this.errorMessage = '';
 
     this.authService.resetPassword(this.token, password).subscribe({
       next: () => {

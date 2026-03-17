@@ -88,6 +88,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AddActivityComponent } from './configure/add-activity/add-activity.component';
 import { AddSourceComponent } from './configure/add-source/add-source.component';
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
+import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
 
 @NgModule({
   declarations: [
@@ -103,6 +104,7 @@ import { ProjectAssignmentComponent } from './configure/project-assignment/proje
     ConfigureComponent,
     AddActivityComponent,
     AddSourceComponent,
+    LeadTransferComponent,
     ProjectAssignmentComponent,
     DatabackupsComponent,
 
