@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ProjectAssignment {
   mapping_id: number;
@@ -66,7 +67,7 @@ export interface LeadTransferHistoryItem {
   providedIn: 'root'
 })
 export class ConfigureService {
-  private apiBase = 'http://localhost:5000/api';
+  private apiBase = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
