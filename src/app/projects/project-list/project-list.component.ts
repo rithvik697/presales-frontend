@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../../services/project-registration.service';
+import { ToastrService } from 'ngx-toastr';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -19,7 +20,8 @@ export class ProjectListComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -41,6 +43,7 @@ export class ProjectListComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
+        this.toastr.error('Failed to load projects');
         this.loading = false;
       }
     });

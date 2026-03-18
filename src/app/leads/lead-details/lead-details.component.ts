@@ -4,6 +4,7 @@ import { Lead } from '../../models/lead.model';
 import { LeadStatusHistory, StatusOption } from '../../models/lead-status-history.model';
 import { AuthService } from '../../services/auth.service';
 import { LeadsService } from '../../services/leads.service';
+import { CallLogsService } from '../../services/call-logs.service';
 import { ToastrService } from 'ngx-toastr';
 import { MenuItem } from 'primeng/api';
 
@@ -74,6 +75,7 @@ export class LeadDetailsComponent implements OnInit {
         private router: Router,
         private authService: AuthService,
         private leadsService: LeadsService,
+        private callLogsService: CallLogsService,
         private toastr: ToastrService
     ) {}
 
@@ -301,6 +303,28 @@ export class LeadDetailsComponent implements OnInit {
 
     editLead(): void {
         this.router.navigate(['/leads/edit', this.leadId]);
+    }
+
+    callLead(): void {
+        if (!this.lead?.phone) return;
+
+        // Mobile devices: open native dialer
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile) {
+            window.location.href = 'tel:' + this.lead.phone;
+            return;
+        }
+
+        // Desktop: use MCube Click2Call via backend
+        this.callLogsService.click2Call(this.lead.phone, this.leadId).subscribe({
+            next: () => {
+                this.toastr.success('Call initiated successfully');
+                this.loadCallHistory();
+            },
+            error: (err) => {
+                this.toastr.error(err?.error?.error || 'Failed to initiate call');
+            }
+        });
     }
 
     // ─── Add Status Change ───

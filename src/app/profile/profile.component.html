@@ -33,7 +33,12 @@
     <!-- RIGHT SETTINGS -->
     <div class="p-col-12 p-md-8">
 
-      <p-tabView>
+      <div *ngIf="forceChange" class="force-change-banner">
+        <i class="pi pi-exclamation-triangle"></i>
+        You are using a temporary password. Please change your password before continuing.
+      </div>
+
+      <p-tabView [(activeIndex)]="activeTabIndex">
 
         <!-- ACCOUNT TAB -->
         <p-tabPanel header="Account Information">

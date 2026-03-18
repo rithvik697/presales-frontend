@@ -1,37 +1,44 @@
 <div class="crm-dashboard">
-  <!-- MAIN CONTENT -->
   <main class="content">
-    <!-- DASHBOARD STATS ONLY -->
     <section class="dashboard-section">
+
+      <!-- Greeting Card -->
       <div class="greeting-card">
         <div>
-          <h2>Good afternoon, Varun!</h2>
+          <h2>{{ greeting }}, {{ fullName }}!</h2>
           <p>Submit activity is must for every site visit and office visit</p>
         </div>
       </div>
 
-      <div class="stats-grid">
+      <!-- Stats Grid -->
+      <div class="stats-grid" *ngIf="!loading">
         <div class="card">
           <h4>TOTAL LEADS</h4>
-          <h1>-</h1>
+          <h1>{{ totalLeads }}</h1>
         </div>
         <div class="card">
           <h4>ACTIVE CUSTOMERS</h4>
-          <h1>-</h1>
+          <h1>{{ activeLeads }}</h1>
         </div>
         <div class="card">
           <h4>PENDING LEADS</h4>
-          <h1>-</h1>
+          <h1>{{ todayLeads }}</h1>
         </div>
         <div class="card">
           <h4>SITE VISIT DONE</h4>
-          <h1>-</h1>
+          <h1>{{ siteVisits }}</h1>
         </div>
         <div class="card">
           <h4>DEALS CLOSED</h4>
-          <h1>-</h1>
+          <h1>{{ closedDeals }}</h1>
         </div>
       </div>
+
+      <!-- Loading Spinner -->
+      <div class="loading-container" *ngIf="loading">
+        <p-progressSpinner strokeWidth="4" animationDuration="1s"></p-progressSpinner>
+      </div>
+
     </section>
   </main>
 </div>

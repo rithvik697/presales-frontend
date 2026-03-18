@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuditService } from '../services/audit.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-audit-trail',
@@ -9,6 +10,7 @@ import { AuditService } from '../services/audit.service';
 export class AuditTrailComponent implements OnInit {
 
   auditLogs: any[] = [];
+  loading = true;
 
   globalFilterFields: string[] = [
     'object_name',
@@ -20,24 +22,28 @@ export class AuditTrailComponent implements OnInit {
     'action_type'
   ];
 
-  constructor(private auditService: AuditService) {}
+  constructor(
+    private auditService: AuditService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.loadAuditLogs();
   }
 
   loadAuditLogs(): void {
+    this.loading = true;
 
     this.auditService.getAuditLogs().subscribe({
       next: (res: any) => {
-
         if (res.success) {
           this.auditLogs = res.data;
         }
-
+        this.loading = false;
       },
-      error: (err: any) => {
-        console.error('Failed to load audit logs', err);
+      error: () => {
+        this.toastr.error('Failed to load audit logs');
+        this.loading = false;
       }
     });
 

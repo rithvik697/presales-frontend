@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -18,10 +19,14 @@ export class ProfileComponent implements OnInit {
   newPassword: string = '';
 
   loading: boolean = false;
+  forceChange: boolean = false;
+  activeTabIndex: number = 0;
 
   constructor(
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -31,6 +36,14 @@ export class ProfileComponent implements OnInit {
     this.fullName = localStorage.getItem('fullName');
     this.role = localStorage.getItem('role');
     this.email = localStorage.getItem('email');
+
+    // Check if forced password change
+    this.forceChange = this.route.snapshot.queryParamMap.get('forceChange') === 'true'
+      || localStorage.getItem('mustChangePassword') === 'true';
+
+    if (this.forceChange) {
+      this.activeTabIndex = 1; // Auto-select Security tab
+    }
 
   }
 
@@ -64,6 +77,13 @@ export class ProfileComponent implements OnInit {
         // reset fields
         this.oldPassword = '';
         this.newPassword = '';
+
+        // If forced password change, clear flag and redirect
+        if (this.forceChange) {
+          this.forceChange = false;
+          localStorage.removeItem('mustChangePassword');
+          this.router.navigate(['/dashboard']);
+        }
       },
 
       error: (err) => {

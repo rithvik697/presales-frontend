@@ -12,6 +12,10 @@
     <div class="p-toolbar-group-left">
       <h2 class="m-0">Call Logs</h2>
     </div>
+    <div class="p-toolbar-group-right">
+      <button pButton label="Log Call" icon="pi pi-plus" class="p-button-primary"
+        (click)="openLogDialog()"></button>
+    </div>
   </p-toolbar>
 
   <!-- Scroll Wrapper -->
@@ -157,6 +161,9 @@
           </div>
         </th>
 
+        <!-- RECORDING -->
+        <th style="width:90px">Recording</th>
+
       </tr>
     </ng-template>
 
@@ -182,13 +189,20 @@
         <td>{{ log.callDuration }}</td>
         <td>{{ log.callTime | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
         <td>{{ log.remarks || '-' }}</td>
+        <td>
+          <a *ngIf="log.recordingUrl" [href]="log.recordingUrl" target="_blank"
+            class="recording-link" title="Play recording">
+            <i class="pi pi-play-circle"></i>
+          </a>
+          <span *ngIf="!log.recordingUrl">-</span>
+        </td>
       </tr>
     </ng-template>
 
     <!-- EMPTY STATE -->
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="9" class="empty-state">
+        <td colspan="10" class="empty-state">
           No call logs found.
         </td>
       </tr>
@@ -199,3 +213,41 @@
   </div>
 
 </div>
+
+<!-- Log Call Dialog -->
+<p-dialog header="Log Call" [(visible)]="showLogDialog" [modal]="true"
+  [style]="{width: '480px'}" appendTo="body">
+  <div class="dialog-form">
+    <div class="form-field mb-3">
+      <label>Lead *</label>
+      <p-dropdown [options]="leads" [(ngModel)]="logForm.lead_id"
+        optionLabel="name" optionValue="id"
+        [filter]="true" filterBy="name"
+        placeholder="Search lead..." styleClass="w-full" appendTo="body">
+      </p-dropdown>
+    </div>
+    <div class="form-field mb-3">
+      <label>Call Status</label>
+      <p-dropdown [options]="statusOptions" [(ngModel)]="logForm.call_status"
+        optionLabel="label" optionValue="value"
+        styleClass="w-full" appendTo="body">
+      </p-dropdown>
+    </div>
+    <div class="form-field mb-3">
+      <label>Duration (seconds)</label>
+      <input type="number" pInputText [(ngModel)]="logForm.call_duration"
+        placeholder="e.g. 120" class="w-full" />
+    </div>
+    <div class="form-field mb-3">
+      <label>Remarks</label>
+      <textarea pInputTextarea [(ngModel)]="logForm.remarks"
+        rows="3" class="w-full" placeholder="Call notes..."></textarea>
+    </div>
+    <div class="form-actions mt-4">
+      <button pButton label="Cancel" icon="pi pi-times" (click)="showLogDialog=false"
+        class="p-button-text p-button-secondary"></button>
+      <button pButton label="Save" icon="pi pi-check" (click)="saveManualLog()"
+        class="p-button-primary"></button>
+    </div>
+  </div>
+</p-dialog>

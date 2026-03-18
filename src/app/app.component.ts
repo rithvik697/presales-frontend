@@ -46,36 +46,27 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private routerSub!: Subscription;
 
-  private allMenuItems = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Leads Management', icon: 'list', route: '/leads' },
-    { label: 'Users', icon: 'people', route: '/users' },
-    { label: 'Project', icon: 'assignment', route: '/projects' },
-    { label: 'Call Logs', icon: 'call', route: '/call-logs' },
-    { label: 'Audit Trail', icon: 'history', route: '/audit-trail' },
+  private allMenuItems: any[] = [
+    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard', roles: [] },
+    { label: 'Leads Management', icon: 'list', route: '/leads', roles: [] },
+    { label: 'Users', icon: 'people', route: '/users', roles: ['ADMIN'] },
+    { label: 'Project', icon: 'assignment', route: '/projects', roles: [] },
+    { label: 'Call Logs', icon: 'call', route: '/call-logs', roles: [] },
+    { label: 'Audit Trail', icon: 'history', route: '/audit-trail', roles: ['ADMIN', 'SALES_MGR'] },
 
     {
       label: 'Configure',
       icon: 'settings',
+      roles: ['ADMIN'],
       children: [
-        {
-          label: 'Add Activity',
-          route: '/configure/add-activity'
-        },
-        {
-          label: 'Add Source',
-          route: '/configure/add-source'
-        },
-        {
-          label: 'Lead Transfer',
-          route: '/configure/lead-transfer'
-        },
-        {
-          label: 'Lead Assigning',
-          route: '/configure/lead-assigning'
-        }
+        { label: 'Add Activity', route: '/configure/add-activity' },
+        { label: 'Add Source', route: '/configure/add-source' },
+        { label: 'Lead Transfer', route: '/configure/lead-transfer' },
+        { label: 'Lead Assigning', route: '/configure/lead-assigning' }
       ]
-    }
+    },
+
+    { label: 'Reports', icon: 'bar_chart', route: '/reports', roles: ['ADMIN', 'SALES_MGR'] }
   ];
 
   constructor(
@@ -115,15 +106,11 @@ export class AppComponent implements OnInit, OnDestroy {
         this.fullName = localStorage.getItem('fullName');
         this.role = localStorage.getItem('role');
 
-        this.menuItems = [...this.allMenuItems];
-
-        if (this.role === 'ADMIN' || this.role === 'Sales Manager') {
-          this.menuItems.push({
-            label: 'Reports',
-            icon: 'bar_chart',
-            route: '/reports'
-          });
-        }
+        this.menuItems = this.allMenuItems.filter(item => {
+          // Empty roles array = visible to all
+          if (!item.roles || item.roles.length === 0) return true;
+          return item.roles.includes(this.role);
+        });
 
         const url: string = e.urlAfterRedirects || e.url;
 
@@ -282,6 +269,7 @@ export class AppComponent implements OnInit, OnDestroy {
     localStorage.removeItem('username');
     localStorage.removeItem('fullName');
     localStorage.removeItem('role');
+    localStorage.removeItem('email');
 
     this.username = null;
     this.fullName = null;

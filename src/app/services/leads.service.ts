@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Lead } from '../models/lead.model';
 import { LeadStatusHistory, StatusOption } from '../models/lead-status-history.model';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeadsService {
-  private baseUrl = 'http://localhost:5000/api/leads';
+  private baseUrl = environment.apiUrl + '/leads';
 
   public filterViewOpen = false;
 
@@ -25,7 +26,7 @@ export class LeadsService {
   }
 
   getProjects() {
-    return this.http.get<any[]>('http://localhost:5000/api/projects');
+    return this.http.get<any[]>(environment.apiUrl + '/projects');
   }
 
   getSources(): Observable<any[]> {
@@ -83,7 +84,7 @@ export class LeadsService {
 
   getCallHistory(leadId: string): Observable<any[]> {
     return this.http.get<any[]>(
-      `http://localhost:5000/api/calls/ui/lead/${leadId}`
+      `${environment.apiUrl}/calls/ui/lead/${leadId}`
     );
   }
 
