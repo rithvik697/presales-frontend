@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-details',
@@ -21,7 +22,7 @@ export class UserDetailsComponent implements OnInit {
 
     this.empId = this.route.snapshot.paramMap.get('id')!;
 
-    this.http.get(`http://localhost:5000/api/users/${this.empId}`)
+    this.http.get(`${environment.apiUrl}/users/${this.empId}`)
       .subscribe((res: any) => {
         this.user = res.data;
       });

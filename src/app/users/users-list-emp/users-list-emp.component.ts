@@ -32,12 +32,27 @@ export class UsersListEmpComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.users = res.data;
-          
+
           this.route.queryParams.subscribe(params => {
             const empId = params['empId'];
-            if (empId && this.table) {
+            const status = params['status'];
+            const role = params['role'];
+
+            if (this.table) {
               setTimeout(() => {
-                this.table.filter(empId, 'emp_id', 'equals');
+                this.table.clear();
+
+                if (empId) {
+                  this.table.filter(empId, 'emp_id', 'equals');
+                }
+
+                if (status) {
+                  this.table.filter(status, 'emp_status', 'equals');
+                }
+
+                if (role) {
+                  this.table.filter(role, 'role_id', 'equals');
+                }
               });
             }
           });

@@ -46,6 +46,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TieredMenuModule } from 'primeng/tieredmenu';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
@@ -88,6 +89,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AddActivityComponent } from './configure/add-activity/add-activity.component';
 import { AddSourceComponent } from './configure/add-source/add-source.component';
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
+import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
 
 @NgModule({
   declarations: [
@@ -103,6 +105,7 @@ import { ProjectAssignmentComponent } from './configure/project-assignment/proje
     ConfigureComponent,
     AddActivityComponent,
     AddSourceComponent,
+    LeadTransferComponent,
     ProjectAssignmentComponent,
     DatabackupsComponent,
 
@@ -171,6 +174,7 @@ import { ProjectAssignmentComponent } from './configure/project-assignment/proje
     ToastModule,
     ConfirmDialogModule,
     TieredMenuModule,
+    ProgressSpinnerModule,
 
     /* Charts & Notifications */
     NgChartsModule,

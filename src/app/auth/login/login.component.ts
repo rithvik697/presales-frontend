@@ -43,8 +43,15 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('username', res.username);
       localStorage.setItem('fullName', res.full_name);
       localStorage.setItem('role', res.role_type);
+      localStorage.setItem('email', res.email);
       this.isLoading = false;
-      this.router.navigate(['/dashboard']);
+
+      if (res.must_change_password) {
+        localStorage.setItem('mustChangePassword', 'true');
+        this.router.navigate(['/profile'], { queryParams: { forceChange: true } });
+      } else {
+        this.router.navigate(['/dashboard']);
+      }
     },
     error: () => {
       this.errorMessage = 'Invalid credentials';

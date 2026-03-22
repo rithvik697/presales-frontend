@@ -30,6 +30,9 @@
                     <div class="lead-meta">
                         <span class="meta-item" *ngIf="lead.phone">
                             <i class="pi pi-phone"></i> {{ lead.phone }}
+                            <button class="call-btn" (click)="callLead()" title="Call this lead">
+                                <i class="pi pi-phone"></i>
+                            </button>
                         </span>
                         <span class="meta-item" *ngIf="lead.email">
                             <i class="pi pi-envelope"></i> {{ lead.email }}

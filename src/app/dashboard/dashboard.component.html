@@ -1,36 +1,137 @@
 <div class="crm-dashboard">
-  <!-- MAIN CONTENT -->
   <main class="content">
-    <!-- DASHBOARD STATS ONLY -->
     <section class="dashboard-section">
       <div class="greeting-card">
         <div>
-          <h2>Good afternoon, Varun!</h2>
+          <h2>{{ greeting }}, {{ fullName }}!</h2>
           <p>Submit activity is must for every site visit and office visit</p>
         </div>
       </div>
 
-      <div class="stats-grid">
-        <div class="card">
-          <h4>TOTAL LEADS</h4>
-          <h1>-</h1>
+      <ng-container *ngIf="!loading && isAdmin(); else nonAdminDashboard">
+        <div class="section-block">
+          <div class="section-header">
+            <h3>User Overview</h3>
+            <p>Click any card to open the matching user list.</p>
+          </div>
+
+          <div class="stats-grid stats-grid--admin">
+            <button
+              *ngFor="let card of adminOverviewCards"
+              type="button"
+              class="card card-button"
+              (click)="openAdminUsers(card)">
+              <h4>{{ card.label }}</h4>
+              <h1>{{ card.value }}</h1>
+            </button>
+          </div>
         </div>
-        <div class="card">
-          <h4>ACTIVE CUSTOMERS</h4>
-          <h1>-</h1>
+
+        <div class="charts-wrapper">
+          <div class="section-block chart-panel chart-panel--wide">
+            <div class="chart-header">
+              <h3>Users Added</h3>
+              <div class="filters">
+                <button class="filter-btn" [class.active]="adminTrendFilter === 'weekly'"
+                  (click)="setAdminTrendFilter('weekly')">Weekly</button>
+                <button class="filter-btn" [class.active]="adminTrendFilter === 'monthly'"
+                  (click)="setAdminTrendFilter('monthly')">Monthly</button>
+                <button class="filter-btn" [class.active]="adminTrendFilter === 'annual'"
+                  (click)="setAdminTrendFilter('annual')">Annual</button>
+              </div>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas #adminTrendChartCanvas></canvas>
+            </div>
+          </div>
+
+          <div class="section-block chart-panel">
+            <div class="chart-header">
+              <h3>Users by Role</h3>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas #adminRoleChartCanvas></canvas>
+            </div>
+          </div>
+
+          <div class="section-block chart-panel">
+            <div class="chart-header">
+              <h3>User Status</h3>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas #adminStatusChartCanvas></canvas>
+            </div>
+          </div>
         </div>
-        <div class="card">
-          <h4>PENDING LEADS</h4>
-          <h1>-</h1>
+      </ng-container>
+
+      <ng-template #nonAdminDashboard>
+        <ng-container *ngIf="!loading && isSalesExec(); else managerAdminDashboard">
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Lead Overview</h3>
+            <p>Click any card to open the matching leads.</p>
+          </div>
+
+          <div class="stats-grid stats-grid--exec">
+            <button
+              *ngFor="let card of salesExecOverviewCards"
+              type="button"
+              class="card card-button"
+              (click)="openLeadView(card)">
+              <h4>{{ card.label }}</h4>
+              <h1>{{ card.value }}</h1>
+            </button>
+          </div>
         </div>
-        <div class="card">
-          <h4>SITE VISIT DONE</h4>
-          <h1>-</h1>
+
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Lead Status Breakdown</h3>
+            <p>Each status card opens that filtered lead list.</p>
+          </div>
+
+          <div class="status-grid">
+            <button
+              *ngFor="let card of salesExecStatusCards"
+              type="button"
+              class="status-card"
+              (click)="openLeadView(card)">
+              <span class="status-card__label">{{ card.label }}</span>
+              <span class="status-card__value">{{ card.value }}</span>
+            </button>
+          </div>
         </div>
-        <div class="card">
-          <h4>DEALS CLOSED</h4>
-          <h1>-</h1>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #managerAdminDashboard>
+        <div class="stats-grid" *ngIf="!loading">
+          <div class="card">
+            <h4>TOTAL LEADS</h4>
+            <h1>{{ totalLeads }}</h1>
+          </div>
+          <div class="card">
+            <h4>ACTIVE LEADS</h4>
+            <h1>{{ activeLeads }}</h1>
+          </div>
+          <div class="card">
+            <h4>TODAY LEADS</h4>
+            <h1>{{ todayLeads }}</h1>
+          </div>
+          <div class="card">
+            <h4>DEALS CLOSED</h4>
+            <h1>{{ closedDeals }}</h1>
+          </div>
+          <div class="card">
+            <h4>LOST LEADS</h4>
+            <h1>{{ lostLeads }}</h1>
+          </div>
         </div>
+      </ng-template>
+
+      <div class="loading-container" *ngIf="loading">
+        <p-progressSpinner strokeWidth="4" animationDuration="1s"></p-progressSpinner>
       </div>
     </section>
   </main>

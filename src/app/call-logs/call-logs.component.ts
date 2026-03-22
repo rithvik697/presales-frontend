@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CallLogsService } from '../services/call-logs.service';
+import { LeadsService } from '../services/leads.service';
+import { ToastrService } from 'ngx-toastr';
 import { MenuItem } from 'primeng/api';
 
 export interface CallLog {
@@ -11,6 +13,7 @@ export interface CallLog {
   callDuration: string;
   callTime: string;
   remarks: string;
+  recordingUrl?: string;
 }
 
 @Component({
@@ -26,7 +29,26 @@ export class CallLogsComponent implements OnInit {
   callLogs: CallLog[] = [];
   loading = true;
 
-  constructor(private callLogsService: CallLogsService) {}
+  // Manual log dialog
+  showLogDialog = false;
+  logForm = {
+    lead_id: '',
+    call_status: 'Connected',
+    call_duration: null as number | null,
+    remarks: ''
+  };
+  leads: any[] = [];
+
+  statusOptions = [
+    { label: 'Connected', value: 'Connected' },
+    { label: 'Not Connected', value: 'Not Connected' }
+  ];
+
+  constructor(
+    private callLogsService: CallLogsService,
+    private leadsService: LeadsService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.home = { icon: 'pi pi-home', routerLink: '/dashboard' };
@@ -35,16 +57,44 @@ export class CallLogsComponent implements OnInit {
   }
 
   loadCallLogs() {
+    this.loading = true;
     this.callLogsService.getCallLogs().subscribe({
       next: (data: CallLog[]) => {
-        console.log('API DATA:', data); // sanity check
         this.callLogs = data;
         this.loading = false;
       },
-      error: err => {
-        console.error(err);
+      error: () => {
+        this.toastr.error('Failed to load call logs');
         this.loading = false;
       }
+    });
+  }
+
+  openLogDialog() {
+    this.logForm = { lead_id: '', call_status: 'Connected', call_duration: null, remarks: '' };
+    this.showLogDialog = true;
+
+    if (this.leads.length === 0) {
+      this.leadsService.getAll().subscribe({
+        next: (data) => this.leads = data,
+        error: () => this.leads = []
+      });
+    }
+  }
+
+  saveManualLog() {
+    if (!this.logForm.lead_id) {
+      this.toastr.warning('Please select a lead');
+      return;
+    }
+
+    this.callLogsService.createManualLog(this.logForm).subscribe({
+      next: () => {
+        this.toastr.success('Call log created');
+        this.showLogDialog = false;
+        this.loadCallLogs();
+      },
+      error: (err) => this.toastr.error(err?.error?.error || 'Failed to create call log')
     });
   }
 
@@ -54,6 +104,8 @@ export class CallLogsComponent implements OnInit {
         return 'success';
       case 'Completed':
         return 'info';
+      case 'Not Connected':
+        return 'danger';
       default:
         return 'secondary';
     }

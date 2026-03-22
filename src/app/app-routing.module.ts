@@ -19,6 +19,7 @@ import { ConfigureComponent } from './configure/configure.component';
 import { AddActivityComponent } from './configure/add-activity/add-activity.component';
 import { AddSourceComponent } from './configure/add-source/add-source.component';
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
+import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
 
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
@@ -34,6 +35,7 @@ import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 import { ReportsComponent } from './reports/reports.component';
 
 import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
 
 const routes: Routes = [
 
@@ -55,10 +57,12 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
 
-      // USERS MODULE
+      // USERS MODULE (ADMIN only)
       {
         path: 'users',
         component: UsersComponent,
+        canActivate: [RoleGuard],
+        data: { allowedRoles: ['ADMIN'] },
         children: [
           { path: '', component: UsersListEmpComponent },
           { path: 'register', component: UserRegistrationComponent },
@@ -69,13 +73,16 @@ const routes: Routes = [
       // DATA BACKUPS
       { path: 'databackups', component: DatabackupsComponent },
 
-      // CONFIGURE MODULE
+      // CONFIGURE MODULE (ADMIN only)
       {
         path: 'configure',
         component: ConfigureComponent,
+        canActivate: [RoleGuard],
+        data: { allowedRoles: ['ADMIN'] },
         children: [
           { path: 'add-activity', component: AddActivityComponent },
           { path: 'add-source', component: AddSourceComponent },
+          { path: 'lead-transfer', component: LeadTransferComponent },
           { path: 'lead-assigning', component: ProjectAssignmentComponent },
           { path: '', redirectTo: 'add-activity', pathMatch: 'full' }
         ]
@@ -96,11 +103,21 @@ const routes: Routes = [
       // CALL LOGS
       { path: 'call-logs', component: CallLogsComponent },
 
-      // AUDIT TRAIL
-      { path: 'audit-trail', component: AuditTrailComponent },
+      // AUDIT TRAIL (ADMIN, SALES_MGR)
+      {
+        path: 'audit-trail',
+        component: AuditTrailComponent,
+        canActivate: [RoleGuard],
+        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] }
+      },
 
-      // REPORTS
-      { path: 'reports', component: ReportsComponent }
+      // REPORTS (ADMIN, SALES_MGR)
+      {
+        path: 'reports',
+        component: ReportsComponent,
+        canActivate: [RoleGuard],
+        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] }
+      }
 
     ]
   },
