@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { Lead } from '../models/lead.model';
+import { CallLogsService } from '../services/call-logs.service';
 import { LeadsService } from '../services/leads.service';
 import { RegistrationService } from '../services/registration.service';
 import { ReportsService } from '../services/reports.service';
@@ -41,8 +42,16 @@ interface AdminLeadRow {
   totalLeads: number;
   activeLeads: number;
   pendingLeads: number;
-  closedLeads: number;
-  lostLeads: number;
+  siteVisitsDone: number;
+  callsMade: number;
+  dealsClosed: number;
+}
+
+type AdminLeadPeriod = 'today' | 'weekly' | 'monthly' | 'annually' | 'total';
+
+interface AdminLeadPeriodOption {
+  label: string;
+  value: AdminLeadPeriod;
 }
 
 @Component({
@@ -68,6 +77,19 @@ export class DashboardComponent implements OnInit {
   public adminLeadSummaryCards: AdminLeadSummaryCard[] = [];
   public adminLeadRows: AdminLeadRow[] = [];
   public adminUsers: DashboardUser[] = [];
+  public adminLeadPeriod: AdminLeadPeriod = 'total';
+  public readonly adminLeadPeriodOptions: AdminLeadPeriodOption[] = [
+    { label: 'Today', value: 'today' },
+    { label: 'Weekly', value: 'weekly' },
+    { label: 'Monthly', value: 'monthly' },
+    { label: 'Annually', value: 'annually' },
+    { label: 'Total', value: 'total' }
+  ];
+  public showCallsMadePanel: boolean = false;
+  public showSiteVisitsDonePanel: boolean = false;
+  public siteVisitsDoneWeekly: number = 0;
+  public siteVisitsDoneMonthly: number = 0;
+  public totalSiteVisitsDone: number = 0;
 
   loading: boolean = true;
 
@@ -90,6 +112,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private reportsService: ReportsService,
+    private callLogsService: CallLogsService,
     private leadsService: LeadsService,
     private registrationService: RegistrationService,
     private router: Router
@@ -160,15 +183,17 @@ export class DashboardComponent implements OnInit {
   loadAdminDashboard(): void {
     forkJoin({
       users: this.registrationService.getUsers(),
-      leads: this.leadsService.getAll()
+      leads: this.leadsService.getAll(),
+      callLogs: this.callLogsService.getRawCallLogs()
     }).subscribe({
-      next: ({ users, leads }) => {
-        const normalizedUsers = Array.isArray(users?.data) ? users.data : [];
+      next: ({ users, leads, callLogs }) => {
+        const normalizedUsers = Array.isArray((users as any)?.data) ? (users as any).data : [];
         const normalizedLeads = Array.isArray(leads) ? leads : [];
+        const normalizedCallLogs = Array.isArray(callLogs) ? callLogs : [];
 
         this.adminUsers = normalizedUsers;
         this.buildAdminOverview(normalizedUsers, normalizedLeads);
-        this.buildAdminLeadInsights(normalizedUsers, normalizedLeads);
+        this.buildAdminLeadInsights(normalizedUsers, normalizedLeads, normalizedCallLogs);
         this.loading = false;
       },
       error: () => {
@@ -189,11 +214,16 @@ export class DashboardComponent implements OnInit {
         this.totalLeads = normalizedLeads.length;
         this.activeLeads = normalizedLeads.filter((lead) => this.isActiveLead(lead)).length;
         this.pendingLeads = normalizedLeads.filter((lead) => this.isPendingLead(lead)).length;
+        this.closedDeals = normalizedLeads.filter((lead) => (lead.status || '').trim() === 'Deal Closed').length;
+        this.totalSiteVisitsDone = normalizedLeads.filter((lead) => this.isSiteVisitDoneLead(lead)).length;
+        this.siteVisitsDoneWeekly = normalizedLeads.filter((lead) => this.isSiteVisitDoneLead(lead) && this.isInCurrentWeek(lead.modifiedAt)).length;
+        this.siteVisitsDoneMonthly = normalizedLeads.filter((lead) => this.isSiteVisitDoneLead(lead) && this.isInCurrentMonth(lead.modifiedAt)).length;
 
         this.salesExecOverviewCards = [
           { label: 'TOTAL LEADS', value: this.totalLeads, type: 'all' },
           { label: 'ACTIVE LEADS', value: this.activeLeads, type: 'active' },
-          { label: 'PENDING LEADS', value: this.pendingLeads, type: 'pending' }
+          { label: 'PENDING LEADS', value: this.pendingLeads, type: 'pending' },
+          { label: 'DEALS CLOSED', value: this.closedDeals, type: 'status', statusName: 'Deal Closed' }
         ];
 
         this.salesExecStatusCards = normalizedStatuses
@@ -247,6 +277,56 @@ export class DashboardComponent implements OnInit {
     return this.pendingStatuses.has(status);
   }
 
+  private isSiteVisitDoneLead(lead: Lead): boolean {
+    return (lead.status || '').trim() === 'Site Visit Done';
+  }
+
+  private isInCurrentWeek(dateValue: string | undefined): boolean {
+    if (!dateValue) {
+      return false;
+    }
+
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) {
+      return false;
+    }
+
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+    return date >= startOfWeek && date < endOfWeek;
+  }
+
+  private isInCurrentMonth(dateValue: string | undefined): boolean {
+    if (!dateValue) {
+      return false;
+    }
+
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) {
+      return false;
+    }
+
+    const today = new Date();
+    return (
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth()
+    );
+  }
+
+  onAdminLeadPeriodChange(): void {
+    if (!this.hasAdminStyleDashboard()) {
+      return;
+    }
+
+    this.loadAdminDashboard();
+  }
+
   private buildAdminOverview(users: DashboardUser[], leads: Lead[]): void {
     const salesExecUsers = users.filter((user) => user.role_id === 'SALES_EXEC').length;
     const activeSalesExecUsers = users.filter(
@@ -291,23 +371,33 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  private buildAdminLeadInsights(users: DashboardUser[], leads: Lead[]): void {
+  private buildAdminLeadInsights(users: DashboardUser[], leads: Lead[], callLogs: any[]): void {
     const leadOwners = users.filter((user) => ['SALES_EXEC', 'SALES_MGR', 'ADMIN'].includes(user.role_id));
     const rows = leadOwners.map((user) => {
       const ownedLeads = leads.filter((lead) => this.isLeadOwnedByUser(lead, user));
-      const pendingLeads = ownedLeads.filter((lead) => this.isPendingLead(lead)).length;
-      const activeLeads = ownedLeads.filter((lead) => this.isActiveLead(lead)).length;
-      const closedLeads = ownedLeads.filter((lead) => (lead.status || '').trim() === 'Deal Closed').length;
-      const lostLeads = ownedLeads.filter((lead) => this.isLostLead(lead)).length;
+      const filteredOwnedLeads = ownedLeads.filter((lead) =>
+        this.matchesAdminLeadPeriod(lead.modifiedAt || lead.createdAt)
+      );
+      const totalLeads = filteredOwnedLeads.length;
+      const pendingLeads = filteredOwnedLeads.filter((lead) => this.isPendingLead(lead)).length;
+      const activeLeads = filteredOwnedLeads.filter((lead) => this.isActiveLead(lead)).length;
+      const siteVisitsDone = filteredOwnedLeads.filter((lead) => this.isSiteVisitDoneLead(lead)).length;
+      const dealsClosed = filteredOwnedLeads.filter(
+        (lead) => (lead.status || '').trim() === 'Deal Closed'
+      ).length;
+      const callsMade = callLogs.filter(
+        (callLog) => this.isCallOwnedByUser(callLog, user) && this.matchesAdminLeadPeriod(callLog.call_time || callLog.callTime)
+      ).length;
 
       return {
         userName: this.getUserFullName(user),
         roleLabel: this.formatRoleLabel(user.role_id),
-        totalLeads: ownedLeads.length,
+        totalLeads,
         activeLeads,
         pendingLeads,
-        closedLeads,
-        lostLeads
+        siteVisitsDone,
+        callsMade,
+        dealsClosed
       };
     });
 
@@ -350,9 +440,53 @@ export class DashboardComponent implements OnInit {
     return comparableValues.some((leadValue) => userValues.includes(leadValue));
   }
 
-  private isLostLead(lead: Lead): boolean {
-    const status = (lead.status || '').trim();
-    return !!status && this.terminalStatuses.has(status) && status !== 'Deal Closed';
+  private matchesAdminLeadPeriod(dateValue: string | undefined): boolean {
+    if (this.adminLeadPeriod === 'total') {
+      return true;
+    }
+
+    if (!dateValue) {
+      return false;
+    }
+
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) {
+      return false;
+    }
+
+    const today = new Date();
+    const startOfToday = new Date(today);
+    startOfToday.setHours(0, 0, 0, 0);
+
+    if (this.adminLeadPeriod === 'today') {
+      const endOfToday = new Date(startOfToday);
+      endOfToday.setDate(endOfToday.getDate() + 1);
+      return date >= startOfToday && date < endOfToday;
+    }
+
+    if (this.adminLeadPeriod === 'weekly') {
+      const startOfWeek = new Date(startOfToday);
+      startOfWeek.setDate(startOfToday.getDate() - startOfToday.getDay());
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 7);
+      return date >= startOfWeek && date < endOfWeek;
+    }
+
+    if (this.adminLeadPeriod === 'monthly') {
+      return (
+        date.getFullYear() === today.getFullYear() &&
+        date.getMonth() === today.getMonth()
+      );
+    }
+
+    return date.getFullYear() === today.getFullYear();
+  }
+
+  private isCallOwnedByUser(callLog: any, user: DashboardUser): boolean {
+    const callOwner = (callLog?.emp_id || '').toString().trim().toLowerCase();
+    const userId = (user.emp_id || '').trim().toLowerCase();
+
+    return !!callOwner && !!userId && callOwner === userId;
   }
 
   private getUserFullName(user: DashboardUser): string {

@@ -45,8 +45,19 @@
 
         <div class="section-block">
           <div class="section-header">
-            <h3>Lead Details by User</h3>
-            <p>Assigned lead counts for each sales user.</p>
+            <div>
+              <h3>Lead Details by User</h3>
+              <p>Assigned lead counts for each sales user.</p>
+            </div>
+            <p-selectButton
+              [options]="adminLeadPeriodOptions"
+              [(ngModel)]="adminLeadPeriod"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onAdminLeadPeriodChange()"
+              styleClass="dashboard-period-filter"
+              ariaLabel="Lead details period filter">
+            </p-selectButton>
           </div>
 
           <div class="lead-user-table" *ngIf="adminLeadRows.length; else noAdminLeadRows">
@@ -58,8 +69,9 @@
                   <th>Total Leads</th>
                   <th>Active</th>
                   <th>Pending</th>
-                  <th>Closed</th>
-                  <th>Lost</th>
+                  <th>Site Visits Done</th>
+                  <th>Calls Made</th>
+                  <th>Deals Closed</th>
                 </tr>
               </thead>
               <tbody>
@@ -69,8 +81,9 @@
                   <td>{{ row.totalLeads }}</td>
                   <td>{{ row.activeLeads }}</td>
                   <td>{{ row.pendingLeads }}</td>
-                  <td>{{ row.closedLeads }}</td>
-                  <td>{{ row.lostLeads }}</td>
+                  <td>{{ row.siteVisitsDone }}</td>
+                  <td>{{ row.callsMade }}</td>
+                  <td>{{ row.dealsClosed }}</td>
                 </tr>
               </tbody>
             </table>
@@ -103,6 +116,56 @@
             </button>
           </div>
         </div>
+
+        <p-panel
+          header="Calls Made"
+          [toggleable]="true"
+          toggler="header"
+          [collapsed]="!showCallsMadePanel"
+          (onBeforeToggle)="showCallsMadePanel = !showCallsMadePanel"
+          styleClass="dashboard-toggle-panel"
+          expandIcon="pi pi-chevron-down"
+          collapseIcon="pi pi-chevron-up">
+          <div class="calls-panel__body" *ngIf="showCallsMadePanel">
+            <div class="stats-grid stats-grid--calls">
+              <div class="card card-button--static">
+                <h4>CALLS MADE YESTERDAY</h4>
+                <h1>0</h1>
+              </div>
+              <div class="card card-button--static">
+                <h4>CALLS MADE TODAY</h4>
+                <h1>0</h1>
+              </div>
+            </div>
+          </div>
+        </p-panel>
+
+        <p-panel
+          header="Site Visits Done"
+          [toggleable]="true"
+          toggler="header"
+          [collapsed]="!showSiteVisitsDonePanel"
+          (onBeforeToggle)="showSiteVisitsDonePanel = !showSiteVisitsDonePanel"
+          styleClass="dashboard-toggle-panel"
+          expandIcon="pi pi-chevron-down"
+          collapseIcon="pi pi-chevron-up">
+          <div class="calls-panel__body" *ngIf="showSiteVisitsDonePanel">
+            <div class="stats-grid stats-grid--site-visits">
+              <div class="card card-button--static">
+                <h4>SITE VISITS DONE THIS WEEK</h4>
+                <h1>{{ siteVisitsDoneWeekly }}</h1>
+              </div>
+              <div class="card card-button--static">
+                <h4>SITE VISITS DONE THIS MONTH</h4>
+                <h1>{{ siteVisitsDoneMonthly }}</h1>
+              </div>
+              <div class="card card-button--static">
+                <h4>TOTAL SITE VISITS DONE</h4>
+                <h1>{{ totalSiteVisitsDone }}</h1>
+              </div>
+            </div>
+          </div>
+        </p-panel>
 
         <div class="section-block">
           <div class="section-header">
