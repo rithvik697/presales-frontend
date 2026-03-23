@@ -212,8 +212,18 @@
       <mat-sidenav-content class="content">
 
         <!-- GLOBAL BREADCRUMB -->
-        <div class="breadcrumb-wrapper" *ngIf="breadcrumbs.length">
-          <p-breadcrumb [model]="breadcrumbs" [home]="home"></p-breadcrumb>
+        <div class="breadcrumb-wrapper" *ngIf="breadcrumbs.length" [class.breadcrumb-wrapper--with-back]="showUserDetailBackButton">
+          <button
+            *ngIf="showUserDetailBackButton"
+            type="button"
+            class="breadcrumb-back-btn"
+            (click)="backFromBreadcrumb()"
+            aria-label="Back to users">
+            <i class="pi pi-arrow-left"></i>
+          </button>
+          <div class="breadcrumb-bar">
+            <p-breadcrumb [model]="breadcrumbs" [home]="home"></p-breadcrumb>
+          </div>
         </div>
 
         <!-- PAGE CONTENT -->

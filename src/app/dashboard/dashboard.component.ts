@@ -1,7 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import Chart from 'chart.js/auto';
 import { Lead } from '../models/lead.model';
 import { LeadsService } from '../services/leads.service';
 import { RegistrationService } from '../services/registration.service';
@@ -18,6 +17,9 @@ interface DashboardUser {
   emp_id: string;
   role_id: string;
   emp_status: string;
+  emp_first_name?: string;
+  emp_middle_name?: string;
+  emp_last_name?: string;
   created_on?: string;
 }
 
@@ -27,16 +29,27 @@ interface AdminOverviewCard {
   queryParams?: Record<string, string>;
 }
 
+interface AdminLeadSummaryCard {
+  label: string;
+  value: number;
+}
+
+interface AdminLeadRow {
+  userName: string;
+  roleLabel: string;
+  totalLeads: number;
+  activeLeads: number;
+  pendingLeads: number;
+  closedLeads: number;
+  lostLeads: number;
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('adminTrendChartCanvas') adminTrendChartCanvas?: ElementRef<HTMLCanvasElement>;
-  @ViewChild('adminRoleChartCanvas') adminRoleChartCanvas?: ElementRef<HTMLCanvasElement>;
-  @ViewChild('adminStatusChartCanvas') adminStatusChartCanvas?: ElementRef<HTMLCanvasElement>;
-
+export class DashboardComponent implements OnInit {
   fullName: string = '';
   greeting: string = '';
   role: string = '';
@@ -48,16 +61,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   todayLeads: number = 0;
   lostLeads: number = 0;
 
-  salesExecOverviewCards: DashboardCard[] = [];
-  salesExecStatusCards: DashboardCard[] = [];
-  adminOverviewCards: AdminOverviewCard[] = [];
-  adminUsers: DashboardUser[] = [];
-  adminTrendFilter: 'weekly' | 'monthly' | 'annual' = 'weekly';
+  public salesExecOverviewCards: DashboardCard[] = [];
+  public salesExecStatusCards: DashboardCard[] = [];
+  public adminOverviewCards: AdminOverviewCard[] = [];
+  public adminLeadSummaryCards: AdminLeadSummaryCard[] = [];
+  public adminLeadRows: AdminLeadRow[] = [];
+  public adminUsers: DashboardUser[] = [];
 
   loading: boolean = true;
-  private adminTrendChart: Chart | null = null;
-  private adminRoleChart: Chart | null = null;
-  private adminStatusChart: Chart | null = null;
 
   private readonly terminalStatuses = new Set([
     'Deal Closed',
@@ -90,14 +101,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadDashboard();
   }
 
-  ngAfterViewInit(): void {
-    this.renderAdminCharts();
-  }
-
-  ngOnDestroy(): void {
-    this.destroyAdminCharts();
-  }
-
   getGreeting(): string {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good morning';
@@ -113,8 +116,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.role === 'ADMIN';
   }
 
+  isSalesManager(): boolean {
+    return this.role === 'SALES_MGR';
+  }
+
+  hasAdminStyleDashboard(): boolean {
+    return this.isAdmin() || this.isSalesManager();
+  }
+
   loadDashboard(): void {
-    if (this.isAdmin()) {
+    if (this.hasAdminStyleDashboard()) {
       this.loadAdminDashboard();
       return;
     }
@@ -146,13 +157,18 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadAdminDashboard(): void {
-    this.registrationService.getUsers().subscribe({
-      next: (res: any) => {
-        const users = Array.isArray(res?.data) ? res.data : [];
-        this.adminUsers = users;
-        this.buildAdminOverview(users);
+    forkJoin({
+      users: this.registrationService.getUsers(),
+      leads: this.leadsService.getAll()
+    }).subscribe({
+      next: ({ users, leads }) => {
+        const normalizedUsers = Array.isArray(users?.data) ? users.data : [];
+        const normalizedLeads = Array.isArray(leads) ? leads : [];
+
+        this.adminUsers = normalizedUsers;
+        this.buildAdminOverview(normalizedUsers);
+        this.buildAdminLeadInsights(normalizedUsers, normalizedLeads);
         this.loading = false;
-        setTimeout(() => this.renderAdminCharts(), 0);
       },
       error: () => {
         this.loading = false;
@@ -179,12 +195,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           { label: 'PENDING LEADS', value: this.pendingLeads, type: 'pending' }
         ];
 
-        this.salesExecStatusCards = normalizedStatuses.map((status: any) => ({
-          label: status.status_name,
-          value: normalizedLeads.filter((lead) => lead.status === status.status_name).length,
-          type: 'status',
-          statusName: status.status_name
-        }));
+        this.salesExecStatusCards = normalizedStatuses
+          .map((status: any) => ({
+            label: status.status_name,
+            value: normalizedLeads.filter((lead) => lead.status === status.status_name).length,
+            type: 'status' as const,
+            statusName: status.status_name
+          }))
+          .filter((card) => card.value > 0);
 
         this.loading = false;
       },
@@ -194,13 +212,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  setAdminTrendFilter(filter: 'weekly' | 'monthly' | 'annual'): void {
-    this.adminTrendFilter = filter;
-    this.renderAdminTrendChart();
-  }
-
   openAdminUsers(card: AdminOverviewCard): void {
-    if (!this.isAdmin()) {
+    if (!this.hasAdminStyleDashboard()) {
       return;
     }
 
@@ -235,7 +248,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private buildAdminOverview(users: DashboardUser[]): void {
     const activeUsers = users.filter((user) => user.emp_status === 'Active').length;
-    const inactiveUsers = users.filter((user) => user.emp_status === 'Inactive').length;
     const salesExecUsers = users.filter((user) => user.role_id === 'SALES_EXEC').length;
     const salesMgrUsers = users.filter((user) => user.role_id === 'SALES_MGR').length;
     const adminUsers = users.filter((user) => user.role_id === 'ADMIN').length;
@@ -243,187 +255,86 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.adminOverviewCards = [
       { label: 'TOTAL USERS', value: users.length, queryParams: {} },
       { label: 'ACTIVE USERS', value: activeUsers, queryParams: { status: 'Active' } },
-      { label: 'INACTIVE USERS', value: inactiveUsers, queryParams: { status: 'Inactive' } },
       { label: 'SALES EXECS', value: salesExecUsers, queryParams: { role: 'SALES_EXEC' } },
       { label: 'SALES MANAGERS', value: salesMgrUsers, queryParams: { role: 'SALES_MGR' } },
       { label: 'ADMINS', value: adminUsers, queryParams: { role: 'ADMIN' } }
     ];
   }
 
-  private renderAdminCharts(): void {
-    if (!this.isAdmin() || this.loading || !this.adminUsers.length) {
-      return;
-    }
+  private buildAdminLeadInsights(users: DashboardUser[], leads: Lead[]): void {
+    const leadOwners = users.filter((user) => ['SALES_EXEC', 'SALES_MGR', 'ADMIN'].includes(user.role_id));
+    const rows = leadOwners.map((user) => {
+      const ownedLeads = leads.filter((lead) => this.isLeadOwnedByUser(lead, user));
+      const pendingLeads = ownedLeads.filter((lead) => this.isPendingLead(lead)).length;
+      const activeLeads = ownedLeads.filter((lead) => this.isActiveLead(lead)).length;
+      const closedLeads = ownedLeads.filter((lead) => (lead.status || '').trim() === 'Deal Closed').length;
+      const lostLeads = ownedLeads.filter((lead) => this.isLostLead(lead)).length;
 
-    this.renderAdminTrendChart();
-    this.renderAdminRoleChart();
-    this.renderAdminStatusChart();
-  }
-
-  private renderAdminTrendChart(): void {
-    if (!this.adminTrendChartCanvas) {
-      return;
-    }
-
-    const grouped = this.groupUsersByCreatedDate(this.adminTrendFilter);
-    const labels = Object.keys(grouped);
-    const values = Object.values(grouped);
-    const datasetLabel =
-      this.adminTrendFilter === 'weekly'
-        ? 'Users Added (Last 7 Days)'
-        : this.adminTrendFilter === 'monthly'
-          ? 'Users Added (Last 30 Days)'
-          : 'Users Added (This Year)';
-
-    this.adminTrendChart?.destroy();
-    this.adminTrendChart = new Chart(this.adminTrendChartCanvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: datasetLabel,
-            data: values,
-            backgroundColor: '#1976d2',
-            borderColor: '#1976d2',
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1
-            }
-          }
-        }
-      }
-    });
-  }
-
-  private renderAdminRoleChart(): void {
-    if (!this.adminRoleChartCanvas) {
-      return;
-    }
-
-    const groupedRoles = this.groupCount(this.adminUsers, (user) => this.formatRoleLabel(user.role_id));
-
-    this.adminRoleChart?.destroy();
-    this.adminRoleChart = new Chart(this.adminRoleChartCanvas.nativeElement, {
-      type: 'pie',
-      data: {
-        labels: Object.keys(groupedRoles),
-        datasets: [
-          {
-            data: Object.values(groupedRoles),
-            backgroundColor: ['#1d4ed8', '#0f766e', '#f97316', '#7c3aed']
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'right' }
-        }
-      }
-    });
-  }
-
-  private renderAdminStatusChart(): void {
-    if (!this.adminStatusChartCanvas) {
-      return;
-    }
-
-    const groupedStatus = this.groupCount(this.adminUsers, (user) => user.emp_status || 'Unknown');
-
-    this.adminStatusChart?.destroy();
-    this.adminStatusChart = new Chart(this.adminStatusChartCanvas.nativeElement, {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(groupedStatus),
-        datasets: [
-          {
-            data: Object.values(groupedStatus),
-            backgroundColor: ['#84cc16', '#9ca3af', '#ef4444']
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'right' }
-        }
-      }
-    });
-  }
-
-  private groupUsersByCreatedDate(filter: 'weekly' | 'monthly' | 'annual'): Record<string, number> {
-    const grouped: Record<string, number> = {};
-    const now = new Date();
-
-    this.adminUsers.forEach((user) => {
-      if (!user.created_on) {
-        return;
-      }
-
-      const createdAt = new Date(user.created_on);
-      if (Number.isNaN(createdAt.getTime())) {
-        return;
-      }
-
-      let include = true;
-      let key = '';
-
-      if (filter === 'weekly') {
-        const start = new Date(now);
-        start.setDate(now.getDate() - 6);
-        start.setHours(0, 0, 0, 0);
-        include = createdAt >= start;
-        key = createdAt.toISOString().split('T')[0];
-      } else if (filter === 'monthly') {
-        const start = new Date(now);
-        start.setDate(now.getDate() - 29);
-        start.setHours(0, 0, 0, 0);
-        include = createdAt >= start;
-        key = createdAt.toISOString().split('T')[0];
-      } else {
-        include = createdAt.getFullYear() === now.getFullYear();
-        key = createdAt.toLocaleString('en-US', { month: 'short' });
-      }
-
-      if (!include) {
-        return;
-      }
-
-      grouped[key] = (grouped[key] || 0) + 1;
+      return {
+        userName: this.getUserFullName(user),
+        roleLabel: this.formatRoleLabel(user.role_id),
+        totalLeads: ownedLeads.length,
+        activeLeads,
+        pendingLeads,
+        closedLeads,
+        lostLeads
+      };
     });
 
-    if (filter === 'annual') {
-      const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return Object.fromEntries(
-        Object.entries(grouped).sort(
-          ([monthA], [monthB]) => monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB)
-        )
-      );
-    }
+    this.adminLeadRows = rows.sort((a, b) => {
+      if (b.totalLeads !== a.totalLeads) {
+        return b.totalLeads - a.totalLeads;
+      }
 
-    return Object.fromEntries(
-      Object.entries(grouped).sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
-    );
+      return a.userName.localeCompare(b.userName);
+    });
+
+    this.adminLeadSummaryCards = [
+      { label: 'TOTAL ASSIGNED LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead)).length },
+      { label: 'ACTIVE PIPELINE', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isActiveLead(lead)).length },
+      { label: 'PENDING FOLLOW-UPS', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isPendingLead(lead)).length },
+      { label: 'DEALS CLOSED', value: leads.filter((lead) => this.hasAssignedOwner(lead) && (lead.status || '').trim() === 'Deal Closed').length }
+    ];
   }
 
-  private groupCount<T>(items: T[], getKey: (item: T) => string): Record<string, number> {
-    return items.reduce((acc, item) => {
-      const key = getKey(item) || 'Unknown';
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+  private hasAssignedOwner(lead: Lead): boolean {
+    return !!(lead.assignedToId || lead.currentAssignedTo || lead.assignedTo);
+  }
+
+  private isLeadOwnedByUser(lead: Lead, user: DashboardUser): boolean {
+    const comparableValues = [
+      lead.assignedToId,
+      lead.currentAssignedTo,
+      lead.assignedTo
+    ]
+      .filter((value): value is string => !!value)
+      .map((value) => value.trim().toLowerCase());
+
+    const userValues = [
+      user.emp_id,
+      this.getUserFullName(user)
+    ]
+      .filter((value): value is string => !!value)
+      .map((value) => value.trim().toLowerCase());
+
+    return comparableValues.some((leadValue) => userValues.includes(leadValue));
+  }
+
+  private isLostLead(lead: Lead): boolean {
+    const status = (lead.status || '').trim();
+    return !!status && this.terminalStatuses.has(status) && status !== 'Deal Closed';
+  }
+
+  private getUserFullName(user: DashboardUser): string {
+    const fullName = [
+      user.emp_first_name,
+      user.emp_middle_name,
+      user.emp_last_name
+    ]
+      .filter((name) => !!name && name.trim() !== '')
+      .join(' ');
+
+    return fullName || user.emp_id;
   }
 
   private formatRoleLabel(role: string): string {
@@ -436,11 +347,5 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       .split('_')
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join(' ');
-  }
-
-  private destroyAdminCharts(): void {
-    this.adminTrendChart?.destroy();
-    this.adminRoleChart?.destroy();
-    this.adminStatusChart?.destroy();
   }
 }
