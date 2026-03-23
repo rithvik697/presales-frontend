@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { LeadsService } from '../../services/leads.service';
 import { Lead } from '../../models/lead.model';
@@ -30,6 +31,7 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   // Lead Overview Modal
   showLeadDetails: boolean = false;
   selectedLead: Lead | null = null;
+  currentDashboardFilter: string | null = null;
 
   // Filter form
   filterForm: FormGroup;
@@ -53,7 +55,28 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   // PrimeNG Table Cols
   cols: any[] = [];
 
-  constructor(private leadsService: LeadsService, private router: Router) {
+  private readonly terminalStatuses = new Set([
+    'Deal Closed',
+    'Spam',
+    'Low Budget',
+    'OOS',
+    'Old Lead',
+    'Not Interested'
+  ]);
+
+  private readonly pendingStatuses = new Set([
+    'Follow-up',
+    'Re-Enquire',
+    'Expected Site Visit',
+    'Expected Office Visit',
+    'Not Answered'
+  ]);
+
+  constructor(
+    private leadsService: LeadsService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.filterForm = new FormGroup({
       customerName: new FormControl(''),
       mobileNumber: new FormControl(''),
@@ -86,6 +109,7 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     this.selectedOptionalCols = [];
 
     this.applyColumns();
+    this.watchDashboardFilters();
     this.loadLeads();
     this.loadEmployees();
     this.loadProjects();
@@ -134,8 +158,34 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       this.allLeads = data;
       this.filteredLeads = data;
       this.extractDropdownValues();
+      this.applyFilters();
       this.loading = false;
     });
+    this.subscriptions.push(sub);
+  }
+
+  watchDashboardFilters(): void {
+    const sub = this.route.queryParams.subscribe((params) => {
+      this.currentDashboardFilter = params['dashboardFilter'] || null;
+      const status = params['status'] || '';
+
+      this.filterForm.patchValue(
+        {
+          status
+        },
+        { emitEvent: false }
+      );
+
+      if (this.currentDashboardFilter || status) {
+        this.showFilterView = true;
+        this.leadsService.filterViewOpen = true;
+      }
+
+      if (this.allLeads.length) {
+        this.applyFilters();
+      }
+    });
+
     this.subscriptions.push(sub);
   }
 
@@ -233,12 +283,20 @@ export class LeadsListComponent implements OnInit, OnDestroy {
           if (leadDate < from) return false;
         }
 
-        if (filters.toDate) {
+      if (filters.toDate) {
           const to = new Date(filters.toDate);
           to.setHours(23,59,59,999);
 
           if (leadDate > to) return false;
         }
+      }
+
+      if (this.currentDashboardFilter === 'active' && !this.isActiveLead(lead)) {
+        return false;
+      }
+
+      if (this.currentDashboardFilter === 'pending' && !this.isPendingLead(lead)) {
+        return false;
       }
       
       return true;
@@ -247,7 +305,9 @@ export class LeadsListComponent implements OnInit, OnDestroy {
 
   clearFilters(dt?: any): void {
     this.filterForm.reset();
+    this.currentDashboardFilter = null;
     this.filteredLeads = this.allLeads;
+    this.router.navigate(['/leads']);
     if (dt) {
       dt.clear(); // Clears PrimeNG table internal filters/sorting
     }
@@ -289,6 +349,16 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       default:
         return 'info';
     }
+  }
+
+  private isActiveLead(lead: Lead): boolean {
+    const status = (lead.status || '').trim();
+    return !!status && !this.terminalStatuses.has(status);
+  }
+
+  private isPendingLead(lead: Lead): boolean {
+    const status = (lead.status || '').trim();
+    return this.pendingStatuses.has(status);
   }
 
   ngOnDestroy(): void {
