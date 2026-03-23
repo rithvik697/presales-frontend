@@ -48,10 +48,10 @@
         <mat-form-field appearance="outline" class="code-field">
           <mat-select [(ngModel)]="selectedCountryCode" name="countryCode">
             <mat-select-trigger>
-              {{ selectedCountryCode.flag }} {{ selectedCountryCode.code }}
+              {{ selectedCountryCode.code }}
             </mat-select-trigger>
             <mat-option *ngFor="let c of countryCodes" [value]="c">
-              {{ c.flag }} {{ c.code }}
+              {{ c.code }} - {{ c.label }}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -64,9 +64,9 @@
                  [disabled]="!isAdmin && isEditMode"
                  type="tel"
                  pattern="[0-9]*"
-                 [maxlength]="selectedCountryCode.limit" />
+                 [maxlength]="selectedCountryCode.max_length" />
           <mat-hint align="end">
-            {{model.phone.length || 0}} / {{selectedCountryCode.limit}}
+            {{model.phone.length || 0}} / {{selectedCountryCode.max_length}}
           </mat-hint>
           <mat-error *ngIf="leadForm.controls['phone']?.errors?.['pattern']">
             Numeric values only
@@ -89,7 +89,7 @@
                type="tel"
                pattern="[0-9]*"
                (input)="onPhoneInput($event, false)"
-               [maxlength]="selectedCountryCode.limit" />
+               [maxlength]="selectedCountryCode.max_length" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
