@@ -41,6 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
   menuItems: any[] = [];
   breadcrumbs: MenuItem[] = [];
   profileMenuItems: MenuItem[] = [];
+  currentUrl: string = '';
 
   home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
@@ -113,6 +114,7 @@ export class AppComponent implements OnInit, OnDestroy {
         });
 
         const url: string = e.urlAfterRedirects || e.url;
+        this.currentUrl = url;
 
         this.isLoginPage = url.startsWith('/login');
         this.isChangePasswordPage = url.startsWith('/change-password');
@@ -156,6 +158,14 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
         { label: isEdit ? 'Edit User' : 'Register User' },
+      ];
+    }
+
+    else if (/^\/users\/[^/?]+$/.test(url)) {
+      const empId = decodeURIComponent(url.split('/').pop() || '');
+      this.breadcrumbs = [
+        { label: 'Users', routerLink: '/users' },
+        { label: empId }
       ];
     }
 
@@ -280,6 +290,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   toggleSidebar(sidenav: MatSidenav): void {
     sidenav.toggle();
+  }
+
+  get showUserDetailBackButton(): boolean {
+    return /^\/users\/[^/?]+$/.test(this.currentUrl);
+  }
+
+  backFromBreadcrumb(): void {
+    this.router.navigate(['/users']);
   }
 
   selectItem(label: string): void {

@@ -8,7 +8,7 @@
         </div>
       </div>
 
-      <ng-container *ngIf="!loading && isAdmin(); else nonAdminDashboard">
+      <ng-container *ngIf="!loading && hasAdminStyleDashboard(); else nonAdminDashboard">
         <div class="section-block">
           <div class="section-header">
             <h3>User Overview</h3>
@@ -27,41 +27,58 @@
           </div>
         </div>
 
-        <div class="charts-wrapper">
-          <div class="section-block chart-panel chart-panel--wide">
-            <div class="chart-header">
-              <h3>Users Added</h3>
-              <div class="filters">
-                <button class="filter-btn" [class.active]="adminTrendFilter === 'weekly'"
-                  (click)="setAdminTrendFilter('weekly')">Weekly</button>
-                <button class="filter-btn" [class.active]="adminTrendFilter === 'monthly'"
-                  (click)="setAdminTrendFilter('monthly')">Monthly</button>
-                <button class="filter-btn" [class.active]="adminTrendFilter === 'annual'"
-                  (click)="setAdminTrendFilter('annual')">Annual</button>
-              </div>
-            </div>
-            <div class="canvas-wrapper">
-              <canvas #adminTrendChartCanvas></canvas>
-            </div>
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Lead Ownership Overview</h3>
+            <p>Admin view of assigned leads across the sales team.</p>
           </div>
 
-          <div class="section-block chart-panel">
-            <div class="chart-header">
-              <h3>Users by Role</h3>
+          <div class="stats-grid stats-grid--admin-leads">
+            <div class="card" *ngFor="let card of adminLeadSummaryCards">
+              <h4>{{ card.label }}</h4>
+              <h1>{{ card.value }}</h1>
             </div>
-            <div class="canvas-wrapper">
-              <canvas #adminRoleChartCanvas></canvas>
-            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Lead Details by User</h3>
+            <p>Assigned lead counts for each sales user.</p>
           </div>
 
-          <div class="section-block chart-panel">
-            <div class="chart-header">
-              <h3>User Status</h3>
-            </div>
-            <div class="canvas-wrapper">
-              <canvas #adminStatusChartCanvas></canvas>
-            </div>
+          <div class="lead-user-table" *ngIf="adminLeadRows.length; else noAdminLeadRows">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Total Leads</th>
+                  <th>Active</th>
+                  <th>Pending</th>
+                  <th>Closed</th>
+                  <th>Lost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of adminLeadRows">
+                  <td>{{ row.userName }}</td>
+                  <td>{{ row.roleLabel }}</td>
+                  <td>{{ row.totalLeads }}</td>
+                  <td>{{ row.activeLeads }}</td>
+                  <td>{{ row.pendingLeads }}</td>
+                  <td>{{ row.closedLeads }}</td>
+                  <td>{{ row.lostLeads }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
+          <ng-template #noAdminLeadRows>
+            <div class="empty-state">
+              <p>No lead ownership data is available yet.</p>
+            </div>
+          </ng-template>
         </div>
       </ng-container>
 
