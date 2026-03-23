@@ -61,6 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
       children: [
         { label: 'Add Activity', route: '/configure/add-activity' },
         { label: 'Add Source', route: '/configure/add-source' },
+        { label: 'Bulk Lead Upload', route: '/configure/bulk-lead-upload' },
         { label: 'Lead Transfer', route: '/configure/lead-transfer' },
         { label: 'Lead Assigning', route: '/configure/lead-assigning' }
       ]
@@ -182,6 +183,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Configure', routerLink: '/configure' },
         { label: 'Add Source' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/bulk-lead-upload')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Bulk Lead Upload' }
       ];
     }
 

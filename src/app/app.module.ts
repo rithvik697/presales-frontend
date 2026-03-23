@@ -91,6 +91,7 @@ import { AddActivityComponent } from './configure/add-activity/add-activity.comp
 import { AddSourceComponent } from './configure/add-source/add-source.component';
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
+import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-upload.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.c
     ConfigureComponent,
     AddActivityComponent,
     AddSourceComponent,
+    BulkLeadUploadComponent,
     LeadTransferComponent,
     ProjectAssignmentComponent,
     DatabackupsComponent,

@@ -1,0 +1,174 @@
+<div class="bulk-upload-page">
+  <div class="card upload-form-card">
+    <div class="page-header">
+      <h2>Bulk Lead Upload</h2>
+      <p class="subtitle">
+        Upload leads in .csv or .xlsx format. Imported leads will start in <strong>New Enquiry</strong>
+        and will be auto-assigned project-wise using your configured round-robin rules.
+      </p>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-card">
+        <h3>Supported Columns</h3>
+        <ul>
+          <li><code>first_name</code>, <code>last_name</code> or <code>name</code></li>
+          <li><code>phone</code></li>
+          <li><code>email</code></li>
+          <li><code>project_name</code></li>
+          <li><code>source_name</code></li>
+          <li><code>description</code>, <code>alternate_phone</code>, <code>profession</code></li>
+          <li>Legacy backup sheets are also supported using columns like <code>Customer Name</code>, <code>country_code</code>, <code>Mobile Number</code>, <code>Requirement Name</code>, and <code>Lead Source</code></li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <h3>Import Rules</h3>
+        <ul>
+          <li>Every imported lead is created in <strong>New Enquiry</strong> status.</li>
+          <li>Phone numbers are normalized before saving.</li>
+          <li>Duplicate phone numbers are skipped automatically.</li>
+          <li>Leads are assigned only to active mapped sales executives.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="upload-box">
+      <label for="bulkFile">Lead File *</label>
+      <input #fileInput id="bulkFile" type="file" [accept]="acceptedFormats" (change)="onFileSelected($event)" />
+      <div class="selected-file" *ngIf="selectedFile">
+        Selected: <strong>{{ selectedFile.name }}</strong>
+      </div>
+      <div class="upload-actions">
+        <button type="button" class="secondary-btn" (click)="resetSelection(fileInput)">Reset</button>
+        <button type="button" (click)="uploadFile()" [disabled]="uploading">
+          {{ uploading ? 'Uploading...' : 'Upload Leads' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card upload-result-card" *ngIf="uploadResult">
+    <div class="summary-header">
+      <h3>Latest Upload Summary</h3>
+      <span class="file-tag">{{ uploadResult.file_name }}</span>
+    </div>
+
+    <div class="summary-metrics">
+      <div class="metric-card">
+        <span class="metric-label">Total Rows</span>
+        <strong>{{ uploadResult.total_rows }}</strong>
+      </div>
+      <div class="metric-card success">
+        <span class="metric-label">Created</span>
+        <strong>{{ uploadResult.created_count }}</strong>
+      </div>
+      <div class="metric-card warning">
+        <span class="metric-label">Duplicates</span>
+        <strong>{{ uploadResult.duplicate_count }}</strong>
+      </div>
+      <div class="metric-card danger">
+        <span class="metric-label">Failed</span>
+        <strong>{{ uploadResult.failed_count }}</strong>
+      </div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-panel" *ngIf="uploadResult.created_leads.length">
+        <h4>Created Leads</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Row</th>
+              <th>Lead ID</th>
+              <th>Assigned To</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of uploadResult.created_leads">
+              <td>{{ row.row_number }}</td>
+              <td>{{ row.lead_id }}</td>
+              <td>{{ row.assigned_to }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="result-panel" *ngIf="uploadResult.duplicate_rows.length">
+        <h4>Skipped Duplicates</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Row</th>
+              <th>Phone</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of uploadResult.duplicate_rows">
+              <td>{{ row.row_number }}</td>
+              <td>{{ row.phone || '-' }}</td>
+              <td>{{ row.reason }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="result-panel" *ngIf="uploadResult.failed_rows.length">
+        <h4>Failed Rows</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Row</th>
+              <th>Phone</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of uploadResult.failed_rows">
+              <td>{{ row.row_number }}</td>
+              <td>{{ row.phone || '-' }}</td>
+              <td>{{ row.reason }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card upload-history-card">
+    <div class="summary-header">
+      <h3>Bulk Upload History</h3>
+    </div>
+
+    <div class="empty-state" *ngIf="!loadingHistory && uploadHistory.length === 0">
+      No upload history recorded yet.
+    </div>
+
+    <div class="history-table-wrap" *ngIf="uploadHistory.length">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Uploaded On</th>
+            <th>File</th>
+            <th>Total</th>
+            <th>Created</th>
+            <th>Duplicates</th>
+            <th>Failed</th>
+            <th>Uploaded By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of uploadHistory">
+            <td>{{ item.uploaded_on | date: 'dd MMM yyyy, hh:mm a' }}</td>
+            <td>{{ item.file_name }}</td>
+            <td>{{ item.total_rows }}</td>
+            <td>{{ item.created_count }}</td>
+            <td>{{ item.duplicate_count }}</td>
+            <td>{{ item.failed_count }}</td>
+            <td>{{ item.uploaded_by }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

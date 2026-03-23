@@ -63,6 +63,38 @@ export interface LeadTransferHistoryItem {
   to_status_name?: string;
 }
 
+export interface BulkUploadRowResult {
+  row_number: number;
+  lead_id?: string;
+  assigned_to?: string;
+  phone?: string;
+  reason?: string;
+}
+
+export interface BulkUploadResult {
+  upload_id: number;
+  file_name: string;
+  total_rows: number;
+  created_count: number;
+  duplicate_count: number;
+  failed_count: number;
+  expected_columns: string[];
+  created_leads: BulkUploadRowResult[];
+  duplicate_rows: BulkUploadRowResult[];
+  failed_rows: BulkUploadRowResult[];
+}
+
+export interface BulkUploadHistoryItem {
+  upload_id: number;
+  file_name: string;
+  total_rows: number;
+  created_count: number;
+  duplicate_count: number;
+  failed_count: number;
+  uploaded_by: string;
+  uploaded_on: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -159,5 +191,15 @@ export class ConfigureService {
 
   getLeadTransferHistory(): Observable<LeadTransferHistoryItem[]> {
     return this.http.get<LeadTransferHistoryItem[]>(`${this.apiBase}/config/lead-transfers/history`);
+  }
+
+  uploadBulkLeads(file: File): Observable<BulkUploadResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<BulkUploadResult>(`${this.apiBase}/config/bulk-leads/upload`, formData);
+  }
+
+  getBulkUploadHistory(): Observable<BulkUploadHistoryItem[]> {
+    return this.http.get<BulkUploadHistoryItem[]>(`${this.apiBase}/config/bulk-leads/history`);
   }
 }
