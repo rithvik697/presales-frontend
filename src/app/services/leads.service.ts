@@ -33,6 +33,10 @@ export class LeadsService {
     return this.http.get<any[]>(`${this.baseUrl}/sources`);
   }
 
+  getCountryCodes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/country-codes`);
+  }
+
   getStatuses(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/statuses`);
   }

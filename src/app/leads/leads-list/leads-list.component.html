@@ -163,6 +163,8 @@
                 </div>
 
                 <!-- Default Text -->
+                <span *ngSwitchCase="'phone'">{{ lead.phone | phoneDisplay }}</span>
+                <span *ngSwitchCase="'alternatePhone'">{{ lead.alternatePhone ? (lead.alternatePhone | phoneDisplay) : '-' }}</span>
                 <span *ngSwitchDefault>{{ lead[col.field] || '-' }}</span>
               </ng-container>
             </td>
