@@ -27,6 +27,7 @@ interface AdminOverviewCard {
   label: string;
   value: number;
   queryParams?: Record<string, string>;
+  isClickable?: boolean;
 }
 
 interface AdminLeadSummaryCard {
@@ -166,7 +167,7 @@ export class DashboardComponent implements OnInit {
         const normalizedLeads = Array.isArray(leads) ? leads : [];
 
         this.adminUsers = normalizedUsers;
-        this.buildAdminOverview(normalizedUsers);
+        this.buildAdminOverview(normalizedUsers, normalizedLeads);
         this.buildAdminLeadInsights(normalizedUsers, normalizedLeads);
         this.loading = false;
       },
@@ -213,7 +214,7 @@ export class DashboardComponent implements OnInit {
   }
 
   openAdminUsers(card: AdminOverviewCard): void {
-    if (!this.hasAdminStyleDashboard()) {
+    if (!this.hasAdminStyleDashboard() || card.isClickable === false) {
       return;
     }
 
@@ -246,19 +247,48 @@ export class DashboardComponent implements OnInit {
     return this.pendingStatuses.has(status);
   }
 
-  private buildAdminOverview(users: DashboardUser[]): void {
-    const activeUsers = users.filter((user) => user.emp_status === 'Active').length;
+  private buildAdminOverview(users: DashboardUser[], leads: Lead[]): void {
     const salesExecUsers = users.filter((user) => user.role_id === 'SALES_EXEC').length;
-    const salesMgrUsers = users.filter((user) => user.role_id === 'SALES_MGR').length;
-    const adminUsers = users.filter((user) => user.role_id === 'ADMIN').length;
+    const activeSalesExecUsers = users.filter(
+      (user) => user.role_id === 'SALES_EXEC' && user.emp_status === 'Active'
+    ).length;
+    const today = new Date();
+    const leadsCreatedToday = leads.filter((lead) => this.isSameDay(lead.createdAt, today)).length;
+    const expectedSiteVisitToday = leads.filter(
+      (lead) => (lead.status || '').trim() === 'Expected Site Visit' && this.isSameDay(lead.modifiedAt, today)
+    ).length;
+    const siteVisitDoneToday = leads.filter(
+      (lead) => (lead.status || '').trim() === 'Site Visit Done' && this.isSameDay(lead.modifiedAt, today)
+    ).length;
 
     this.adminOverviewCards = [
-      { label: 'TOTAL USERS', value: users.length, queryParams: {} },
-      { label: 'ACTIVE USERS', value: activeUsers, queryParams: { status: 'Active' } },
-      { label: 'SALES EXECS', value: salesExecUsers, queryParams: { role: 'SALES_EXEC' } },
-      { label: 'SALES MANAGERS', value: salesMgrUsers, queryParams: { role: 'SALES_MGR' } },
-      { label: 'ADMINS', value: adminUsers, queryParams: { role: 'ADMIN' } }
+      { label: 'TOTAL END USERS', value: salesExecUsers, queryParams: { role: 'SALES_EXEC' } },
+      {
+        label: 'ACTIVE END USERS',
+        value: activeSalesExecUsers,
+        queryParams: { role: 'SALES_EXEC', status: 'Active' }
+      },
+      { label: 'LEADS CREATED TODAY', value: leadsCreatedToday, isClickable: false },
+      { label: "TODAY'S EXPECTED SITE VISIT", value: expectedSiteVisitToday, isClickable: false },
+      { label: "TODAY'S SITE VISIT DONE", value: siteVisitDoneToday, isClickable: false }
     ];
+  }
+
+  private isSameDay(dateValue: string | undefined, referenceDate: Date): boolean {
+    if (!dateValue) {
+      return false;
+    }
+
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) {
+      return false;
+    }
+
+    return (
+      date.getFullYear() === referenceDate.getFullYear() &&
+      date.getMonth() === referenceDate.getMonth() &&
+      date.getDate() === referenceDate.getDate()
+    );
   }
 
   private buildAdminLeadInsights(users: DashboardUser[], leads: Lead[]): void {

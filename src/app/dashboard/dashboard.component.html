@@ -12,7 +12,7 @@
         <div class="section-block">
           <div class="section-header">
             <h3>User Overview</h3>
-            <p>Click any card to open the matching user list.</p>
+            <p>Sales exec summary and today's lead activity.</p>
           </div>
 
           <div class="stats-grid stats-grid--admin">
@@ -20,6 +20,8 @@
               *ngFor="let card of adminOverviewCards"
               type="button"
               class="card card-button"
+              [class.card-button--static]="card.isClickable === false"
+              [disabled]="card.isClickable === false"
               (click)="openAdminUsers(card)">
               <h4>{{ card.label }}</h4>
               <h1>{{ card.value }}</h1>

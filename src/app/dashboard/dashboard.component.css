@@ -128,6 +128,16 @@
   border-color: #4364f7;
 }
 
+.card-button--static {
+  cursor: default;
+}
+
+.card-button--static:hover,
+.card-button--static:focus-visible {
+  border-color: #d8e4ff;
+  transform: none;
+}
+
 .status-grid {
   display: grid;
   gap: 14px;
