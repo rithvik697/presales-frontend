@@ -95,10 +95,38 @@
             </div>
           </ng-template>
         </div>
+
+        <div class="section-block" *ngIf="adminStatusChartData">
+          <div class="section-header">
+            <div>
+              <h3>Lead Status Distribution</h3>
+              <p>All existing statuses with percentage, count, and color for the selected period.</p>
+            </div>
+          </div>
+
+          <div class="admin-status-chart">
+            <div class="admin-status-chart__visual">
+              <p-chart
+                type="doughnut"
+                [data]="adminStatusChartData"
+                [options]="adminStatusChartOptions"
+                styleClass="admin-status-chart__canvas">
+              </p-chart>
+            </div>
+
+            <div class="admin-status-chart__legend">
+              <div class="admin-status-chart__legend-item" *ngFor="let item of adminStatusLegendItems">
+                <span class="admin-status-chart__swatch" [style.background]="item.color"></span>
+                <span class="admin-status-chart__legend-label">{{ item.label }}</span>
+                <span class="admin-status-chart__legend-meta">{{ item.percentage }}% ({{ item.count }})</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-container>
 
       <ng-template #nonAdminDashboard>
-        <ng-container *ngIf="!loading && isSalesExec(); else managerAdminDashboard">
+        <ng-container *ngIf="!loading && isSalesExec()">
         <div class="section-block">
           <div class="section-header">
             <h3>Lead Overview</h3>
@@ -185,31 +213,6 @@
           </div>
         </div>
         </ng-container>
-      </ng-template>
-
-      <ng-template #managerAdminDashboard>
-        <div class="stats-grid" *ngIf="!loading">
-          <div class="card">
-            <h4>TOTAL LEADS</h4>
-            <h1>{{ totalLeads }}</h1>
-          </div>
-          <div class="card">
-            <h4>ACTIVE LEADS</h4>
-            <h1>{{ activeLeads }}</h1>
-          </div>
-          <div class="card">
-            <h4>TODAY LEADS</h4>
-            <h1>{{ todayLeads }}</h1>
-          </div>
-          <div class="card">
-            <h4>DEALS CLOSED</h4>
-            <h1>{{ closedDeals }}</h1>
-          </div>
-          <div class="card">
-            <h4>LOST LEADS</h4>
-            <h1>{{ lostLeads }}</h1>
-          </div>
-        </div>
       </ng-template>
 
       <div class="loading-container" *ngIf="loading">

@@ -34,6 +34,14 @@ interface AdminOverviewCard {
 interface AdminLeadSummaryCard {
   label: string;
   value: number;
+  isClickable?: boolean;
+}
+
+interface AdminStatusChartLegendItem {
+  label: string;
+  count: number;
+  percentage: number;
+  color: string;
 }
 
 interface AdminLeadRow {
@@ -77,6 +85,9 @@ export class DashboardComponent implements OnInit {
   public adminLeadSummaryCards: AdminLeadSummaryCard[] = [];
   public adminLeadRows: AdminLeadRow[] = [];
   public adminUsers: DashboardUser[] = [];
+  public adminStatusChartData: any = null;
+  public adminStatusChartOptions: any = {};
+  public adminStatusLegendItems: AdminStatusChartLegendItem[] = [];
   public adminLeadPeriod: AdminLeadPeriod = 'total';
   public readonly adminLeadPeriodOptions: AdminLeadPeriodOption[] = [
     { label: 'Today', value: 'today' },
@@ -122,6 +133,7 @@ export class DashboardComponent implements OnInit {
     this.fullName = localStorage.getItem('fullName') || localStorage.getItem('username') || 'User';
     this.role = localStorage.getItem('role') || '';
     this.greeting = this.getGreeting();
+    this.initializeAdminStatusChartOptions();
     this.loadDashboard();
   }
 
@@ -184,16 +196,19 @@ export class DashboardComponent implements OnInit {
     forkJoin({
       users: this.registrationService.getUsers(),
       leads: this.leadsService.getAll(),
-      callLogs: this.callLogsService.getRawCallLogs()
+      callLogs: this.callLogsService.getRawCallLogs(),
+      statuses: this.leadsService.getStatuses()
     }).subscribe({
-      next: ({ users, leads, callLogs }) => {
+      next: ({ users, leads, callLogs, statuses }) => {
         const normalizedUsers = Array.isArray((users as any)?.data) ? (users as any).data : [];
         const normalizedLeads = Array.isArray(leads) ? leads : [];
         const normalizedCallLogs = Array.isArray(callLogs) ? callLogs : [];
+        const normalizedStatuses = Array.isArray(statuses) ? statuses : [];
 
         this.adminUsers = normalizedUsers;
         this.buildAdminOverview(normalizedUsers, normalizedLeads);
         this.buildAdminLeadInsights(normalizedUsers, normalizedLeads, normalizedCallLogs);
+        this.buildAdminStatusChart(normalizedStatuses, normalizedLeads);
         this.loading = false;
       },
       error: () => {
@@ -332,14 +347,6 @@ export class DashboardComponent implements OnInit {
     const activeSalesExecUsers = users.filter(
       (user) => user.role_id === 'SALES_EXEC' && user.emp_status === 'Active'
     ).length;
-    const today = new Date();
-    const leadsCreatedToday = leads.filter((lead) => this.isSameDay(lead.createdAt, today)).length;
-    const expectedSiteVisitToday = leads.filter(
-      (lead) => (lead.status || '').trim() === 'Expected Site Visit' && this.isSameDay(lead.modifiedAt, today)
-    ).length;
-    const siteVisitDoneToday = leads.filter(
-      (lead) => (lead.status || '').trim() === 'Site Visit Done' && this.isSameDay(lead.modifiedAt, today)
-    ).length;
 
     this.adminOverviewCards = [
       { label: 'TOTAL END USERS', value: salesExecUsers, queryParams: { role: 'SALES_EXEC' } },
@@ -347,10 +354,7 @@ export class DashboardComponent implements OnInit {
         label: 'ACTIVE END USERS',
         value: activeSalesExecUsers,
         queryParams: { role: 'SALES_EXEC', status: 'Active' }
-      },
-      { label: 'LEADS CREATED TODAY', value: leadsCreatedToday, isClickable: false },
-      { label: "TODAY'S EXPECTED SITE VISIT", value: expectedSiteVisitToday, isClickable: false },
-      { label: "TODAY'S SITE VISIT DONE", value: siteVisitDoneToday, isClickable: false }
+      }
     ];
   }
 
@@ -372,6 +376,15 @@ export class DashboardComponent implements OnInit {
   }
 
   private buildAdminLeadInsights(users: DashboardUser[], leads: Lead[], callLogs: any[]): void {
+    const today = new Date();
+    const leadsCreatedToday = leads.filter((lead) => this.isSameDay(lead.createdAt, today)).length;
+    const expectedSiteVisitToday = leads.filter(
+      (lead) => (lead.status || '').trim() === 'Expected Site Visit' && this.isSameDay(lead.modifiedAt, today)
+    ).length;
+    const siteVisitDoneToday = leads.filter(
+      (lead) => (lead.status || '').trim() === 'Site Visit Done' && this.isSameDay(lead.modifiedAt, today)
+    ).length;
+
     const leadOwners = users.filter((user) => ['SALES_EXEC', 'SALES_MGR', 'ADMIN'].includes(user.role_id));
     const rows = leadOwners.map((user) => {
       const ownedLeads = leads.filter((lead) => this.isLeadOwnedByUser(lead, user));
@@ -413,8 +426,43 @@ export class DashboardComponent implements OnInit {
       { label: 'TOTAL ASSIGNED LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead)).length },
       { label: 'ACTIVE PIPELINE', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isActiveLead(lead)).length },
       { label: 'PENDING FOLLOW-UPS', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isPendingLead(lead)).length },
-      { label: 'DEALS CLOSED', value: leads.filter((lead) => this.hasAssignedOwner(lead) && (lead.status || '').trim() === 'Deal Closed').length }
+      { label: 'DEALS CLOSED', value: leads.filter((lead) => this.hasAssignedOwner(lead) && (lead.status || '').trim() === 'Deal Closed').length },
+      { label: 'LEADS CREATED TODAY', value: leadsCreatedToday, isClickable: false },
+      { label: "TODAY'S EXPECTED SITE VISIT", value: expectedSiteVisitToday, isClickable: false },
+      { label: "TODAY'S SITE VISIT DONE", value: siteVisitDoneToday, isClickable: false }
     ];
+  }
+
+  private buildAdminStatusChart(statuses: any[], leads: Lead[]): void {
+    const filteredLeads = leads.filter((lead) => this.matchesAdminLeadPeriod(lead.modifiedAt || lead.createdAt));
+    const totalStatusLeads = filteredLeads.length;
+    const statusNames = statuses.map((status) => (status?.status_name || '').trim()).filter((statusName) => !!statusName);
+
+    const statusLegendItems = statusNames.map((statusName, index) => {
+      const count = filteredLeads.filter((lead) => (lead.status || '').trim() === statusName).length;
+      const percentage = totalStatusLeads > 0 ? Number(((count / totalStatusLeads) * 100).toFixed(1)) : 0;
+
+      return {
+        label: statusName,
+        count,
+        percentage,
+        color: this.getStatusChartColor(index, statusNames.length)
+      };
+    }).filter((item) => item.count > 0);
+
+    this.adminStatusLegendItems = statusLegendItems;
+    this.adminStatusChartData = {
+      labels: statusLegendItems.map((item) => item.label),
+      datasets: [
+        {
+          data: statusLegendItems.map((item) => item.count),
+          backgroundColor: statusLegendItems.map((item) => item.color),
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          hoverOffset: 8
+        }
+      ]
+    };
   }
 
   private hasAssignedOwner(lead: Lead): boolean {
@@ -487,6 +535,35 @@ export class DashboardComponent implements OnInit {
     const userId = (user.emp_id || '').trim().toLowerCase();
 
     return !!callOwner && !!userId && callOwner === userId;
+  }
+
+  private initializeAdminStatusChartOptions(): void {
+    this.adminStatusChartOptions = {
+      cutout: '58%',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const total = Array.isArray(context?.dataset?.data)
+                ? context.dataset.data.reduce((sum: number, value: number) => sum + value, 0)
+                : 0;
+              const currentValue = Number(context?.raw || 0);
+              const percentage = total > 0 ? ((currentValue / total) * 100).toFixed(1) : '0.0';
+
+              return `${context.label}: ${percentage}% (${currentValue})`;
+            }
+          }
+        }
+      }
+    };
+  }
+
+  private getStatusChartColor(index: number, totalItems: number): string {
+    const hue = Math.round((360 / Math.max(totalItems, 1)) * index);
+    return `hsl(${hue}, 70%, 55%)`;
   }
 
   private getUserFullName(user: DashboardUser): string {
