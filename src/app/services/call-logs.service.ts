@@ -16,6 +16,10 @@ export class CallLogsService {
     return this.http.get<any[]>(`${this.baseUrl}/ui`);
   }
 
+  getRawCallLogs(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/logs`);
+  }
+
   click2Call(customerPhone: string, leadId?: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/click2call`, {
       customer_phone: customerPhone,

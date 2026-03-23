@@ -47,6 +47,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ChartModule } from 'primeng/chart';
 import { MessageService } from 'primeng/api';
 
 /* ------------------ Third Party ------------------ */
@@ -179,6 +181,8 @@ import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-
     ConfirmDialogModule,
     TieredMenuModule,
     ProgressSpinnerModule,
+    SelectButtonModule,
+    ChartModule,
 
     /* Charts & Notifications */
     NgChartsModule,
