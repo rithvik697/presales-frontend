@@ -70,6 +70,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
   displaySummaryDialog: boolean = false;
   summaryDialogTitle: string = '';
   summaryDialogData: any[] = [];
+  summaryDialogType: string = '';
   loadingSummaryData: boolean = false;
 
   // Monthly Performance Report State
@@ -951,6 +952,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
     this.displaySummaryDialog = true;
     this.loadingSummaryData = true;
     this.summaryDialogData = [];
+    this.summaryDialogType = type;
     
     // Check if we have specific filters applied
     const userId = this.selectedUser || undefined;
