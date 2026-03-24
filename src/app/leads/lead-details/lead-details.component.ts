@@ -77,7 +77,7 @@ export class LeadDetailsComponent implements OnInit {
         private leadsService: LeadsService,
         private callLogsService: CallLogsService,
         private toastr: ToastrService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.isAdmin = this.authService.getRole() === 'ADMIN';
