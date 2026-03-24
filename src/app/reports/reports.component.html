@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="users-header">
     <div class="title-section">
-      <h2 style="margin: 0; padding-right: 15px;">Reports Dashboard</h2>
+      <h2 style="margin: 0; padding-right: 15px;">Reports</h2>
       <div class="download-actions">
         <button pButton type="button" label="Download Leads" icon="pi pi-download" class="p-button-success p-button-sm"
           (click)="activeMenu.toggle($event)"></button>
@@ -22,6 +22,16 @@
           optionLabel="project_name" optionValue="project_id" [showClear]="true" placeholder="All Projects"
           styleClass="p-dropdown-sm"></p-dropdown>
 
+        <label>Source:</label>
+        <p-dropdown [options]="sourcesList" [(ngModel)]="selectedSource" (onChange)="applyFilters()"
+          optionLabel="source_name" optionValue="source_id" [showClear]="true" placeholder="All Sources"
+          styleClass="p-dropdown-sm"></p-dropdown>
+
+        <label>Status:</label>
+        <p-dropdown [options]="statusesList" [(ngModel)]="selectedStatus" (onChange)="applyFilters()"
+          optionLabel="status_name" optionValue="status_id" [showClear]="true" placeholder="All Statuses"
+          styleClass="p-dropdown-sm"></p-dropdown>
+
         <label>From Date:</label>
         <input type="date" [(ngModel)]="startDate" class="date-input" (change)="applyFilters()">
         <label>To Date:</label>
@@ -36,11 +46,14 @@
 
   <!-- Summary Cards -->
   <div class="summary-cards">
-    <p-card header="Total Leads" (click)="openSummaryDetails('Total', 'Total Leads Details')" styleClass="clickable-card">{{ summary.total_leads }}</p-card>
-    <p-card header="Active Leads" (click)="openSummaryDetails('Active', 'Active Leads Details')" styleClass="clickable-card">{{ summary.active_leads }}</p-card>
-    <p-card header="Deals Closed" (click)="openSummaryDetails('Closed', 'Deals Closed Details')" styleClass="clickable-card">{{ summary.closed_leads }}</p-card>
-    <p-card header="Spam" (click)="openSummaryDetails('Lost', 'Spam Details')" styleClass="clickable-card">{{ summary.lost_leads }}</p-card>
-    <p-card header="Leads Today" (click)="openSummaryDetails('Today', 'Leads Today Details')" styleClass="highlight-card clickable-card">{{ summary.today_leads }}</p-card>
+    <p-card header="Overall Leads" (click)="openSummaryDetails('Total', 'Overall Leads Details')"
+      styleClass="clickable-card">{{ summary.total_leads }}</p-card>
+    <p-card header="Active Leads" (click)="openSummaryDetails('Active', 'Active Leads Details')"
+      styleClass="clickable-card">{{ summary.active_leads }}</p-card>
+    <p-card header="Deals Closed" (click)="openSummaryDetails('Closed', 'Deals Closed Details')"
+      styleClass="clickable-card">{{ summary.closed_leads }}</p-card>
+    <p-card header="New Leads Today" (click)="openSummaryDetails('Today', 'New Leads Today Details')"
+      styleClass="highlight-card clickable-card">{{ summary.today_leads }}</p-card>
   </div>
 
   <!-- User Performance Section (Toggleable) -->
@@ -53,18 +66,66 @@
       </button>
       <p-menu #perfMenu [popup]="true" [model]="perfDownloadMenuItems" appendTo="body"></p-menu>
     </ng-template>
+
+    <!-- User Performance Local Filters -->
+    <div class="perf-filters-container mb-3"
+      style="background: #fcfcfc; border: 1px solid #eee; padding: 12px; border-radius: 4px; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.85rem;">
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">User:</label>
+        <p-dropdown [options]="usersList" [(ngModel)]="perfSelectedUser" optionLabel="full_name" optionValue="emp_id"
+          [showClear]="true" placeholder="All" styleClass="p-dropdown-sm"></p-dropdown>
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">Project:</label>
+        <p-dropdown [options]="projectsList" [(ngModel)]="perfSelectedProject" optionLabel="project_name"
+          optionValue="project_id" [showClear]="true" placeholder="All" styleClass="p-dropdown-sm"></p-dropdown>
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">Source:</label>
+        <p-dropdown [options]="sourcesList" [(ngModel)]="perfSelectedSource" optionLabel="source_name"
+          optionValue="source_id" [showClear]="true" placeholder="All" styleClass="p-dropdown-sm"></p-dropdown>
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">Status:</label>
+        <p-dropdown [options]="statusesList" [(ngModel)]="perfSelectedStatus" optionLabel="status_name"
+          optionValue="status_id" [showClear]="true" placeholder="All" styleClass="p-dropdown-sm"></p-dropdown>
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">From:</label>
+        <input type="date" [(ngModel)]="perfStartDate" class="date-input"
+          style="padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">To:</label>
+        <input type="date" [(ngModel)]="perfEndDate" class="date-input"
+          style="padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">Status View:</label>
+        <p-multiSelect [options]="perfDynamicStatuses" [(ngModel)]="selectedPerfStatuses" optionLabel="displayName"
+          optionValue="status_name" placeholder="Select Statuses" styleClass="p-multiselect-sm"
+          display="chip"></p-multiSelect>
+      </div>
+      <div class="filter-actions" style="display:flex; gap: 8px;">
+        <button pButton type="button" label="Apply" icon="pi pi-filter" class="p-button-sm p-button-primary"
+          (click)="applyUserPerformanceFilters()"></button>
+        <button pButton type="button" label="Clear" icon="pi pi-filter-slash"
+          class="p-button-sm p-button-outlined p-button-secondary" (click)="clearPerfFilters()"></button>
+      </div>
+    </div>
+
     <div class="table-container">
       <p-table [value]="userPerformance" [rowHover]="true" styleClass="p-datatable-sm primeng-table">
         <ng-template pTemplate="header">
           <tr>
             <th>EMP ID</th>
             <th>User Name</th>
-            <th>Total Assigned</th>
-            <th>Site Visit Done</th>
-            <th>Office Visit Done</th>
+            <th>Overall Leads</th>
+            <th>Site Visit</th>
+            <th>Office Visit</th>
             <th>Pipeline</th>
+            <th *ngFor="let status of selectedPerfStatuses">{{ status }}</th>
             <th>Deals Closed</th>
-            <th>Spam</th>
             <th>Download</th>
           </tr>
         </ng-template>
@@ -84,15 +145,18 @@
               </a>
             </td>
             <td class="text-primary font-bold">{{ perf.total_assigned }}</td>
-            <td class="text-success font-bold">{{ perf.site_visit_done }}</td>
-            <td class="text-warning font-bold">{{ perf.office_visit_done }}</td>
-            <td class="text-danger font-bold">{{ perf.pipeline }}</td>
-            <td class="text-success font-bold">{{ perf.deals_closed }}</td>
-            <td class="text-danger font-bold">{{ perf.spam }}</td>
+            <td class="text-success font-bold">{{ perf.status_counts['Site Visit Done'] || 0 }}</td>
+            <td class="text-warning font-bold">{{ perf.status_counts['Office Visit Done'] || 0 }}</td>
+            <td class="text-info font-bold">{{ perf.pipeline }}</td>
+            <td *ngFor="let status of selectedPerfStatuses" class="text-info font-bold">
+              {{ perf.status_counts[status] || 0 }}
+            </td>
+            <td class="text-success font-bold">{{ perf.status_counts['Deal Closed'] || 0 }}</td>
             <td>
               <button pButton class="p-button-text p-button-sm p-button-secondary" icon="pi pi-download" label="⬇"
                 (click)="rowMenu.toggle($event); $event.stopPropagation()"></button>
-              <p-tieredMenu #rowMenu [popup]="true" [model]="perf.downloadMenuItems" appendTo="body" styleClass="left-opening-menu"></p-tieredMenu>
+              <p-tieredMenu #rowMenu [popup]="true" [model]="perf.downloadMenuItems" appendTo="body"
+                styleClass="left-opening-menu"></p-tieredMenu>
             </td>
           </tr>
         </ng-template>
@@ -104,52 +168,125 @@
       </p-table>
     </div>
 
-    <!-- Monthly Individual Performance Sub-section -->
-    <div *ngIf="monthlyReportIndividuals && monthlyReportIndividuals.length > 0" style="margin-top: 1.5rem;">
-      <div style="display:flex; align-items:center; justify-content:space-between; border-top: 1px solid #e9ecef; padding-top: 1rem; margin-bottom: 1rem; cursor: pointer;"
-        (click)="showIndividualPerf = !showIndividualPerf">
-        <h4 style="margin:0; color:#1976d2; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.5px;">
-          <i class="pi pi-chart-bar" style="margin-right:6px;"></i>Individual Monthly Performance
-          <small *ngIf="monthlyReportData" style="color:#888; font-size:0.75rem; font-weight:400; margin-left:8px;">{{ monthlyReportData.month_name }} vs {{ monthlyReportData.prev_month_name }}</small>
-        </h4>
-        <i [class]="showIndividualPerf ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" style="color:#1976d2;"></i>
-      </div>
-
-      <div *ngIf="showIndividualPerf">
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-          <div *ngFor="let indiv of monthlyReportIndividuals"
-            style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 0.85rem; background: #fafafa;">
-            <h5 style="margin-top:0; margin-bottom: 8px; color: #333; font-size: 1rem; border-bottom: 2px solid #5cb85c; display: inline-block; padding-bottom: 2px;">{{ indiv.name | uppercase }}</h5>
-            <div style="font-size: 0.85rem; line-height: 1.7;">
-              <div><strong>Leads received:</strong> {{ indiv.curr.leads_received }} <span style="color:#888; font-size:0.8em;">({{ monthlyReportData.prev_month_name }}: {{ indiv.prev.leads_received }})</span></div>
-              <div><strong>Site Visit Done:</strong> {{ indiv.curr.site_visits }} <span style="color:#888; font-size:0.8em;">({{ monthlyReportData.prev_month_name }}: {{ indiv.prev.site_visits }})</span></div>
-              <div><strong>Calls attempted:</strong> {{ indiv.curr.calls_attempted }} <span style="color:#888; font-size:0.8em;">({{ monthlyReportData.prev_month_name }}: {{ indiv.prev.calls_attempted }})</span></div>
-              <div><strong>DEAL CLOSED:</strong> {{ indiv.curr.deals_closed }} <span style="color:#888; font-size:0.8em;">({{ monthlyReportData.prev_month_name }}: {{ indiv.prev.deals_closed }})</span></div>
-            </div>
-          </div>
+    <!-- Overall Statistics moved from Monthly Panel -->
+    <div *ngIf="monthlyReportData"
+      style="background:#f4f9ff; padding:1rem; border-radius:8px; margin-top:1.5rem; margin-bottom:1.5rem;">
+      <h4 style="margin-top:0; color:#1976d2; border-bottom:1px solid #cce0ff; padding-bottom:5px;">OVERALL STATISTICS
+      </h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+        <div><strong style="color:#555;">Leads Received</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.leads_received }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.leads_received }}</small>
         </div>
-
-        <!-- Highlights -->
-        <div *ngIf="monthlyReportData" style="display: flex; gap: 1.5rem; background: #f9f9f9; border: 1px solid #eee; padding: 0.85rem 1rem; border-radius: 8px;">
-          <div style="flex:1;">
-            <strong style="color: #2e7d32; display:block; margin-bottom: 0.4rem; font-size:0.85rem;"><i class="pi pi-arrow-up"></i> Good Performance</strong>
-            <div style="font-size:0.85rem;">🏆 Calls: <strong>{{ monthlyReportData.highlights.highest_calls.count }}</strong> by {{ monthlyReportData.highlights.highest_calls.name }}</div>
-            <div style="font-size:0.85rem;">🏆 Visits: <strong>{{ monthlyReportData.highlights.highest_visits.count }}</strong> by {{ monthlyReportData.highlights.highest_visits.name }}</div>
-          </div>
-          <div style="flex:1;">
-            <strong style="color: #c62828; display:block; margin-bottom: 0.4rem; font-size:0.85rem;"><i class="pi pi-arrow-down"></i> Needs Improvement</strong>
-            <div style="font-size:0.85rem;">📉 Calls: <strong>{{ monthlyReportData.highlights.lowest_calls.count }}</strong> by {{ monthlyReportData.highlights.lowest_calls.name }}</div>
-            <div style="font-size:0.85rem;">📉 Visits: <strong>{{ monthlyReportData.highlights.lowest_visits.count }}</strong> by {{ monthlyReportData.highlights.lowest_visits.name }}</div>
-          </div>
+        <div><strong style="color:#555;">Test Leads</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.test_leads }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.test_leads }}</small>
+        </div>
+        <div><strong style="color:#555;">Site Visit Done</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.site_visits }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.site_visits }}</small>
+        </div>
+        <div><strong style="color:#555;">Not Enquired/Spam</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.spam }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.spam }}</small>
+        </div>
+        <div><strong style="color:#555;">Not Interested</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.not_interested }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.not_interested }}</small>
+        </div>
+        <div><strong style="color:#555;">Walk-ins</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.walkins }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.walkins }}</small>
+        </div>
+        <div><strong style="color:#555;">mcube (IVR)</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.mcube }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.mcube }}</small>
+        </div>
+        <div><strong style="color:#555;">Calls Attempted</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.calls_attempted }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.calls_attempted }}</small>
+        </div>
+        <div><strong style="color:#555;">DEAL CLOSED</strong><br>
+          <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{
+            monthlyReportData.current.overall.deal_closed }}</span><br>
+          <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{
+            monthlyReportData.previous.overall.deal_closed }}</small>
         </div>
       </div>
     </div>
+
+    <!-- User Performance Periodic Sections -->
+    <div class="chart-header mt-4">
+      <h3 style="margin:0; color:#1976d2; font-size:1.1rem;">User Performance Reports ({{ getPerformanceDateRange() }})
+      </h3>
+      <div class="filters">
+        <button class="filter-btn" [class.active]="perfReportFilter === 'weekly'"
+          (click)="setPerfFilter('weekly')">Weekly</button>
+        <button class="filter-btn" [class.active]="perfReportFilter === 'monthly'"
+          (click)="setPerfFilter('monthly')">Monthly</button>
+        <button class="filter-btn" [class.active]="perfReportFilter === 'annual'"
+          (click)="setPerfFilter('annual')">Annual</button>
+      </div>
+    </div>
+
+    <div class="table-container mt-2">
+      <p-table [value]="currentPerfIndividuals" [rowHover]="true" styleClass="p-datatable-sm primeng-table">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Employee Name</th>
+            <th>Leads Received</th>
+            <th>Site Visit Done</th>
+            <th>Calls Attempted</th>
+            <th>Deals Closed</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-indiv>
+          <tr>
+            <td style="font-weight: 500; color: #333;">{{ indiv.name | uppercase }}</td>
+            <td>
+              <span class="text-primary">{{ indiv.curr.leads_received }}</span>
+            </td>
+            <td>
+              <span class="text-info">{{ indiv.curr.site_visits }}</span>
+            </td>
+            <td>
+              <span class="text-warning">{{ indiv.curr.calls_attempted }}</span>
+            </td>
+            <td>
+              <span class="text-success font-bold">{{ indiv.curr.deals_closed }}</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center p-4">No performance data found for the selected period.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
   </p-panel>
 
   <!-- Daily Report Log Section -->
-  <p-panel header="Daily Report Log (Leads Today)" [toggleable]="true" toggler="header" [collapsed]="true"
+  <p-panel header="Daily Report Log (New Leads Today)" [toggleable]="true" toggler="header" [collapsed]="true"
     styleClass="mb-4" [style]="{'margin-bottom':'1.5rem'}" expandIcon="pi pi-chevron-down"
-    collapseIcon="pi pi-chevron-up">
+    collapseIcon="pi pi-chevron-up" (onExpand)="onPanelExpand('daily')">
     <ng-template pTemplate="icons">
       <button pButton class="p-panel-header-icon p-link" (click)="dailyMenu.toggle($event); $event.stopPropagation()"
         title="Download Daily Log">
@@ -158,12 +295,15 @@
       <p-menu #dailyMenu [popup]="true" [model]="dailyDownloadMenuItems" appendTo="body"></p-menu>
     </ng-template>
     <div class="table-container">
+      <h3 style="text-align:center; color:#1976d2; margin-top:0; margin-bottom: 1rem; font-size: 1.1rem;">
+        Daily Report ({{ getTodayDate() }})
+      </h3>
       <p-table [value]="dailyLog" [paginator]="true" [rows]="5" [rowHover]="true"
         styleClass="p-datatable-sm primeng-table">
         <ng-template pTemplate="header">
           <tr>
             <th>Lead ID</th>
-            <th>Description</th>
+            <th>Lead Name</th>
             <th>Created On</th>
             <th>Assigned User</th>
             <th>Project</th>
@@ -173,8 +313,8 @@
         <ng-template pTemplate="body" let-log>
           <tr>
             <td>{{ log.lead_id }}</td>
-            <td>{{ log.lead_description }}</td>
-            <td>{{ log.created_on | date:'medium' }}</td>
+            <td>{{ log.lead_name || 'N/A' }}</td>
+            <td>{{ log.created_on | date:'dd/MM/yyyy' }}</td>
             <td>
               <a *ngIf="log.employee_name !== 'Unassigned'" [routerLink]="['/reports']"
                 [queryParams]="{userId: log.emp_id}"
@@ -198,9 +338,9 @@
   </p-panel>
 
   <!-- Weekly Report Log (Toggleable) -->
-  <p-panel header="Weekly Report Log" [toggleable]="true" toggler="header" [collapsed]="true"
-    styleClass="mb-4" [style]="{'margin-bottom':'1.5rem'}" expandIcon="pi pi-chevron-down"
-    collapseIcon="pi pi-chevron-up">
+  <p-panel header="Weekly Report Log" [toggleable]="true" toggler="header" [collapsed]="true" styleClass="mb-4"
+    [style]="{'margin-bottom':'1.5rem'}" expandIcon="pi pi-chevron-down" collapseIcon="pi pi-chevron-up"
+    (onExpand)="onPanelExpand('weekly')">
     <ng-template pTemplate="icons">
       <button pButton class="p-panel-header-icon p-link" (click)="weeklyMenu.toggle($event); $event.stopPropagation()"
         title="Download Weekly Log">
@@ -209,6 +349,9 @@
       <p-menu #weeklyMenu [popup]="true" [model]="weeklyDownloadMenuItems" appendTo="body"></p-menu>
     </ng-template>
     <div class="table-container">
+      <h3 style="text-align:center; color:#1976d2; margin-top:0; margin-bottom: 1rem; font-size: 1.1rem;">
+        Weekly Report ({{ getSpecificDateRange('weekly') }})
+      </h3>
       <p-table [value]="weeklyLog" [paginator]="true" [rows]="5" [rowHover]="true"
         styleClass="p-datatable-sm primeng-table">
         <ng-template pTemplate="header">
@@ -218,30 +361,36 @@
             <th>Project Name</th>
             <th>Source</th>
             <th>Employee Name</th>
+            <th>Status</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-log>
           <tr>
-            <td>{{ log.created_on | date:'medium' }}</td>
+            <td>{{ log.created_on | date:'dd/MM/yyyy' }}</td>
             <td>{{ log.customer_name || 'N/A' }}</td>
             <td>{{ log.project_name }}</td>
             <td>{{ log.source_name }}</td>
             <td>{{ log.employee_name }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="log.status?.toLowerCase()?.replace(' ', '-') || 'unknown'">
+                {{ log.status || 'New' }}
+              </span>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="5" class="text-center p-4">No leads recorded for the past week.</td>
+            <td colspan="6" class="text-center p-4">No leads recorded for the past week.</td>
           </tr>
         </ng-template>
       </p-table>
     </div>
   </p-panel>
 
-  <!-- Monthly Performance Report (Toggleable) -->
-  <p-panel header="Monthly Performance Report" [toggleable]="true" toggler="header" [collapsed]="true"
-    styleClass="mb-4" [style]="{'margin-bottom':'1.5rem'}" expandIcon="pi pi-chevron-down"
-    collapseIcon="pi pi-chevron-up">
+  <!-- Monthly Reports Log (Toggleable) -->
+  <p-panel header="Monthly Reports Log" [toggleable]="true" toggler="header" [collapsed]="true" styleClass="mb-4"
+    [style]="{'margin-bottom':'1.5rem'}" expandIcon="pi pi-chevron-down" collapseIcon="pi pi-chevron-up"
+    (onExpand)="onPanelExpand('monthly')">
     <ng-template pTemplate="icons">
       <button pButton class="p-panel-header-icon p-link" (click)="monthlyMenu.toggle($event); $event.stopPropagation()"
         title="Download Monthly Report">
@@ -249,83 +398,171 @@
       </button>
       <p-menu #monthlyMenu [popup]="true" [model]="monthlyDownloadMenuItems" appendTo="body"></p-menu>
     </ng-template>
-    
-    <div *ngIf="loadingMonthlyReport" class="flex justify-content-center p-4" style="display:flex; justify-content:center;">
+
+    <div *ngIf="loadingMonthlyReport" class="flex justify-content-center p-4"
+      style="display:flex; justify-content:center;">
       <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
     </div>
-    <div *ngIf="!loadingMonthlyReport && monthlyReportError" style="text-align:center; padding: 1.5rem; color: #888; font-style: italic;">
-      <i class="pi pi-exclamation-circle" style="font-size: 1.5rem; color: #e57373; display:block; margin-bottom:0.5rem;"></i>
+    <div *ngIf="!loadingMonthlyReport && monthlyReportError"
+      style="text-align:center; padding: 1.5rem; color: #888; font-style: italic;">
+      <i class="pi pi-exclamation-circle"
+        style="font-size: 1.5rem; color: #e57373; display:block; margin-bottom:0.5rem;"></i>
       {{ monthlyReportError }}
     </div>
-    
+
     <div *ngIf="!loadingMonthlyReport && monthlyReportData" class="monthly-report-container">
       <h3 style="text-align:center; color:#1976d2; margin-top:0;">
         {{ monthlyReportData.month_name }} {{ monthlyReportData.year }} Monthly Report
       </h3>
-      
-      <div style="background:#f4f9ff; padding:1rem; border-radius:8px; margin-bottom:1.5rem;">
-        <h4 style="margin-top:0; color:#1976d2; border-bottom:1px solid #cce0ff; padding-bottom:5px;">OVERALL STATISTICS</h4>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
-          <div><strong style="color:#555;">Leads Received</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.leads_received }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.leads_received }}</small>
-          </div>
-          <div><strong style="color:#555;">Test Leads</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.test_leads }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.test_leads }}</small>
-          </div>
-          <div><strong style="color:#555;">Site Visit Done</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.site_visits }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.site_visits }}</small>
-          </div>
-          <div><strong style="color:#555;">Not Enquired/Spam</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.spam }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.spam }}</small>
-          </div>
-          <div><strong style="color:#555;">Not Interested</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.not_interested }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.not_interested }}</small>
-          </div>
-          <div><strong style="color:#555;">Walk-ins</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.walkins }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.walkins }}</small>
-          </div>
-          <div><strong style="color:#555;">mcube (IVR)</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.mcube }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.mcube }}</small>
-          </div>
-          <div><strong style="color:#555;">Calls Attempted</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.calls_attempted }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.calls_attempted }}</small>
-          </div>
-          <div><strong style="color:#555;">DEAL CLOSED</strong><br>
-            <span style="font-size:1.1rem; font-weight:500;">Current ({{ monthlyReportData.month_name }}): {{ monthlyReportData.current.overall.deal_closed }}</span><br>
-            <small style="color:#666;">Previous ({{ monthlyReportData.prev_month_name }}): {{ monthlyReportData.previous.overall.deal_closed }}</small>
-          </div>
-        </div>
-      </div>
-      
 
+      <div class="table-container mt-4">
+        <h4 style="color:#1976d2; margin-bottom: 1rem;">Monthly Lead Log</h4>
+        <p-table [value]="monthlyLog" [paginator]="true" [rows]="10" [rowHover]="true"
+          styleClass="p-datatable-sm primeng-table">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Time</th>
+              <th>Customer Name</th>
+              <th>Project Name</th>
+              <th>Source</th>
+              <th>Employee Name</th>
+              <th>Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-log>
+            <tr>
+              <td>{{ log.created_on | date:'dd/MM/yyyy' }}</td>
+              <td>{{ log.customer_name || 'N/A' }}</td>
+              <td>{{ log.project_name }}</td>
+              <td>{{ log.source_name }}</td>
+              <td>{{ log.employee_name }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="log.status?.toLowerCase()?.replace(' ', '-') || 'unknown'">
+                  {{ log.status || 'New' }}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center p-4">No leads recorded for this month.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </p-panel>
+
+  <!-- ═══ PERMANENT STATUS RECORDS ═══ -->
+  <p-panel header="Permanent Status Records" [toggleable]="true" toggler="header" [collapsed]="true" styleClass="mb-4"
+    [style]="{'margin-bottom':'1.5rem'}" expandIcon="pi pi-chevron-down" collapseIcon="pi pi-chevron-up"
+    (onExpand)="loadPermanentRecord()">
+    <ng-template pTemplate="icons">
+      <button pButton class="p-panel-header-icon p-link" (click)="permHistMenu.toggle($event); $event.stopPropagation()"
+        title="Download Permanent Record">
+        <span class="pi pi-download"></span>
+      </button>
+      <p-menu #permHistMenu [popup]="true" [model]="permanentRecordDownloadMenuItems" appendTo="body"></p-menu>
+    </ng-template>
+
+    <!-- Local Filters -->
+    <div class="perf-filters-container mb-3"
+      style="background: #fcfcfc; border: 1px solid #eee; padding: 12px; border-radius: 4px; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.85rem;">
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">Status:</label>
+        <p-dropdown [options]="permanentRecordOptions" [(ngModel)]="selectedPermanentRecordType"
+          (onChange)="onPermanentRecordTypeChange()" styleClass="p-dropdown-sm"></p-dropdown>
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">From:</label>
+        <input type="date" [(ngModel)]="permStartDate" class="date-input"
+          style="padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <div class="filter-item">
+        <label style="margin-right: 4px; font-weight: 500;">To:</label>
+        <input type="date" [(ngModel)]="permEndDate" class="date-input"
+          style="padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <div class="filter-actions" style="display:flex; gap: 8px;">
+        <button pButton type="button" label="Apply" icon="pi pi-filter" class="p-button-sm p-button-primary"
+          (click)="applyPermanentRecordFilters()"></button>
+        <button pButton type="button" label="Clear" icon="pi pi-filter-slash"
+          class="p-button-sm p-button-outlined p-button-secondary" (click)="clearPermanentRecordFilters()"></button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <p style="font-size:0.85rem; color:#555; margin-bottom:0.75rem;">
+        This report is permanent. Even if a lead's status changes later, its historical milestone
+        is always preserved here. "Current Status" shows where the lead stands <em>today</em>.
+      </p>
+      <div *ngIf="loadingPermanentRecord" style="display:flex; justify-content:center; padding:2rem;">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color:#1976d2;"></i>
+      </div>
+      <p-table *ngIf="!loadingPermanentRecord" [value]="activePermanentRecordData" [paginator]="true" [rows]="10"
+        [rowHover]="true" styleClass="p-datatable-sm primeng-table" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Lead ID</th>
+            <th>Lead Name</th>
+            <th>Assigned To</th>
+            <th>Project</th>
+            <th>{{ selectedPermanentRecordType === 'site_visit' ? 'Site Visit Done On' : 'Deal Closed On' }}</th>
+            <th>Current Status</th>
+            <th>Remarks</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td>{{ row.lead_id }}</td>
+            <td>{{ (row.lead_name || '').trim() || 'N/A' }}</td>
+            <td>{{ row.employee_name }}</td>
+            <td>{{ row.project_name }}</td>
+            <td>{{ row.changed_at | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="row.current_status?.toLowerCase()?.replace(' ', '-') || 'unknown'">
+                {{ row.current_status || 'Unknown' }}
+              </span>
+            </td>
+            <td style="color:#666; font-size:0.85rem;">{{ row.remarks || '–' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center p-4">No records found for the selected period.</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </p-panel>
 
 
   <!-- Charts Section -->
+
   <div class="charts-wrapper mt-4">
     <!-- Line Chart with Filters -->
     <div class="chart-container">
       <div class="chart-header">
         <h3>Leads Created</h3>
         <div class="filters">
+          <button class="filter-btn" [class.active]="currentFilter === 'daily'"
+            (click)="setFilter('daily')">Daily</button>
           <button class="filter-btn" [class.active]="currentFilter === 'weekly'"
             (click)="setFilter('weekly')">Weekly</button>
           <button class="filter-btn" [class.active]="currentFilter === 'monthly'"
             (click)="setFilter('monthly')">Monthly</button>
           <button class="filter-btn" [class.active]="currentFilter === 'annual'"
             (click)="setFilter('annual')">Annual</button>
+          <button class="filter-btn" [class.active]="currentFilter === 'total'"
+            (click)="setFilter('total')">Total</button>
         </div>
       </div>
-      <div class="canvas-wrapper">
+      <div class="canvas-wrapper" style="position: relative;">
+        <div *ngIf="loadingLineChart"
+          style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.7); display:flex; justify-content:center; align-items:center; z-index: 10;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #1976d2;"></i>
+        </div>
         <canvas #lineChartCanvas></canvas>
       </div>
     </div>
@@ -335,7 +572,11 @@
       <div class="chart-header">
         <h3>Leads by Status</h3>
       </div>
-      <div class="canvas-wrapper">
+      <div class="canvas-wrapper" style="position: relative;">
+        <div *ngIf="loadingPieChart"
+          style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.7); display:flex; justify-content:center; align-items:center; z-index: 10;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #1976d2;"></i>
+        </div>
         <canvas #pieChartCanvas></canvas>
       </div>
     </div>
@@ -344,35 +585,43 @@
 </div>
 
 <!-- Summary Details Dialog -->
-<p-dialog [(visible)]="displaySummaryDialog" [header]="summaryDialogTitle" [modal]="true" [style]="{width: '80vw'}" [maximizable]="true" appendTo="body">
-    <p-table [value]="summaryDialogData" [loading]="loadingSummaryData" [paginator]="true" [rows]="10" styleClass="p-datatable-sm primeng-table" [rowHover]="true"
-        [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>Lead ID</th>
-                <th>Lead Name</th>
-                <th>Description</th>
-                <th>Project</th>
-                <th>Assigned User</th>
-                <th>Status</th>
-                <th>Created On</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-lead>
-            <tr>
-                <td>{{ lead.lead_id }}</td>
-                <td>{{ lead.lead_name || 'N/A' }}</td>
-                <td>{{ lead.lead_description }}</td>
-                <td>{{ lead.project_name }}</td>
-                <td>{{ lead.employee_name }}</td>
-                <td>{{ lead.label || 'New' }}</td>
-                <td>{{ lead.created_on | date:'medium' }}</td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="7" class="text-center p-4">No leads found.</td>
-            </tr>
-        </ng-template>
-    </p-table>
+<p-dialog [(visible)]="displaySummaryDialog" [header]="summaryDialogTitle" [modal]="true" [style]="{width: '80vw'}"
+  [maximizable]="true" appendTo="body">
+  <p-table [value]="summaryDialogData" [loading]="loadingSummaryData" [paginator]="true" [rows]="10"
+    styleClass="p-datatable-sm primeng-table" [rowHover]="true" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Lead ID</th>
+        <th>Lead Name</th>
+        <th>Description</th>
+        <th>Project</th>
+        <th>Assigned User</th>
+        <th>Status</th>
+        <th>Current Status</th>
+        <th>Created On</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-lead>
+      <tr>
+        <td>{{ lead.lead_id }}</td>
+        <td>{{ lead.lead_name || 'N/A' }}</td>
+        <td>{{ lead.lead_description }}</td>
+        <td>{{ lead.project_name }}</td>
+        <td>{{ lead.employee_name }}</td>
+        <td>{{ lead.label || 'New' }}</td>
+        <td>
+          <span *ngIf="lead.current_status && lead.current_status !== lead.label"
+            style="color:#e57373; font-weight:500;">{{ lead.current_status || '---' }}</span>
+          <span *ngIf="!lead.current_status || lead.current_status === lead.label" style="color:#aaa;">—</span>
+        </td>
+        <td>{{ lead.created_on | date:'dd/MM/yyyy' }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center p-4">No leads found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </p-dialog>

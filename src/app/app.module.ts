@@ -48,6 +48,7 @@ import { ConfirmationService } from 'primeng/api';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -175,6 +176,7 @@ import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.c
     ConfirmDialogModule,
     TieredMenuModule,
     ProgressSpinnerModule,
+    MultiSelectModule,
 
     /* Charts & Notifications */
     NgChartsModule,
