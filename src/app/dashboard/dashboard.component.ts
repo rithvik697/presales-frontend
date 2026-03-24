@@ -89,6 +89,7 @@ export class DashboardComponent implements OnInit {
   public adminStatusChartOptions: any = {};
   public adminStatusLegendItems: AdminStatusChartLegendItem[] = [];
   public adminLeadPeriod: AdminLeadPeriod = 'total';
+  public adminStatusPeriod: AdminLeadPeriod = 'total';
   public readonly adminLeadPeriodOptions: AdminLeadPeriodOption[] = [
     { label: 'Today', value: 'today' },
     { label: 'Weekly', value: 'weekly' },
@@ -103,6 +104,10 @@ export class DashboardComponent implements OnInit {
   public totalSiteVisitsDone: number = 0;
 
   loading: boolean = true;
+  private adminDashboardLeads: Lead[] = [];
+  private adminDashboardStatuses: any[] = [];
+  private adminDashboardCallLogs: any[] = [];
+  private adminDashboardUsers: DashboardUser[] = [];
 
   private readonly terminalStatuses = new Set([
     'Deal Closed',
@@ -205,7 +210,12 @@ export class DashboardComponent implements OnInit {
         const normalizedCallLogs = Array.isArray(callLogs) ? callLogs : [];
         const normalizedStatuses = Array.isArray(statuses) ? statuses : [];
 
+        this.adminDashboardUsers = normalizedUsers;
+        this.adminDashboardLeads = normalizedLeads;
+        this.adminDashboardCallLogs = normalizedCallLogs;
+        this.adminDashboardStatuses = normalizedStatuses;
         this.adminUsers = normalizedUsers;
+
         this.buildAdminOverview(normalizedUsers, normalizedLeads);
         this.buildAdminLeadInsights(normalizedUsers, normalizedLeads, normalizedCallLogs);
         this.buildAdminStatusChart(normalizedStatuses, normalizedLeads);
@@ -339,7 +349,19 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    this.loadAdminDashboard();
+    this.buildAdminLeadInsights(
+      this.adminDashboardUsers,
+      this.adminDashboardLeads,
+      this.adminDashboardCallLogs
+    );
+  }
+
+  onAdminStatusPeriodChange(): void {
+    if (!this.hasAdminStyleDashboard()) {
+      return;
+    }
+
+    this.buildAdminStatusChart(this.adminDashboardStatuses, this.adminDashboardLeads);
   }
 
   private buildAdminOverview(users: DashboardUser[], leads: Lead[]): void {
@@ -434,7 +456,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private buildAdminStatusChart(statuses: any[], leads: Lead[]): void {
-    const filteredLeads = leads.filter((lead) => this.matchesAdminLeadPeriod(lead.modifiedAt || lead.createdAt));
+    const filteredLeads = leads.filter((lead) => this.matchesAdminStatusPeriod(lead.modifiedAt || lead.createdAt));
     const totalStatusLeads = filteredLeads.length;
     const statusNames = statuses.map((status) => (status?.status_name || '').trim()).filter((statusName) => !!statusName);
 
@@ -489,7 +511,15 @@ export class DashboardComponent implements OnInit {
   }
 
   private matchesAdminLeadPeriod(dateValue: string | undefined): boolean {
-    if (this.adminLeadPeriod === 'total') {
+    return this.matchesPeriod(dateValue, this.adminLeadPeriod);
+  }
+
+  private matchesAdminStatusPeriod(dateValue: string | undefined): boolean {
+    return this.matchesPeriod(dateValue, this.adminStatusPeriod);
+  }
+
+  private matchesPeriod(dateValue: string | undefined, period: AdminLeadPeriod): boolean {
+    if (period === 'total') {
       return true;
     }
 
@@ -506,13 +536,13 @@ export class DashboardComponent implements OnInit {
     const startOfToday = new Date(today);
     startOfToday.setHours(0, 0, 0, 0);
 
-    if (this.adminLeadPeriod === 'today') {
+    if (period === 'today') {
       const endOfToday = new Date(startOfToday);
       endOfToday.setDate(endOfToday.getDate() + 1);
       return date >= startOfToday && date < endOfToday;
     }
 
-    if (this.adminLeadPeriod === 'weekly') {
+    if (period === 'weekly') {
       const startOfWeek = new Date(startOfToday);
       startOfWeek.setDate(startOfToday.getDate() - startOfToday.getDay());
       const endOfWeek = new Date(startOfWeek);
@@ -520,7 +550,7 @@ export class DashboardComponent implements OnInit {
       return date >= startOfWeek && date < endOfWeek;
     }
 
-    if (this.adminLeadPeriod === 'monthly') {
+    if (period === 'monthly') {
       return (
         date.getFullYear() === today.getFullYear() &&
         date.getMonth() === today.getMonth()

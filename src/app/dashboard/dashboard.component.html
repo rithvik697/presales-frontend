@@ -102,6 +102,15 @@
               <h3>Lead Status Distribution</h3>
               <p>All existing statuses with percentage, count, and color for the selected period.</p>
             </div>
+            <p-selectButton
+              [options]="adminLeadPeriodOptions"
+              [(ngModel)]="adminStatusPeriod"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onAdminStatusPeriodChange()"
+              styleClass="dashboard-period-filter"
+              ariaLabel="Lead status distribution period filter">
+            </p-selectButton>
           </div>
 
           <div class="admin-status-chart">

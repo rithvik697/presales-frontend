@@ -51,10 +51,6 @@
           <span class="summary-label">Deals Closed</span>
           <span class="summary-value">{{ leadSummary.closed }}</span>
         </div>
-        <div class="summary-card">
-          <span class="summary-label">Lost Leads</span>
-          <span class="summary-value">{{ leadSummary.lost }}</span>
-        </div>
       </div>
 
       <div class="info-section">
@@ -123,48 +119,6 @@
         </div>
       </div>
 
-      <div class="info-section">
-        <h3 class="section-heading"><i class="pi pi-users"></i> Assigned Lead Details</h3>
-
-        <div class="lead-table-wrap" *ngIf="assignedLeads.length; else emptyLeadsState">
-          <table class="lead-table">
-            <thead>
-              <tr>
-                <th>Lead</th>
-                <th>Project</th>
-                <th>Source</th>
-                <th>Status</th>
-                <th>Phone</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let lead of assignedLeads">
-                <td>
-                  <a class="lead-link" [routerLink]="['/leads/details', lead.id]">
-                    {{ lead.name || lead.id || '-' }}
-                  </a>
-                </td>
-                <td>{{ lead.project || '-' }}</td>
-                <td>{{ lead.source || '-' }}</td>
-                <td>
-                  <span class="lead-status-pill" [ngClass]="getStatusClass(lead.status)">
-                    {{ lead.status || 'New' }}
-                  </span>
-                </td>
-                <td>{{ lead.phone || '-' }}</td>
-                <td>{{ lead.createdAt ? (lead.createdAt | date:'dd MMM yyyy, h:mm a') : '-' }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <ng-template #emptyLeadsState>
-          <div class="empty-state">
-            <p>No assigned leads found for this user.</p>
-          </div>
-        </ng-template>
-      </div>
     </div>
   </div>
 </div>

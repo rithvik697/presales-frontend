@@ -233,6 +233,10 @@
 
 .lead-user-table {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 420px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
 }
 
 .lead-user-table table {
@@ -249,10 +253,14 @@
 }
 
 .lead-user-table th {
+  background: #ffffff;
   color: #475569;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.04em;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .lead-user-table td {
@@ -262,6 +270,21 @@
 
 .lead-user-table tbody tr:hover {
   background: #f8fbff;
+}
+
+.lead-user-table::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.lead-user-table::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 999px;
+}
+
+.lead-user-table::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
 }
 
 .empty-state {
