@@ -13,6 +13,7 @@ export class ProjectListComponent implements OnInit {
 
   projects: any[] = [];
   loading = true;
+  canManageProjects = false;
 
   // 👉 Breadcrumbs
   breadcrumbItems: MenuItem[] = [];
@@ -25,6 +26,7 @@ export class ProjectListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.canManageProjects = ['ADMIN', 'SALES_MGR'].includes(localStorage.getItem('role') || '');
     this.setupBreadcrumbs();
     this.loadProjects();
   }

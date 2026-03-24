@@ -47,6 +47,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ChartModule } from 'primeng/chart';
 import { MessageService } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
 
@@ -84,6 +86,7 @@ import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
+import { PhoneDisplayPipe } from './pipes/phone-display.pipe';
 
 /* ------------------ Interceptors ------------------ */
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -91,6 +94,7 @@ import { AddActivityComponent } from './configure/add-activity/add-activity.comp
 import { AddSourceComponent } from './configure/add-source/add-source.component';
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
+import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-upload.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +110,7 @@ import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.c
     ConfigureComponent,
     AddActivityComponent,
     AddSourceComponent,
+    BulkLeadUploadComponent,
     LeadTransferComponent,
     ProjectAssignmentComponent,
     DatabackupsComponent,
@@ -126,7 +131,8 @@ import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.c
     ForgotPasswordComponent,
     ResetPasswordComponent,
 
-    FilterByPipe
+    FilterByPipe,
+    PhoneDisplayPipe
   ],
 
   imports: [
@@ -177,6 +183,8 @@ import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.c
     TieredMenuModule,
     ProgressSpinnerModule,
     MultiSelectModule,
+    SelectButtonModule,
+    ChartModule,
 
     /* Charts & Notifications */
     NgChartsModule,

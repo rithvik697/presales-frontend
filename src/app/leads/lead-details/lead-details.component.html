@@ -29,7 +29,7 @@
                     </div>
                     <div class="lead-meta">
                         <span class="meta-item" *ngIf="lead.phone">
-                            <i class="pi pi-phone"></i> {{ lead.phone }}
+                            <i class="pi pi-phone"></i> {{ lead.phone | phoneDisplay }}
                             <button class="call-btn" (click)="callLead()" title="Call this lead">
                                 <i class="pi pi-phone"></i>
                             </button>
@@ -83,11 +83,11 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Phone (IVR)</span>
-                        <span class="info-value phone-value"><i class="pi pi-phone"></i> {{ lead.phone }}</span>
+                        <span class="info-value phone-value"><i class="pi pi-phone"></i> {{ lead.phone | phoneDisplay }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Alternate Phone</span>
-                        <span class="info-value">{{ lead.alternatePhone || '—' }}</span>
+                        <span class="info-value">{{ lead.alternatePhone ? (lead.alternatePhone | phoneDisplay) : '—' }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Email</span>
@@ -377,7 +377,7 @@
             <h4 class="section-title">Lead Summary</h4>
             <div class="summary-grid">
                 <div class="summary-item"><label>Name</label><span>{{ lead.name }}</span></div>
-                <div class="summary-item"><label>Phone</label><span>{{ lead.phone }}</span></div>
+                <div class="summary-item"><label>Phone</label><span>{{ lead.phone | phoneDisplay }}</span></div>
                 <div class="summary-item"><label>Current Status</label>
                     <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A'
                         }}</span>
@@ -421,7 +421,7 @@
             <h4 class="section-title">Lead Summary</h4>
             <div class="summary-grid">
                 <div class="summary-item"><label>Name</label><span>{{ lead.name }}</span></div>
-                <div class="summary-item"><label>Phone</label><span>{{ lead.phone }}</span></div>
+                <div class="summary-item"><label>Phone</label><span>{{ lead.phone | phoneDisplay }}</span></div>
                 <div class="summary-item"><label>Current Status</label>
                     <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A'
                         }}</span>

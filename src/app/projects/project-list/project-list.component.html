@@ -15,6 +15,7 @@
 
     <div class="p-toolbar-group-right">
       <button
+        *ngIf="canManageProjects"
         pButton
         label="Register Project"
         icon="pi pi-plus"
@@ -170,6 +171,7 @@
 
           <td>
             <p-button
+              *ngIf="canManageProjects"
               icon="pi pi-pencil"
               class="p-button-text p-button-primary p-button-sm"
               (onClick)="openEditDialog(project)">

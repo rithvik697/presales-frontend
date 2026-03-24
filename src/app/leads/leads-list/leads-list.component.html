@@ -127,16 +127,15 @@
               <!-- Status with Tag -->
               <p-tag *ngSwitchCase="'status'" [value]="lead.status" [severity]="getSeverity(lead.status)"></p-tag>
 
-              <!-- Phone with Country Code -->
-              <span *ngSwitchCase="'phone'">+91 {{ lead.phone }}</span>
+              <!-- Phone with formatting -->
+              <span *ngSwitchCase="'phone'">{{ lead.phone | phoneDisplay }}</span>
+
+              <!-- Alternate Phone -->
+              <span *ngSwitchCase="'alternatePhone'">{{ lead.alternatePhone ? (lead.alternatePhone | phoneDisplay) : '-'
+                }}</span>
 
               <!-- Remarks/Description -->
               <span *ngSwitchCase="'description'">{{ lead.description || '-' }}</span>
-
-              <!-- Dates -->
-              <span *ngSwitchCase="'createdAt'">{{ lead.createdAt | date:'dd-MM-yyyy' }}</span>
-              <span *ngSwitchCase="'modifiedAt'">{{ lead.modifiedAt ? (lead.modifiedAt | date:'dd-MM-yyyy') : '-'
-                }}</span>
 
               <!-- Actions -->
               <div *ngSwitchCase="'actions'" class="flex gap-2">

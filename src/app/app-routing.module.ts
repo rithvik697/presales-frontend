@@ -20,6 +20,7 @@ import { AddActivityComponent } from './configure/add-activity/add-activity.comp
 import { AddSourceComponent } from './configure/add-source/add-source.component';
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
+import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-upload.component';
 
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
@@ -82,6 +83,7 @@ const routes: Routes = [
         children: [
           { path: 'add-activity', component: AddActivityComponent },
           { path: 'add-source', component: AddSourceComponent },
+          { path: 'bulk-lead-upload', component: BulkLeadUploadComponent },
           { path: 'lead-transfer', component: LeadTransferComponent },
           { path: 'lead-assigning', component: ProjectAssignmentComponent },
           { path: '', redirectTo: 'add-activity', pathMatch: 'full' }
@@ -96,8 +98,18 @@ const routes: Routes = [
 
       // PROJECTS
       { path: 'projects', component: ProjectListComponent },
-      { path: 'projects/register', component: ProjectRegistrationComponent },
-      { path: 'projects/edit/:id', component: ProjectRegistrationComponent },
+      {
+        path: 'projects/register',
+        component: ProjectRegistrationComponent,
+        canActivate: [RoleGuard],
+        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] }
+      },
+      {
+        path: 'projects/edit/:id',
+        component: ProjectRegistrationComponent,
+        canActivate: [RoleGuard],
+        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] }
+      },
       { path: 'projects/:id', component: ProjectDetailsComponent },
 
       // CALL LOGS

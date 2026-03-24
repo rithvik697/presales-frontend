@@ -6,16 +6,21 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'app/services/auth.service';
 import { MenuItem } from 'primeng/api';
 
+type CountryCodeOption = {
+  code: string;
+  label: string;
+  max_length: number;
+};
+
 @Component({
   selector: 'app-lead-create',
   templateUrl: './lead-create.component.html',
   styleUrls: ['./lead-create.component.css'],
 })
 export class LeadCreateComponent implements OnInit {
-
   isEditMode = false;
-  isAdmin: boolean = false;
-  isManager: boolean = false;
+  isAdmin = false;
+  isManager = false;
   leadId: string | null = null;
 
   model: Lead = {
@@ -37,17 +42,14 @@ export class LeadCreateComponent implements OnInit {
   employees: any[] = [];
   sources: any[] = [];
   statuses: any[] = [];
+  countryCodes: CountryCodeOption[] = [];
   breadcrumbItems: MenuItem[] = [];
   home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
-  countryCodes = [
-    { code: '+91', flag: '🇮🇳', limit: 10 },
-    { code: '+1', flag: '🇺🇸', limit: 10 },
-    { code: '+44', flag: '🇬🇧', limit: 10 },
-    { code: '+61', flag: '🇦🇺', limit: 9 },
-    { code: '+86', flag: '🇨🇳', limit: 11 }
-  ];
-
-  selectedCountryCode = this.countryCodes[0];
+  selectedCountryCode: CountryCodeOption = {
+    code: '+91',
+    label: 'India',
+    max_length: 10
+  };
 
   constructor(
     private leadsService: LeadsService,
@@ -55,20 +57,16 @@ export class LeadCreateComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private authService: AuthService
-
   ) { }
 
   ngOnInit(): void {
-
     this.isAdmin = this.authService.isAdmin();
     this.isManager = this.authService.isManager();
 
-    // Auto assign lead to sales executive
     if (!this.isAdmin && !this.isManager) {
       this.model.assignedTo = this.authService.getUserId() || '';
     }
 
-    // Edit mode check
     this.leadId = this.route.snapshot.paramMap.get('id');
     if (this.leadId) {
       this.isEditMode = true;
@@ -77,7 +75,6 @@ export class LeadCreateComponent implements OnInit {
         { label: 'Lead Details', routerLink: ['/leads/details', this.leadId] },
         { label: 'Edit Lead' }
       ];
-      this.loadLead(this.leadId);
     } else {
       this.breadcrumbItems = [
         { label: 'Leads', routerLink: '/leads' },
@@ -85,18 +82,40 @@ export class LeadCreateComponent implements OnInit {
       ];
     }
 
-    // Load employees only for Admin / Manager
     if (this.isAdmin || this.isManager) {
       this.leadsService.getEmployees('SALES_EXEC').subscribe({
-        next: (emps) => this.employees = emps,
+        next: (emps) => (this.employees = emps),
         error: () => this.toastr.error('Failed to load employees')
       });
     }
 
-    // Projects
     this.leadsService.getProjects().subscribe({
-      next: (data) => this.projects = data,
+      next: (data) => (this.projects = data),
       error: () => this.toastr.error('Failed to load projects')
+    });
+
+    this.leadsService.getSources().subscribe({
+      next: (data) => (this.sources = data),
+      error: () => this.toastr.error('Failed to load sources')
+    });
+
+    this.leadsService.getStatuses().subscribe({
+      next: (data) => (this.statuses = data),
+      error: () => this.toastr.error('Failed to load statuses')
+    });
+
+    this.leadsService.getCountryCodes().subscribe({
+      next: (codes) => {
+        this.countryCodes = codes || [];
+        if (this.countryCodes.length > 0) {
+          this.selectedCountryCode = this.countryCodes[0];
+        }
+
+        if (this.isEditMode && this.leadId) {
+          this.loadLead(this.leadId);
+        }
+      },
+      error: () => this.toastr.error('Failed to load country codes')
     });
 
     // Sources
@@ -113,18 +132,24 @@ export class LeadCreateComponent implements OnInit {
 
   }
 
-  loadLead(id: string) {
+  loadLead(id: string): void {
     this.leadsService.getById(id).subscribe({
       next: (lead) => {
         this.model = lead;
 
-        // Bind dropdowns to IDs (not names) so mat-select can match them
-        if (lead.projectId) { this.model.project = lead.projectId; }
-        if (lead.sourceId) { this.model.source = lead.sourceId; }
-        if (lead.statusId) { this.model.status = lead.statusId; }
-        if (lead.assignedToId) { this.model.assignedTo = lead.assignedToId; }
+        if (lead.projectId) {
+          this.model.project = lead.projectId;
+        }
+        if (lead.sourceId) {
+          this.model.source = lead.sourceId;
+        }
+        if (lead.statusId) {
+          this.model.status = lead.statusId;
+        }
+        if (lead.assignedToId) {
+          this.model.assignedTo = lead.assignedToId;
+        }
 
-        // Parse full name into first/last
         if (lead.name) {
           const parts = lead.name.split(' ');
           this.model.firstName = parts[0] || '';
@@ -149,82 +174,99 @@ export class LeadCreateComponent implements OnInit {
         if (this.model.alternatePhone) {
           this.model.alternatePhone = String(this.model.alternatePhone);
         }
+        this.applyStoredPhoneToForm('phone');
+        this.applyStoredPhoneToForm('alternatePhone', false);
       },
       error: () => this.toastr.error('Failed to load lead')
     });
   }
 
-  onPhoneInput(event: any, isMain: boolean) {
-    const input = event.target;
-    let val = input.value.replace(/[^0-9]/g, '');
+  private applyStoredPhoneToForm(field: 'phone' | 'alternatePhone', updateSelectedCode = true): void {
+    const value = this.model[field];
+    if (!value || this.countryCodes.length === 0) {
+      return;
+    }
 
-    const limit = this.selectedCountryCode.limit;
-    if (val.length > limit) {
-      val = val.slice(0, limit);
+    const found = [...this.countryCodes]
+      .sort((a, b) => b.code.length - a.code.length)
+      .find((country) => value.startsWith(country.code));
+
+    if (!found) {
+      return;
+    }
+
+    if (updateSelectedCode) {
+      this.selectedCountryCode = found;
+    }
+
+    this.model[field] = value.replace(found.code, '').trim();
+  }
+
+  onPhoneInput(event: Event, isMain: boolean): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/[^0-9]/g, '');
+    const limit = this.selectedCountryCode.max_length;
+
+    if (value.length > limit) {
+      value = value.slice(0, limit);
     }
 
     if (isMain) {
-      this.model.phone = val;
+      this.model.phone = value;
     } else {
-      this.model.alternatePhone = val;
+      this.model.alternatePhone = value;
     }
 
-    input.value = val;
+    input.value = value;
   }
 
-  submit() {
-
+  submit(): void {
     if (!this.model.phone) {
       this.toastr.error('Phone number is required');
       return;
     }
 
-    if (this.model.phone.length !== this.selectedCountryCode.limit) {
+    if (this.model.phone.length !== this.selectedCountryCode.max_length) {
       this.toastr.error(
-        `Phone number must be exactly ${this.selectedCountryCode.limit} digits`
+        `Phone number must be exactly ${this.selectedCountryCode.max_length} digits`
       );
       return;
     }
 
-    // Construct full name
-    this.model.name =
-      `${this.model.firstName} ${this.model.lastName}`.trim();
+    this.model.name = `${this.model.firstName} ${this.model.lastName}`.trim();
 
     const submissionModel: any = { ...this.model };
+    submissionModel.phone = `${this.selectedCountryCode.code}${this.model.phone}`;
 
     submissionModel.phone = this.model.phone;
 
     if (this.isEditMode && this.leadId) {
-      // actorId is NOT sent — the backend reads it from the JWT token
-      this.leadsService.update(this.leadId, submissionModel)
-        .subscribe({
-          next: () => {
-            this.toastr.success('Lead updated successfully');
-            this.router.navigate(['/leads']);
-          },
-          error: (err) => {
-            console.error(err);
-            this.toastr.error(err.error?.error || 'Failed to update lead');
-          }
-        });
-
-    } else {
-      // actorId is NOT sent — the backend reads it from the JWT token
-      this.leadsService.create(submissionModel)
-        .subscribe({
-          next: () => {
-            this.toastr.success('Lead created successfully');
-            this.router.navigate(['/leads']);
-          },
-          error: (err) => {
-            console.error(err);
-            this.toastr.error(err.error?.error || 'Failed to create lead');
-          }
-        });
+      this.leadsService.update(this.leadId, submissionModel).subscribe({
+        next: () => {
+          this.toastr.success('Lead updated successfully');
+          this.router.navigate(['/leads']);
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error(err.error?.error || 'Failed to update lead');
+        }
+      });
+      return;
     }
+
+    this.leadsService.create(submissionModel).subscribe({
+      next: () => {
+        this.toastr.success('Lead created successfully');
+        this.router.navigate(['/leads']);
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error(err.error?.error || 'Failed to create lead');
+      }
+    });
   }
 
-  cancel() {
+  cancel(): void {
     this.router.navigate(['/leads']);
   }
 }

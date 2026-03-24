@@ -8,7 +8,7 @@ import {
 import { Router, NavigationEnd } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
 import { NotificationService } from './services/notification.service';
@@ -41,10 +41,12 @@ export class AppComponent implements OnInit, OnDestroy {
   menuItems: any[] = [];
   breadcrumbs: MenuItem[] = [];
   profileMenuItems: MenuItem[] = [];
+  currentUrl: string = '';
 
   home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
   private routerSub!: Subscription;
+  private notificationPollSub?: Subscription;
 
   private allMenuItems: any[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard', roles: [] },
@@ -61,6 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
       children: [
         { label: 'Add Activity', route: '/configure/add-activity' },
         { label: 'Add Source', route: '/configure/add-source' },
+        { label: 'Bulk Lead Upload', route: '/configure/bulk-lead-upload' },
         { label: 'Lead Transfer', route: '/configure/lead-transfer' },
         { label: 'Lead Assigning', route: '/configure/lead-assigning' }
       ]
@@ -113,6 +116,7 @@ export class AppComponent implements OnInit, OnDestroy {
         });
 
         const url: string = e.urlAfterRedirects || e.url;
+        this.currentUrl = url;
 
         this.isLoginPage = url.startsWith('/login');
         this.isChangePasswordPage = url.startsWith('/change-password');
@@ -128,6 +132,21 @@ export class AppComponent implements OnInit, OnDestroy {
         this.selectedItem = found ? found.label : '';
 
         this.updateBreadcrumbs(url);
+
+        if (
+          this.username &&
+          !this.isLoginPage &&
+          !this.isChangePasswordPage &&
+          !this.isForgotPasswordPage &&
+          !this.isResetPasswordPage
+        ) {
+          this.loadNotifications();
+          this.startNotificationPolling();
+        } else {
+          this.stopNotificationPolling();
+          this.notifications = [];
+          this.unreadCount = 0;
+        }
       });
   }
 
@@ -135,6 +154,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.routerSub) {
       this.routerSub.unsubscribe();
     }
+    this.stopNotificationPolling();
   }
 
   updateBreadcrumbs(url: string): void {
@@ -156,6 +176,14 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Users', routerLink: '/users' },
         { label: isEdit ? 'Edit User' : 'Register User' },
+      ];
+    }
+
+    else if (/^\/users\/[^/?]+$/.test(url)) {
+      const empId = decodeURIComponent(url.split('/').pop() || '');
+      this.breadcrumbs = [
+        { label: 'Users', routerLink: '/users' },
+        { label: empId }
       ];
     }
 
@@ -182,6 +210,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Configure', routerLink: '/configure' },
         { label: 'Add Source' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/bulk-lead-upload')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Bulk Lead Upload' }
       ];
     }
 
@@ -215,6 +250,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isDesktop = event.target.innerWidth > 768;
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest('.notification-wrapper')) {
+      this.showNotificationDropdown = false;
+    }
+  }
+
   loadNotifications(): void {
 
     this.notificationService.getNotifications().subscribe(
@@ -230,6 +273,25 @@ export class AppComponent implements OnInit, OnDestroy {
         console.error('Failed to load notifications', error);
       }
     );
+  }
+
+  startNotificationPolling(): void {
+    if (this.notificationPollSub) {
+      return;
+    }
+
+    this.notificationPollSub = interval(30000).subscribe(() => {
+      if (this.username && !this.isLoginPage) {
+        this.loadNotifications();
+      }
+    });
+  }
+
+  stopNotificationPolling(): void {
+    if (this.notificationPollSub) {
+      this.notificationPollSub.unsubscribe();
+      this.notificationPollSub = undefined;
+    }
   }
 
   toggleNotifications(): void {
@@ -274,12 +336,23 @@ export class AppComponent implements OnInit, OnDestroy {
     this.username = null;
     this.fullName = null;
     this.role = null;
+    this.notifications = [];
+    this.unreadCount = 0;
+    this.stopNotificationPolling();
 
     this.router.navigate(['/login']);
   }
 
   toggleSidebar(sidenav: MatSidenav): void {
     sidenav.toggle();
+  }
+
+  get showUserDetailBackButton(): boolean {
+    return /^\/users\/[^/?]+$/.test(this.currentUrl);
+  }
+
+  backFromBreadcrumb(): void {
+    this.router.navigate(['/users']);
   }
 
   selectItem(label: string): void {

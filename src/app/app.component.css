@@ -179,10 +179,74 @@ mat-sidenav-content {
   }  
 
   
-  .content {
-    flex-grow: 1;
-    padding: 20px;
-  }
+.content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.breadcrumb-wrapper {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.breadcrumb-wrapper--with-back {
+  padding: 12px 0;
+}
+
+.breadcrumb-bar {
+  flex: 1;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e0e3eb;
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+
+.breadcrumb-back-btn {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e0e3eb;
+  border-radius: 10px;
+  color: #555;
+  cursor: pointer;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 36px;
+}
+
+.breadcrumb-back-btn:hover {
+  background: #1a1a2e;
+  border-color: #1a1a2e;
+  color: #ffffff;
+}
+
+::ng-deep .breadcrumb-bar .p-breadcrumb {
+  background: transparent;
+  border: none;
+  display: block;
+  padding: 0;
+  width: 100%;
+}
+
+::ng-deep .breadcrumb-bar .p-breadcrumb ol {
+  display: flex;
+  padding: 0;
+  width: 100%;
+}
+
+::ng-deep .breadcrumb-bar .p-breadcrumb .p-menuitem-link {
+  padding: 0;
+}
+
+::ng-deep .breadcrumb-bar .p-breadcrumb .p-menuitem-text,
+::ng-deep .breadcrumb-bar .p-breadcrumb .p-menuitem-icon,
+::ng-deep .breadcrumb-bar .p-breadcrumb .p-breadcrumb-chevron {
+  color: #475569;
+}
   .sidebarbg{
     height: auto;
   }
@@ -474,16 +538,15 @@ new-icon{
   position: absolute;
   top: 110%; /* positions dropdown just below the icon */
   right: 0;
-  width: 280px;
+  width: min(420px, calc(100vw - 24px));
   background-color: white;
-  border-radius: 12px;
-  padding: 14px 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
   z-index: 1000;
-  animation: fadeIn 0.2s ease-in-out;  
-    width: auto;   
-    
-  
+  animation: fadeIn 0.2s ease-in-out;
+  overflow: hidden;
 }
 
 /*  Notification Text */
@@ -639,18 +702,20 @@ p-table {
 
 /* Notifications Bar */
 .notification-dropdown {
-  width: 340px;
-  max-height: 420px;
+  width: min(420px, calc(100vw - 24px));
+  max-height: min(70vh, 520px);
   overflow-y: auto;
-  padding: 10px;
+  overflow-x: hidden;
+  padding: 12px;
 }
 
 .notification-item {
-  padding: 14px;
-  border-radius: 8px;
+  padding: 16px;
+  border-radius: 14px;
   background: #f8f9fc;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   border-left: 4px solid transparent;
+  box-sizing: border-box;
 }
 
 .unread-item {
@@ -661,22 +726,32 @@ p-table {
 .notification-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .notification-title {
   font-weight: 600;
   font-size: 15px;
+  color: #1f2937;
+  line-height: 1.35;
+  flex: 1 1 180px;
+  min-width: 0;
 }
 
 .notification-message {
-  margin-top: 6px;
+  margin-top: 10px;
   font-size: 14px;
-  color: #6c757d;
+  color: #475569;
+  line-height: 1.55;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .notification-time {
-  margin-top: 6px;
+  margin-top: 12px;
   font-size: 12px;
   color: #9aa0a6;
 }
@@ -695,6 +770,26 @@ p-table {
 .notification-status.read {
   background: #e0e0e0;
   color: #555;
+}
+
+.notification-status-btn {
+  flex: 0 0 auto;
+  min-width: 120px;
+  border-radius: 10px !important;
+  white-space: nowrap;
+}
+
+.notification-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.notification-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
 }
 
 

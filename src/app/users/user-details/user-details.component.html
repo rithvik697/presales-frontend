@@ -1,104 +1,128 @@
-<div class="page-container" *ngIf="user">
+<div class="user-details-page" *ngIf="!loading && user">
+  <div class="user-page-shell">
+    <div class="user-header-card">
+      <div class="header-left">
+        <div class="user-avatar">{{ initials || 'U' }}</div>
+        <div class="header-info">
+          <div class="user-name-row">
+            <h2 class="user-name">{{ fullName || user.emp_id }}</h2>
+            <span class="user-role-pill">{{ roleLabel }}</span>
+          </div>
+          <div class="user-meta">
+            <span class="meta-item" *ngIf="user.phone_num">
+              <i class="pi pi-phone"></i> {{ user.phone_num }}
+            </span>
+            <span class="meta-item" *ngIf="user.email">
+              <i class="pi pi-envelope"></i> {{ user.email }}
+            </span>
+            <span class="meta-item">
+              <i class="pi pi-id-card"></i> {{ user.emp_id }}
+            </span>
+          </div>
+        </div>
+      </div>
 
-  <!-- Header Section -->
-  <div class="details-header">
-
-    <div class="title-section">
-      <h2>{{ user.emp_first_name }} {{ user.emp_last_name }}</h2>
-
-      <span
-        class="status-badge"
-        [ngClass]="user.emp_status === 'Active' ? 'status-active' : 'status-inactive'">
-        {{ user.emp_status }}
-      </span>
+      <div class="header-right">
+        <div class="user-age-box">
+          <span class="age-number">{{ leadAgeReference }}</span>
+          <span class="age-label">since created</span>
+        </div>
+        <span class="status-badge" [ngClass]="user.emp_status === 'Active' ? 'status-active' : 'status-inactive'">
+          {{ user.emp_status }}
+        </span>
+      </div>
     </div>
 
-    <!-- Only Back Button -->
-    <div class="action-buttons">
-      <a
-        pButton
-        label="Back"
-        icon="pi pi-arrow-left"
-        class="p-button-outlined"
-        routerLink="/users">
-      </a>
+    <div class="details-body">
+      <div class="summary-strip">
+        <div class="summary-card">
+          <span class="summary-label">Total Leads</span>
+          <span class="summary-value">{{ leadSummary.total }}</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Active Leads</span>
+          <span class="summary-value">{{ leadSummary.active }}</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Pending Leads</span>
+          <span class="summary-value">{{ leadSummary.pending }}</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Deals Closed</span>
+          <span class="summary-value">{{ leadSummary.closed }}</span>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h3 class="section-heading"><i class="pi pi-user"></i> User Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Employee ID</span>
+            <span class="info-value">{{ user.emp_id }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Username</span>
+            <span class="info-value">{{ user.username || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Full Name</span>
+            <span class="info-value">{{ fullName || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value email-value">{{ user.email || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone</span>
+            <span class="info-value phone-value">{{ user.phone_num || '-' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h3 class="section-heading"><i class="pi pi-briefcase"></i> Role Information</h3>
+        <div class="info-grid info-grid--two">
+          <div class="info-item">
+            <span class="info-label">Role</span>
+            <span class="info-value">{{ roleLabel }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Status</span>
+            <span class="info-value">{{ user.emp_status }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h3 class="section-heading"><i class="pi pi-clock"></i> Timeline</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Created On</span>
+            <span class="info-value date-value">{{ user.created_on ? (user.created_on | date:'dd MMM yyyy') : '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Created By</span>
+            <span class="info-value">{{ user.created_by || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Modified On</span>
+            <span class="info-value date-value">{{ user.modified_on ? (user.modified_on | date:'dd MMM yyyy, h:mm a') : '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Modified By</span>
+            <span class="info-value">{{ user.modified_by || '-' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Last Login</span>
+            <span class="info-value">{{ user.last_login ? (user.last_login | date:'dd MMM yyyy, h:mm a') : '-' }}</span>
+          </div>
+        </div>
+      </div>
+
     </div>
-
   </div>
+</div>
 
-  <!-- Cards Layout -->
-  <div class="details-grid">
-
-    <!-- User Information -->
-    <p-card header="User Information">
-
-      <div class="info-row">
-        <span>Employee ID</span>
-        <span>{{ user.emp_id }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Username</span>
-        <span>{{ user.username }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Email</span>
-        <span>{{ user.email }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Phone</span>
-        <span>{{ user.phone_num || '-' }}</span>
-      </div>
-
-    </p-card>
-
-    <!-- Role Information -->
-    <p-card header="Role Information">
-
-      <div class="info-row">
-        <span>Role</span>
-        <span>{{ user.role_id }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Status</span>
-        <span>{{ user.emp_status }}</span>
-      </div>
-
-    </p-card>
-
-    <!-- Timeline -->
-    <p-card header="Timeline">
-
-      <div class="info-row">
-        <span>Created On</span>
-        <span>{{ user.created_on ? (user.created_on | date:'dd MMM yyyy') : '-' }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Created By</span>
-        <span>{{ user.created_by || '-' }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Modified On</span>
-        <span>{{ user.modified_on ? (user.modified_on | date:'dd MMM yyyy, h:mm a') : '-' }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Modified By</span>
-        <span>{{ user.modified_by || '-' }}</span>
-      </div>
-
-      <div class="info-row">
-        <span>Last Login</span>
-        <span>{{ user.last_login ? (user.last_login | date:'dd MMM yyyy, h:mm a') : '-' }}</span>
-      </div>
-
-    </p-card>
-
-  </div>
-
+<div class="loading-state" *ngIf="loading">
+  <p-progressSpinner strokeWidth="4" animationDuration="1s"></p-progressSpinner>
 </div>

@@ -8,11 +8,11 @@
         </div>
       </div>
 
-      <ng-container *ngIf="!loading && isAdmin(); else nonAdminDashboard">
+      <ng-container *ngIf="!loading && hasAdminStyleDashboard(); else nonAdminDashboard">
         <div class="section-block">
           <div class="section-header">
             <h3>User Overview</h3>
-            <p>Click any card to open the matching user list.</p>
+            <p>End User summary and today's lead activity.</p>
           </div>
 
           <div class="stats-grid stats-grid--admin">
@@ -20,6 +20,8 @@
               *ngFor="let card of adminOverviewCards"
               type="button"
               class="card card-button"
+              [class.card-button--static]="card.isClickable === false"
+              [disabled]="card.isClickable === false"
               (click)="openAdminUsers(card)">
               <h4>{{ card.label }}</h4>
               <h1>{{ card.value }}</h1>
@@ -27,46 +29,113 @@
           </div>
         </div>
 
-        <div class="charts-wrapper">
-          <div class="section-block chart-panel chart-panel--wide">
-            <div class="chart-header">
-              <h3>Users Added</h3>
-              <div class="filters">
-                <button class="filter-btn" [class.active]="adminTrendFilter === 'weekly'"
-                  (click)="setAdminTrendFilter('weekly')">Weekly</button>
-                <button class="filter-btn" [class.active]="adminTrendFilter === 'monthly'"
-                  (click)="setAdminTrendFilter('monthly')">Monthly</button>
-                <button class="filter-btn" [class.active]="adminTrendFilter === 'annual'"
-                  (click)="setAdminTrendFilter('annual')">Annual</button>
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Lead Ownership Overview</h3>
+            <p>Admin view of assigned leads across the sales team.</p>
+          </div>
+
+          <div class="stats-grid stats-grid--admin-leads">
+            <div class="card" *ngFor="let card of adminLeadSummaryCards">
+              <h4>{{ card.label }}</h4>
+              <h1>{{ card.value }}</h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header">
+            <div>
+              <h3>Lead Details by User</h3>
+              <p>Assigned lead counts for each sales user.</p>
+            </div>
+            <p-selectButton
+              [options]="adminLeadPeriodOptions"
+              [(ngModel)]="adminLeadPeriod"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onAdminLeadPeriodChange()"
+              styleClass="dashboard-period-filter"
+              ariaLabel="Lead details period filter">
+            </p-selectButton>
+          </div>
+
+          <div class="lead-user-table" *ngIf="adminLeadRows.length; else noAdminLeadRows">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Total Leads</th>
+                  <th>Active</th>
+                  <th>Pending</th>
+                  <th>Site Visits Done</th>
+                  <th>Calls Made</th>
+                  <th>Deals Closed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of adminLeadRows">
+                  <td>{{ row.userName }}</td>
+                  <td>{{ row.roleLabel }}</td>
+                  <td>{{ row.totalLeads }}</td>
+                  <td>{{ row.activeLeads }}</td>
+                  <td>{{ row.pendingLeads }}</td>
+                  <td>{{ row.siteVisitsDone }}</td>
+                  <td>{{ row.callsMade }}</td>
+                  <td>{{ row.dealsClosed }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ng-template #noAdminLeadRows>
+            <div class="empty-state">
+              <p>No lead ownership data is available yet.</p>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="section-block" *ngIf="adminStatusChartData">
+          <div class="section-header">
+            <div>
+              <h3>Lead Status Distribution</h3>
+              <p>All existing statuses with percentage, count, and color for the selected period.</p>
+            </div>
+            <p-selectButton
+              [options]="adminLeadPeriodOptions"
+              [(ngModel)]="adminStatusPeriod"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onAdminStatusPeriodChange()"
+              styleClass="dashboard-period-filter"
+              ariaLabel="Lead status distribution period filter">
+            </p-selectButton>
+          </div>
+
+          <div class="admin-status-chart">
+            <div class="admin-status-chart__visual">
+              <p-chart
+                type="doughnut"
+                [data]="adminStatusChartData"
+                [options]="adminStatusChartOptions"
+                styleClass="admin-status-chart__canvas">
+              </p-chart>
+            </div>
+
+            <div class="admin-status-chart__legend">
+              <div class="admin-status-chart__legend-item" *ngFor="let item of adminStatusLegendItems">
+                <span class="admin-status-chart__swatch" [style.background]="item.color"></span>
+                <span class="admin-status-chart__legend-label">{{ item.label }}</span>
+                <span class="admin-status-chart__legend-meta">{{ item.percentage }}% ({{ item.count }})</span>
               </div>
-            </div>
-            <div class="canvas-wrapper">
-              <canvas #adminTrendChartCanvas></canvas>
-            </div>
-          </div>
-
-          <div class="section-block chart-panel">
-            <div class="chart-header">
-              <h3>Users by Role</h3>
-            </div>
-            <div class="canvas-wrapper">
-              <canvas #adminRoleChartCanvas></canvas>
-            </div>
-          </div>
-
-          <div class="section-block chart-panel">
-            <div class="chart-header">
-              <h3>User Status</h3>
-            </div>
-            <div class="canvas-wrapper">
-              <canvas #adminStatusChartCanvas></canvas>
             </div>
           </div>
         </div>
       </ng-container>
 
       <ng-template #nonAdminDashboard>
-        <ng-container *ngIf="!loading && isSalesExec(); else managerAdminDashboard">
+        <ng-container *ngIf="!loading && isSalesExec()">
         <div class="section-block">
           <div class="section-header">
             <h3>Lead Overview</h3>
@@ -84,6 +153,56 @@
             </button>
           </div>
         </div>
+
+        <p-panel
+          header="Calls Made"
+          [toggleable]="true"
+          toggler="header"
+          [collapsed]="!showCallsMadePanel"
+          (onBeforeToggle)="showCallsMadePanel = !showCallsMadePanel"
+          styleClass="dashboard-toggle-panel"
+          expandIcon="pi pi-chevron-up"
+          collapseIcon="pi pi-chevron-down">
+          <div class="calls-panel__body" *ngIf="showCallsMadePanel">
+            <div class="stats-grid stats-grid--calls">
+              <div class="card card-button--static">
+                <h4>CALLS MADE YESTERDAY</h4>
+                <h1>0</h1>
+              </div>
+              <div class="card card-button--static">
+                <h4>CALLS MADE TODAY</h4>
+                <h1>0</h1>
+              </div>
+            </div>
+          </div>
+        </p-panel>
+
+        <p-panel
+          header="Site Visits Done"
+          [toggleable]="true"
+          toggler="header"
+          [collapsed]="!showSiteVisitsDonePanel"
+          (onBeforeToggle)="showSiteVisitsDonePanel = !showSiteVisitsDonePanel"
+          styleClass="dashboard-toggle-panel"
+          expandIcon="pi pi-chevron-up"
+          collapseIcon="pi pi-chevron-down">
+          <div class="calls-panel__body" *ngIf="showSiteVisitsDonePanel">
+            <div class="stats-grid stats-grid--site-visits">
+              <div class="card card-button--static">
+                <h4>SITE VISITS DONE THIS WEEK</h4>
+                <h1>{{ siteVisitsDoneWeekly }}</h1>
+              </div>
+              <div class="card card-button--static">
+                <h4>SITE VISITS DONE THIS MONTH</h4>
+                <h1>{{ siteVisitsDoneMonthly }}</h1>
+              </div>
+              <div class="card card-button--static">
+                <h4>TOTAL SITE VISITS DONE</h4>
+                <h1>{{ totalSiteVisitsDone }}</h1>
+              </div>
+            </div>
+          </div>
+        </p-panel>
 
         <div class="section-block">
           <div class="section-header">
@@ -103,31 +222,6 @@
           </div>
         </div>
         </ng-container>
-      </ng-template>
-
-      <ng-template #managerAdminDashboard>
-        <div class="stats-grid" *ngIf="!loading">
-          <div class="card">
-            <h4>TOTAL LEADS</h4>
-            <h1>{{ totalLeads }}</h1>
-          </div>
-          <div class="card">
-            <h4>ACTIVE LEADS</h4>
-            <h1>{{ activeLeads }}</h1>
-          </div>
-          <div class="card">
-            <h4>TODAY LEADS</h4>
-            <h1>{{ todayLeads }}</h1>
-          </div>
-          <div class="card">
-            <h4>DEALS CLOSED</h4>
-            <h1>{{ closedDeals }}</h1>
-          </div>
-          <div class="card">
-            <h4>LOST LEADS</h4>
-            <h1>{{ lostLeads }}</h1>
-          </div>
-        </div>
       </ng-template>
 
       <div class="loading-container" *ngIf="loading">
