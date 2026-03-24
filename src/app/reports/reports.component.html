@@ -598,7 +598,7 @@
         <th>Project</th>
         <th>Assigned User</th>
         <th>Status</th>
-        <th>Current Status</th>
+        <th *ngIf="summaryDialogType === 'Closed'">Current Status</th>
         <th>Created On</th>
       </tr>
     </ng-template>
@@ -610,7 +610,7 @@
         <td>{{ lead.project_name }}</td>
         <td>{{ lead.employee_name }}</td>
         <td>{{ lead.label || 'New' }}</td>
-        <td>
+        <td *ngIf="summaryDialogType === 'Closed'">
           <span *ngIf="lead.current_status && lead.current_status !== lead.label"
             style="color:#e57373; font-weight:500;">{{ lead.current_status || '---' }}</span>
           <span *ngIf="!lead.current_status || lead.current_status === lead.label" style="color:#aaa;">—</span>
@@ -620,7 +620,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="8" class="text-center p-4">No leads found.</td>
+        <td [attr.colspan]="summaryDialogType === 'Closed' ? 8 : 7" class="text-center p-4">No leads found.</td>
       </tr>
     </ng-template>
   </p-table>
