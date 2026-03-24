@@ -176,9 +176,13 @@
   color: #1f2937;
   display: flex;
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 400;
   justify-content: space-between;
   padding: 22px 24px;
+}
+
+:host ::ng-deep .dashboard-toggle-panel .p-panel-title {
+  font-weight: 400;
 }
 
 :host ::ng-deep .dashboard-toggle-panel .p-panel-content {
