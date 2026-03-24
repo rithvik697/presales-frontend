@@ -8,7 +8,7 @@ import {
 import { Router, NavigationEnd } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
 import { NotificationService } from './services/notification.service';
@@ -46,6 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
   home: MenuItem = { icon: 'pi pi-home', routerLink: '/dashboard' };
 
   private routerSub!: Subscription;
+  private notificationPollSub?: Subscription;
 
   private allMenuItems: any[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard', roles: [] },
@@ -131,6 +132,21 @@ export class AppComponent implements OnInit, OnDestroy {
         this.selectedItem = found ? found.label : '';
 
         this.updateBreadcrumbs(url);
+
+        if (
+          this.username &&
+          !this.isLoginPage &&
+          !this.isChangePasswordPage &&
+          !this.isForgotPasswordPage &&
+          !this.isResetPasswordPage
+        ) {
+          this.loadNotifications();
+          this.startNotificationPolling();
+        } else {
+          this.stopNotificationPolling();
+          this.notifications = [];
+          this.unreadCount = 0;
+        }
       });
   }
 
@@ -138,6 +154,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.routerSub) {
       this.routerSub.unsubscribe();
     }
+    this.stopNotificationPolling();
   }
 
   updateBreadcrumbs(url: string): void {
@@ -233,6 +250,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isDesktop = event.target.innerWidth > 768;
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest('.notification-wrapper')) {
+      this.showNotificationDropdown = false;
+    }
+  }
+
   loadNotifications(): void {
 
     this.notificationService.getNotifications().subscribe(
@@ -248,6 +273,25 @@ export class AppComponent implements OnInit, OnDestroy {
         console.error('Failed to load notifications', error);
       }
     );
+  }
+
+  startNotificationPolling(): void {
+    if (this.notificationPollSub) {
+      return;
+    }
+
+    this.notificationPollSub = interval(30000).subscribe(() => {
+      if (this.username && !this.isLoginPage) {
+        this.loadNotifications();
+      }
+    });
+  }
+
+  stopNotificationPolling(): void {
+    if (this.notificationPollSub) {
+      this.notificationPollSub.unsubscribe();
+      this.notificationPollSub = undefined;
+    }
   }
 
   toggleNotifications(): void {
@@ -292,6 +336,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.username = null;
     this.fullName = null;
     this.role = null;
+    this.notifications = [];
+    this.unreadCount = 0;
+    this.stopNotificationPolling();
 
     this.router.navigate(['/login']);
   }
