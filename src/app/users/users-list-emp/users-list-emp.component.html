@@ -113,10 +113,7 @@
 
           <!-- ✅ FULL NAME DISPLAY -->
           <td>
-            <a
-              [routerLink]="['/users', user.emp_id]"
-              class="user-link"
-            >
+            <a [routerLink]="['/users', user.emp_id]" class="user-link">
               {{ getFullName(user) }}
             </a>
           </td>

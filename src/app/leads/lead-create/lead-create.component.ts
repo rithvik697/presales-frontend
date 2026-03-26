@@ -57,7 +57,7 @@ export class LeadCreateComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -117,6 +117,19 @@ export class LeadCreateComponent implements OnInit {
       },
       error: () => this.toastr.error('Failed to load country codes')
     });
+
+    // Sources
+    this.leadsService.getSources().subscribe({
+      next: (data) => this.sources = data,
+      error: () => this.toastr.error('Failed to load sources')
+    });
+
+    // Statuses
+    this.leadsService.getStatuses().subscribe({
+      next: (data) => this.statuses = data,
+      error: () => this.toastr.error('Failed to load statuses')
+    });
+
   }
 
   loadLead(id: string): void {
@@ -143,6 +156,24 @@ export class LeadCreateComponent implements OnInit {
           this.model.lastName = parts.slice(1).join(' ') || '';
         }
 
+        // Extract country code from phone
+        if (this.model.phone) {
+          const phoneStr = String(this.model.phone);
+          const found = this.countryCodes
+            .sort((a, b) => b.code.length - a.code.length)
+            .find(c => phoneStr.startsWith(c.code));
+
+          if (found) {
+            this.selectedCountryCode = found;
+            this.model.phone = phoneStr.replace(found.code, '').trim();
+          } else {
+            this.model.phone = phoneStr;
+          }
+        }
+
+        if (this.model.alternatePhone) {
+          this.model.alternatePhone = String(this.model.alternatePhone);
+        }
         this.applyStoredPhoneToForm('phone');
         this.applyStoredPhoneToForm('alternatePhone', false);
       },
@@ -207,9 +238,7 @@ export class LeadCreateComponent implements OnInit {
     const submissionModel: any = { ...this.model };
     submissionModel.phone = `${this.selectedCountryCode.code}${this.model.phone}`;
 
-    if (this.model.alternatePhone) {
-      submissionModel.alternatePhone = `${this.selectedCountryCode.code}${this.model.alternatePhone}`;
-    }
+    submissionModel.phone = this.model.phone;
 
     if (this.isEditMode && this.leadId) {
       this.leadsService.update(this.leadId, submissionModel).subscribe({

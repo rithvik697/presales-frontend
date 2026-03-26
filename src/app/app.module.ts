@@ -50,6 +50,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ChartModule } from 'primeng/chart';
 import { MessageService } from 'primeng/api';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 /* ------------------ Third Party ------------------ */
 import { NgChartsModule } from 'ng2-charts';
@@ -181,6 +182,7 @@ import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-
     ConfirmDialogModule,
     TieredMenuModule,
     ProgressSpinnerModule,
+    MultiSelectModule,
     SelectButtonModule,
     ChartModule,
 
@@ -203,4 +205,4 @@ import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-
 
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
