@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private allMenuItems: any[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard', roles: [] },
     { label: 'Leads Management', icon: 'list', route: '/leads', roles: [] },
-    { label: 'Users', icon: 'people', route: '/users', roles: ['ADMIN'] },
+    { label: 'Users', icon: 'people', route: '/users', roles: ['ADMIN', 'SALES_MGR'] },
     { label: 'Project', icon: 'assignment', route: '/projects', roles: [] },
     { label: 'Call Logs', icon: 'call', route: '/call-logs', roles: [] },
     { label: 'Audit Trail', icon: 'history', route: '/audit-trail', roles: ['ADMIN', 'SALES_MGR'] },
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
     {
       label: 'Configure',
       icon: 'settings',
-      roles: ['ADMIN'],
+      roles: ['ADMIN', 'SALES_MGR'],
       children: [
         { label: 'Add Activity', route: '/configure/add-activity' },
         { label: 'Add Source', route: '/configure/add-source' },

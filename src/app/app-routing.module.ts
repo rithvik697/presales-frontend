@@ -58,12 +58,12 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
 
-      // USERS MODULE (ADMIN only)
+      // USERS MODULE (ADMIN, SALES_MGR)
       {
         path: 'users',
         component: UsersComponent,
         canActivate: [RoleGuard],
-        data: { allowedRoles: ['ADMIN'] },
+        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] },
         children: [
           { path: '', component: UsersListEmpComponent },
           { path: 'register', component: UserRegistrationComponent },
@@ -74,12 +74,12 @@ const routes: Routes = [
       // DATA BACKUPS
       { path: 'databackups', component: DatabackupsComponent },
 
-      // CONFIGURE MODULE (ADMIN only)
+      // CONFIGURE MODULE (ADMIN, SALES_MGR)
       {
         path: 'configure',
         component: ConfigureComponent,
         canActivate: [RoleGuard],
-        data: { allowedRoles: ['ADMIN'] },
+        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] },
         children: [
           { path: 'add-activity', component: AddActivityComponent },
           { path: 'add-source', component: AddSourceComponent },
