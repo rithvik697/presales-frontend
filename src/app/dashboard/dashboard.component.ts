@@ -10,8 +10,13 @@ import { ReportsService } from '../services/reports.service';
 interface DashboardCard {
   label: string;
   value: number;
-  type: 'all' | 'active' | 'pending' | 'status';
+  type: 'all' | 'new' | 'active' | 'pending' | 'status';
   statusName?: string;
+}
+
+interface DashboardSummaryCard {
+  label: string;
+  value: number;
 }
 
 interface DashboardUser {
@@ -22,6 +27,8 @@ interface DashboardUser {
   emp_middle_name?: string;
   emp_last_name?: string;
   created_on?: string;
+  username?: string;
+  email?: string;
 }
 
 interface AdminOverviewCard {
@@ -49,6 +56,7 @@ interface AdminLeadRow {
   roleLabel: string;
   totalLeads: number;
   activeLeads: number;
+  freshLeads: number;
   pendingLeads: number;
   siteVisitsDone: number;
   callsMade: number;
@@ -73,6 +81,7 @@ export class DashboardComponent implements OnInit {
   role: string = '';
 
   totalLeads: number = 0;
+  newLeads: number = 0;
   activeLeads: number = 0;
   pendingLeads: number = 0;
   closedDeals: number = 0;
@@ -81,6 +90,9 @@ export class DashboardComponent implements OnInit {
 
   public salesExecOverviewCards: DashboardCard[] = [];
   public salesExecStatusCards: DashboardCard[] = [];
+  public salesExecCallCards: DashboardSummaryCard[] = [];
+  public salesExecSiteVisitCards: DashboardSummaryCard[] = [];
+  public salesExecDealsClosedCards: DashboardSummaryCard[] = [];
   public adminOverviewCards: AdminOverviewCard[] = [];
   public adminLeadSummaryCards: AdminLeadSummaryCard[] = [];
   public adminLeadRows: AdminLeadRow[] = [];
@@ -99,6 +111,7 @@ export class DashboardComponent implements OnInit {
   ];
   public showCallsMadePanel: boolean = false;
   public showSiteVisitsDonePanel: boolean = false;
+  public showDealsClosedPanel: boolean = false;
   public siteVisitsDoneWeekly: number = 0;
   public siteVisitsDoneMonthly: number = 0;
   public totalSiteVisitsDone: number = 0;
@@ -230,13 +243,19 @@ export class DashboardComponent implements OnInit {
   loadSalesExecDashboard(): void {
     forkJoin({
       leads: this.leadsService.getAll(),
-      statuses: this.leadsService.getStatuses()
+      statuses: this.leadsService.getStatuses(),
+      callLogs: this.callLogsService.getRawCallLogs(),
+      users: this.registrationService.getUsers()
     }).subscribe({
-      next: ({ leads, statuses }) => {
+      next: ({ leads, statuses, callLogs, users }) => {
         const normalizedLeads = Array.isArray(leads) ? leads : [];
         const normalizedStatuses = Array.isArray(statuses) ? statuses : [];
+        const normalizedCallLogs = Array.isArray(callLogs) ? callLogs : [];
+        const normalizedUsers = Array.isArray((users as any)?.data) ? (users as any).data : [];
+        const currentUser = this.findCurrentUser(normalizedUsers);
 
         this.totalLeads = normalizedLeads.length;
+        this.newLeads = normalizedLeads.filter((lead) => this.isNewLead(lead)).length;
         this.activeLeads = normalizedLeads.filter((lead) => this.isActiveLead(lead)).length;
         this.pendingLeads = normalizedLeads.filter((lead) => this.isPendingLead(lead)).length;
         this.closedDeals = normalizedLeads.filter((lead) => (lead.status || '').trim() === 'Deal Closed').length;
@@ -245,9 +264,10 @@ export class DashboardComponent implements OnInit {
         this.siteVisitsDoneMonthly = normalizedLeads.filter((lead) => this.isSiteVisitDoneLead(lead) && this.isInCurrentMonth(lead.modifiedAt)).length;
 
         this.salesExecOverviewCards = [
-          { label: 'TOTAL LEADS', value: this.totalLeads, type: 'all' },
+          { label: 'NEW LEADS', value: this.newLeads, type: 'new' },
           { label: 'ACTIVE LEADS', value: this.activeLeads, type: 'active' },
           { label: 'PENDING LEADS', value: this.pendingLeads, type: 'pending' },
+          { label: 'TOTAL LEADS', value: this.totalLeads, type: 'all' },
           { label: 'DEALS CLOSED', value: this.closedDeals, type: 'status', statusName: 'Deal Closed' }
         ];
 
@@ -259,6 +279,10 @@ export class DashboardComponent implements OnInit {
             statusName: status.status_name
           }))
           .filter((card) => card.value > 0);
+
+        this.salesExecCallCards = this.buildSalesExecCallCards(normalizedCallLogs, currentUser);
+        this.salesExecSiteVisitCards = this.buildSalesExecSiteVisitCards(normalizedLeads);
+        this.salesExecDealsClosedCards = this.buildSalesExecDealsClosedCards(normalizedLeads);
 
         this.loading = false;
       },
@@ -297,6 +321,10 @@ export class DashboardComponent implements OnInit {
     return !!status && !this.terminalStatuses.has(status);
   }
 
+  private isNewLead(lead: Lead): boolean {
+    return this.isSameDay(lead.createdAt, new Date());
+  }
+
   private isPendingLead(lead: Lead): boolean {
     const status = (lead.status || '').trim();
     return this.pendingStatuses.has(status);
@@ -306,12 +334,51 @@ export class DashboardComponent implements OnInit {
     return (lead.status || '').trim() === 'Site Visit Done';
   }
 
+  private buildSalesExecCallCards(callLogs: any[], currentUser: DashboardUser | null): DashboardSummaryCard[] {
+    const ownedCallLogs = currentUser
+      ? callLogs.filter((callLog) => this.isCallOwnedByUser(callLog, currentUser))
+      : [];
+
+    return [
+      { label: 'CALLS MADE YESTERDAY', value: ownedCallLogs.filter((callLog) => this.isYesterday(callLog.call_time || callLog.callTime)).length },
+      { label: 'CALLS MADE TODAY', value: ownedCallLogs.filter((callLog) => this.matchesPeriod(callLog.call_time || callLog.callTime, 'today')).length },
+      { label: 'CALLS MADE THIS WEEK', value: ownedCallLogs.filter((callLog) => this.matchesPeriod(callLog.call_time || callLog.callTime, 'weekly')).length },
+      { label: 'CALLS MADE THIS MONTH', value: ownedCallLogs.filter((callLog) => this.matchesPeriod(callLog.call_time || callLog.callTime, 'monthly')).length },
+      { label: 'CALLS MADE THIS YEAR', value: ownedCallLogs.filter((callLog) => this.matchesPeriod(callLog.call_time || callLog.callTime, 'annually')).length },
+      { label: 'TOTAL CALLS MADE', value: ownedCallLogs.length }
+    ];
+  }
+
+  private buildSalesExecSiteVisitCards(leads: Lead[]): DashboardSummaryCard[] {
+    const siteVisitLeads = leads.filter((lead) => this.isSiteVisitDoneLead(lead));
+
+    return [
+      { label: 'SITE VISITS DONE TODAY', value: siteVisitLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'today')).length },
+      { label: 'SITE VISITS DONE THIS WEEK', value: siteVisitLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'weekly')).length },
+      { label: 'SITE VISITS DONE THIS MONTH', value: siteVisitLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'monthly')).length },
+      { label: 'SITE VISITS DONE THIS YEAR', value: siteVisitLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'annually')).length },
+      { label: 'TOTAL SITE VISITS DONE', value: siteVisitLeads.length }
+    ];
+  }
+
+  private buildSalesExecDealsClosedCards(leads: Lead[]): DashboardSummaryCard[] {
+    const closedDealLeads = leads.filter((lead) => (lead.status || '').trim() === 'Deal Closed');
+
+    return [
+      { label: 'DEALS CLOSED TODAY', value: closedDealLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'today')).length },
+      { label: 'DEALS CLOSED THIS WEEK', value: closedDealLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'weekly')).length },
+      { label: 'DEALS CLOSED THIS MONTH', value: closedDealLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'monthly')).length },
+      { label: 'DEALS CLOSED THIS YEAR', value: closedDealLeads.filter((lead) => this.matchesPeriod(lead.modifiedAt, 'annually')).length },
+      { label: 'TOTAL DEALS CLOSED', value: closedDealLeads.length }
+    ];
+  }
+
   private isInCurrentWeek(dateValue: string | undefined): boolean {
     if (!dateValue) {
       return false;
     }
 
-    const date = new Date(dateValue);
+    const date = this.parseDateValue(dateValue);
     if (Number.isNaN(date.getTime())) {
       return false;
     }
@@ -332,7 +399,7 @@ export class DashboardComponent implements OnInit {
       return false;
     }
 
-    const date = new Date(dateValue);
+    const date = this.parseDateValue(dateValue);
     if (Number.isNaN(date.getTime())) {
       return false;
     }
@@ -385,7 +452,7 @@ export class DashboardComponent implements OnInit {
       return false;
     }
 
-    const date = new Date(dateValue);
+    const date = this.parseDateValue(dateValue);
     if (Number.isNaN(date.getTime())) {
       return false;
     }
@@ -416,6 +483,7 @@ export class DashboardComponent implements OnInit {
       const totalLeads = filteredOwnedLeads.length;
       const pendingLeads = filteredOwnedLeads.filter((lead) => this.isPendingLead(lead)).length;
       const activeLeads = filteredOwnedLeads.filter((lead) => this.isActiveLead(lead)).length;
+      const freshLeads = filteredOwnedLeads.filter((lead) => this.isSameDay(lead.createdAt, today)).length;
       const siteVisitsDone = filteredOwnedLeads.filter((lead) => this.isSiteVisitDoneLead(lead)).length;
       const dealsClosed = filteredOwnedLeads.filter(
         (lead) => (lead.status || '').trim() === 'Deal Closed'
@@ -429,6 +497,7 @@ export class DashboardComponent implements OnInit {
         roleLabel: this.formatRoleLabel(user.role_id),
         totalLeads,
         activeLeads,
+        freshLeads,
         pendingLeads,
         siteVisitsDone,
         callsMade,
@@ -445,8 +514,8 @@ export class DashboardComponent implements OnInit {
     });
 
     this.adminLeadSummaryCards = [
-      { label: 'TOTAL ASSIGNED LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead)).length },
-      { label: 'ACTIVE PIPELINE', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isActiveLead(lead)).length },
+      { label: 'TOTAL ALL-USER LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead)).length },
+      { label: 'PIPELINE LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isActiveLead(lead)).length },
       { label: 'PENDING FOLLOW-UPS', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isPendingLead(lead)).length },
       { label: 'DEALS CLOSED', value: leads.filter((lead) => this.hasAssignedOwner(lead) && (lead.status || '').trim() === 'Deal Closed').length },
       { label: 'LEADS CREATED TODAY', value: leadsCreatedToday, isClickable: false },
@@ -527,7 +596,7 @@ export class DashboardComponent implements OnInit {
       return false;
     }
 
-    const date = new Date(dateValue);
+    const date = this.parseDateValue(dateValue);
     if (Number.isNaN(date.getTime())) {
       return false;
     }
@@ -560,11 +629,54 @@ export class DashboardComponent implements OnInit {
     return date.getFullYear() === today.getFullYear();
   }
 
+  private isYesterday(dateValue: string | undefined): boolean {
+    if (!dateValue) {
+      return false;
+    }
+
+    const date = this.parseDateValue(dateValue);
+    if (Number.isNaN(date.getTime())) {
+      return false;
+    }
+
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    return this.isSameDay(dateValue, yesterday);
+  }
+
+  private parseDateValue(dateValue: string): Date {
+    const normalizedValue = dateValue.includes(' ') && !dateValue.includes('T')
+      ? dateValue.replace(' ', 'T')
+      : dateValue;
+
+    return new Date(normalizedValue);
+  }
+
   private isCallOwnedByUser(callLog: any, user: DashboardUser): boolean {
     const callOwner = (callLog?.emp_id || '').toString().trim().toLowerCase();
     const userId = (user.emp_id || '').trim().toLowerCase();
 
     return !!callOwner && !!userId && callOwner === userId;
+  }
+
+  private findCurrentUser(users: DashboardUser[]): DashboardUser | null {
+    const currentEmpId = (localStorage.getItem('user_id') || '').trim().toLowerCase();
+    const currentUsername = (localStorage.getItem('username') || '').trim().toLowerCase();
+    const currentFullName = (this.fullName || '').trim().toLowerCase();
+
+    return users.find((user) => {
+      const userEmpId = (user.emp_id || '').trim().toLowerCase();
+      const userUsername = (user.username || '').trim().toLowerCase();
+      const userFullName = this.getUserFullName(user).trim().toLowerCase();
+
+      return (
+        (!!currentEmpId && userEmpId === currentEmpId) ||
+        (!!currentUsername && userUsername === currentUsername) ||
+        (!!currentFullName && userFullName === currentFullName)
+      );
+    }) || null;
   }
 
   private initializeAdminStatusChartOptions(): void {

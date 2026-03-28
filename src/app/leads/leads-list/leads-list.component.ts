@@ -297,6 +297,10 @@ export class LeadsListComponent implements OnInit, OnDestroy {
         return false;
       }
 
+      if (this.currentDashboardFilter === 'new' && !this.isNewLead(lead)) {
+        return false;
+      }
+
       if (this.currentDashboardFilter === 'pending' && !this.isPendingLead(lead)) {
         return false;
       }
@@ -358,6 +362,10 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     return !!status && !this.terminalStatuses.has(status);
   }
 
+  private isNewLead(lead: Lead): boolean {
+    return this.isSameDay(lead.createdAt, new Date());
+  }
+
   private isPendingLead(lead: Lead): boolean {
     const status = (lead.status || '').trim();
     return this.pendingStatuses.has(status);
@@ -386,6 +394,31 @@ export class LeadsListComponent implements OnInit, OnDestroy {
       return localNumber;
     }
     return `${matchedCode} ${localNumber}`;
+  }
+
+  private isSameDay(dateValue: string | undefined, referenceDate: Date): boolean {
+    if (!dateValue) {
+      return false;
+    }
+
+    const date = this.parseDateValue(dateValue);
+    if (Number.isNaN(date.getTime())) {
+      return false;
+    }
+
+    return (
+      date.getFullYear() === referenceDate.getFullYear() &&
+      date.getMonth() === referenceDate.getMonth() &&
+      date.getDate() === referenceDate.getDate()
+    );
+  }
+
+  private parseDateValue(dateValue: string): Date {
+    const normalizedValue = dateValue.includes(' ') && !dateValue.includes('T')
+      ? dateValue.replace(' ', 'T')
+      : dateValue;
+
+    return new Date(normalizedValue);
   }
 
   ngOnDestroy(): void {
