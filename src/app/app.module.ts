@@ -86,7 +86,6 @@ import { AuditTrailComponent } from './audit-trail/audit-trail.component';
 
 /* ------------------ Pipes ------------------ */
 import { FilterByPipe } from './pipes/filter-by.pipe';
-import { PhoneDisplayPipe } from './pipes/phone-display.pipe';
 
 /* ------------------ Interceptors ------------------ */
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -131,8 +130,7 @@ import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-
     ForgotPasswordComponent,
     ResetPasswordComponent,
 
-    FilterByPipe,
-    PhoneDisplayPipe
+    FilterByPipe
   ],
 
   imports: [

@@ -128,10 +128,10 @@
               <p-tag *ngSwitchCase="'status'" [value]="lead.status" [severity]="getSeverity(lead.status)"></p-tag>
 
               <!-- Phone with formatting -->
-              <span *ngSwitchCase="'phone'">{{ lead.phone | phoneDisplay }}</span>
+              <span *ngSwitchCase="'phone'">{{ formatPhone(lead.phone) }}</span>
 
               <!-- Alternate Phone -->
-              <span *ngSwitchCase="'alternatePhone'">{{ lead.alternatePhone ? (lead.alternatePhone | phoneDisplay) : '-'
+              <span *ngSwitchCase="'alternatePhone'">{{ lead.alternatePhone ? formatPhone(lead.alternatePhone) : '-'
                 }}</span>
 
               <!-- Remarks/Description -->

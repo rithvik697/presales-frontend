@@ -65,6 +65,7 @@ export class LeadDetailsComponent implements OnInit {
     // Auth
     isAdmin: boolean = false;
     currentUser: string = '';
+    private readonly phoneCountryCodes = ['+91', '+1', '+44', '+61', '+86'];
 
     // Breadcrumb
     breadcrumbItems: MenuItem[] = [];
@@ -448,5 +449,30 @@ export class LeadDetailsComponent implements OnInit {
                 this.showDeleteConfirmation = false;
             }
         });
+    }
+
+    formatPhone(value: string | null | undefined): string {
+        if (!value) return '-';
+        let raw = String(value).trim();
+
+        // Auto-normalize legacy Indian numbers starting with '91' without '+'
+        if (!raw.startsWith('+') && raw.startsWith('91') && raw.length === 12) {
+            raw = '+' + raw;
+        }
+
+        const matchedCode = [...this.phoneCountryCodes]
+            .sort((a, b) => b.length - a.length)
+            .find((code) => raw.startsWith(code));
+
+        if (!matchedCode) return raw;
+
+        const localNumber = raw.slice(matchedCode.length).trim();
+        if (!localNumber) return matchedCode;
+
+        // Symmetric alignment: hide +91 for India numbers in tables/details
+        if (matchedCode === '+91') {
+            return localNumber;
+        }
+        return `${matchedCode} ${localNumber}`;
     }
 }

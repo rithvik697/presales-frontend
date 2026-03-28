@@ -161,11 +161,16 @@ export class LeadCreateComponent implements OnInit {
           const phoneStr = String(this.model.phone);
           const found = this.countryCodes
             .sort((a, b) => b.code.length - a.code.length)
-            .find(c => phoneStr.startsWith(c.code));
+            .find(c => {
+               const numericCode = c.code.replace('+', '');
+               return phoneStr.startsWith(c.code) || 
+                      (phoneStr.startsWith(numericCode) && phoneStr.length === c.max_length + numericCode.length);
+            });
 
           if (found) {
             this.selectedCountryCode = found;
-            this.model.phone = phoneStr.replace(found.code, '').trim();
+            const codeToReplace = phoneStr.startsWith(found.code) ? found.code : found.code.replace('+', '');
+            this.model.phone = phoneStr.replace(codeToReplace, '').trim();
           } else {
             this.model.phone = phoneStr;
           }
@@ -182,14 +187,18 @@ export class LeadCreateComponent implements OnInit {
   }
 
   private applyStoredPhoneToForm(field: 'phone' | 'alternatePhone', updateSelectedCode = true): void {
-    const value = this.model[field];
+    const value = String(this.model[field] || '');
     if (!value || this.countryCodes.length === 0) {
       return;
     }
 
     const found = [...this.countryCodes]
       .sort((a, b) => b.code.length - a.code.length)
-      .find((country) => value.startsWith(country.code));
+      .find((c) => {
+         const numericCode = c.code.replace('+', '');
+         return value.startsWith(c.code) || 
+                (value.startsWith(numericCode) && value.length === c.max_length + numericCode.length);
+      });
 
     if (!found) {
       return;
@@ -199,7 +208,8 @@ export class LeadCreateComponent implements OnInit {
       this.selectedCountryCode = found;
     }
 
-    this.model[field] = value.replace(found.code, '').trim();
+    const toReplace = value.startsWith(found.code) ? found.code : found.code.replace('+', '');
+    this.model[field] = value.replace(toReplace, '').trim();
   }
 
   onPhoneInput(event: Event, isMain: boolean): void {
