@@ -313,7 +313,12 @@
         <ng-template pTemplate="body" let-log>
           <tr>
             <td>{{ log.lead_id }}</td>
-            <td>{{ log.lead_name || 'N/A' }}</td>
+            <td>
+              <a [routerLink]="['/leads/details', log.lead_id]"
+                style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
+                {{ log.lead_name || 'N/A' }}
+              </a>
+            </td>
             <td>{{ log.created_on | date:'dd/MM/yyyy' }}</td>
             <td>
               <a *ngIf="log.employee_name !== 'Unassigned'" [routerLink]="['/reports']"
@@ -367,7 +372,12 @@
         <ng-template pTemplate="body" let-log>
           <tr>
             <td>{{ log.created_on | date:'dd/MM/yyyy' }}</td>
-            <td>{{ log.customer_name || 'N/A' }}</td>
+            <td>
+              <a [routerLink]="['/leads/details', log.lead_id]"
+                style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
+                {{ log.customer_name || 'N/A' }}
+              </a>
+            </td>
             <td>{{ log.project_name }}</td>
             <td>{{ log.source_name }}</td>
             <td>{{ log.employee_name }}</td>
@@ -432,7 +442,12 @@
           <ng-template pTemplate="body" let-log>
             <tr>
               <td>{{ log.created_on | date:'dd/MM/yyyy' }}</td>
-              <td>{{ log.customer_name || 'N/A' }}</td>
+              <td>
+                <a [routerLink]="['/leads/details', log.lead_id]"
+                  style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
+                  {{ log.customer_name || 'N/A' }}
+                </a>
+              </td>
               <td>{{ log.project_name }}</td>
               <td>{{ log.source_name }}</td>
               <td>{{ log.employee_name }}</td>
@@ -516,7 +531,12 @@
         <ng-template pTemplate="body" let-row>
           <tr>
             <td>{{ row.lead_id }}</td>
-            <td>{{ (row.lead_name || '').trim() || 'N/A' }}</td>
+            <td>
+              <a [routerLink]="['/leads/details', row.lead_id]"
+                style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
+                {{ (row.lead_name || '').trim() || 'N/A' }}
+              </a>
+            </td>
             <td>{{ row.employee_name }}</td>
             <td>{{ row.project_name }}</td>
             <td>{{ row.changed_at | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -605,7 +625,12 @@
     <ng-template pTemplate="body" let-lead>
       <tr>
         <td>{{ lead.lead_id }}</td>
-        <td>{{ lead.lead_name || 'N/A' }}</td>
+        <td>
+          <a [routerLink]="['/leads/details', lead.lead_id]"
+            style="text-decoration: underline !important; color: #1976d2; font-weight: 500; cursor: pointer;">
+            {{ lead.lead_name || 'N/A' }}
+          </a>
+        </td>
         <td>{{ lead.lead_description }}</td>
         <td>{{ lead.project_name }}</td>
         <td>{{ lead.employee_name }}</td>
