@@ -118,12 +118,12 @@ const routes: Routes = [
       // CALL LOGS
       { path: 'call-logs', component: CallLogsComponent },
 
-      // AUDIT TRAIL (ADMIN, SALES_MGR)
+      // AUDIT TRAIL (ADMIN only)
       {
         path: 'audit-trail',
         component: AuditTrailComponent,
         canActivate: [RoleGuard],
-        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] }
+        data: { allowedRoles: ['ADMIN'] }
       },
 
       // REPORTS (ADMIN, SALES_MGR)

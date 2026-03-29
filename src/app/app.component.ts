@@ -54,7 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Users', icon: 'people', route: '/users', roles: ['ADMIN'] },
     { label: 'Project', icon: 'assignment', route: '/projects', roles: [] },
     { label: 'Call Logs', icon: 'call', route: '/call-logs', roles: [] },
-    { label: 'Audit Trail', icon: 'history', route: '/audit-trail', roles: ['ADMIN', 'SALES_MGR'] },
+    { label: 'Audit Trail', icon: 'history', route: '/audit-trail', roles: ['ADMIN'] },
 
     {
       label: 'Configure',
