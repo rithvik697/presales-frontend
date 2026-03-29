@@ -16,6 +16,17 @@ export class ResetPasswordComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
+  get passwordChecks() {
+    const p = this.resetForm?.get('password')?.value || '';
+    return {
+      length: p.length >= 8 && p.length <= 64,
+      upper: /[A-Z]/.test(p),
+      lower: /[a-z]/.test(p),
+      number: /[0-9]/.test(p),
+      special: /[@$!%*?&#^()_\-+=]/.test(p)
+    };
+  }
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -26,7 +37,7 @@ export class ResetPasswordComponent implements OnInit {
   ngOnInit(): void {
 
     this.resetForm = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(64)]],
        confirmPassword: ['', Validators.required]
     });
 
@@ -46,9 +57,16 @@ export class ResetPasswordComponent implements OnInit {
 
     const password = this.resetForm.value.password;
     const confirmPassword = this.resetForm.value.confirmPassword;
+    const checks = this.passwordChecks;
 
     if (password !== confirmPassword) {
       this.errorMessage = 'Passwords do not match';
+      this.isLoading = false;
+      return;
+    }
+
+    if (!(checks.length && checks.upper && checks.lower && checks.number && checks.special)) {
+      this.errorMessage = 'Password must be 8-64 chars and include uppercase, lowercase, number, and special character';
       this.isLoading = false;
       return;
     }

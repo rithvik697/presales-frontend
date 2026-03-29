@@ -78,4 +78,11 @@ export class ProjectService {
     return this.http.get<any[]>(`${this.baseUrl}/type-options`);
   }
 
+  // -----------------------------
+  // Delete Project
+  // -----------------------------
+  deleteProject(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${id}`);
+  }
+
 }
