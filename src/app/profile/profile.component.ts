@@ -17,23 +17,6 @@ export class ProfileComponent implements OnInit {
 
   oldPassword: string = '';
   newPassword: string = '';
-  confirmPassword: string = '';
-
-  get pwChecks() {
-    const p = this.newPassword;
-    return {
-      length:    p.length >= 8 && p.length <= 64,
-      upper:     /[A-Z]/.test(p),
-      lower:     /[a-z]/.test(p),
-      number:    /[0-9]/.test(p),
-      special:   /[@$!%*?&#^()_\-+=]/.test(p)
-    };
-  }
-
-  get pwStrong(): boolean {
-    const c = this.pwChecks;
-    return c.length && c.upper && c.lower && c.number && c.special;
-  }
 
   loading: boolean = false;
   forceChange: boolean = false;
@@ -66,23 +49,13 @@ export class ProfileComponent implements OnInit {
 
   changePassword(): void {
 
-    if (!this.oldPassword || !this.newPassword || !this.confirmPassword) {
+    if (!this.oldPassword || !this.newPassword) {
       this.toastr.warning('Please fill all fields');
       return;
     }
 
-    if (this.oldPassword === this.newPassword) {
-      this.toastr.warning('New password must be different from the current password');
-      return;
-    }
-
-    if (this.newPassword !== this.confirmPassword) {
-      this.toastr.warning('Passwords do not match');
-      return;
-    }
-
-    if (!this.pwStrong) {
-      this.toastr.warning('Password must be 8-64 chars with uppercase, lowercase, number, and special character');
+    if (this.newPassword.length < 6) {
+      this.toastr.warning('Password must be at least 6 characters');
       return;
     }
 
@@ -104,7 +77,6 @@ export class ProfileComponent implements OnInit {
         // reset fields
         this.oldPassword = '';
         this.newPassword = '';
-        this.confirmPassword = '';
 
         // If forced password change, clear flag and redirect
         if (this.forceChange) {

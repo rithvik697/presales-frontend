@@ -12,6 +12,17 @@
     <div class="p-toolbar-group-left">
       <h2 class="m-0">Projects</h2>
     </div>
+
+    <div class="p-toolbar-group-right">
+      <button
+        *ngIf="canManageProjects"
+        pButton
+        label="Register Project"
+        icon="pi pi-plus"
+        class="p-button-primary"
+        (click)="goToRegister()">
+      </button>
+    </div>
   </p-toolbar>
 
   <!-- Scroll Wrapper -->
@@ -158,20 +169,12 @@
           <td>{{ project.state }}</td>
           <td>{{ project.created_on | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
 
-          <td style="text-align:center">
+          <td>
             <p-button
               *ngIf="canManageProjects"
               icon="pi pi-pencil"
               class="p-button-text p-button-primary p-button-sm"
-              (onClick)="openEditDialog(project)"
-              pTooltip="Edit">
-            </p-button>
-            <p-button
-              *ngIf="isAdmin"
-              icon="pi pi-trash"
-              class="p-button-text p-button-danger p-button-sm"
-              (onClick)="confirmDelete(project)"
-              pTooltip="Delete">
+              (onClick)="openEditDialog(project)">
             </p-button>
           </td>
 
@@ -190,20 +193,5 @@
     </p-table>
 
   </div>
-
-  <!-- Delete Confirmation Dialog -->
-  <p-dialog
-    header="Confirm Delete"
-    [(visible)]="showDeleteConfirm"
-    [modal]="true"
-    [style]="{width: '420px'}"
-    [closable]="true">
-    <p>Are you sure you want to delete project <strong>{{ projectToDelete?.project_name }}</strong>?</p>
-    <p style="color:#b91c1c; font-size:13px;">This action cannot be undone.</p>
-    <ng-template pTemplate="footer">
-      <button pButton label="Cancel" class="p-button-text" (click)="showDeleteConfirm = false"></button>
-      <button pButton label="Delete" class="p-button-danger" icon="pi pi-trash" (click)="deleteProject()"></button>
-    </ng-template>
-  </p-dialog>
 
 </div>

@@ -190,28 +190,11 @@
         <td>{{ log.callTime | date:'dd-MMM-yyyy, HH:mm:ss' }}</td>
         <td>{{ log.remarks || '-' }}</td>
         <td>
-          <!-- Idle state -->
-          <button *ngIf="log.recordingUrl && playingRecordingUrl !== log.recordingUrl"
-            class="rec-btn rec-btn-idle"
-            (click)="toggleRecording(log)" title="Play recording">
-            <i class="pi pi-play"></i>
-            <span>Play</span>
-          </button>
-
-          <!-- Playing state -->
-          <div *ngIf="log.recordingUrl && playingRecordingUrl === log.recordingUrl"
-            class="rec-player">
-            <button class="rec-btn rec-btn-active" (click)="toggleRecording(log)" title="Stop">
-              <i class="pi pi-stop"></i>
-            </button>
-            <div class="rec-wave">
-              <span class="rec-bar"></span><span class="rec-bar"></span><span class="rec-bar"></span>
-              <span class="rec-bar"></span><span class="rec-bar"></span>
-            </div>
-            <span class="rec-time">{{ playingElapsed }}</span>
-          </div>
-
-          <span *ngIf="!log.recordingUrl" class="rec-none">--</span>
+          <a *ngIf="log.recordingUrl" [href]="log.recordingUrl" target="_blank"
+            class="recording-link" title="Play recording">
+            <i class="pi pi-play-circle"></i>
+          </a>
+          <span *ngIf="!log.recordingUrl">-</span>
         </td>
       </tr>
     </ng-template>

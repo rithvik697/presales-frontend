@@ -21,7 +21,6 @@ import { AddSourceComponent } from './configure/add-source/add-source.component'
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
 import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-upload.component';
-import { ReportEmailRecipientsComponent } from './configure/report-emails/report-emails.component';
 
 import { LeadsListComponent } from './leads/leads-list/leads-list.component';
 import { LeadCreateComponent } from './leads/lead-create/lead-create.component';
@@ -87,8 +86,6 @@ const routes: Routes = [
           { path: 'bulk-lead-upload', component: BulkLeadUploadComponent },
           { path: 'lead-transfer', component: LeadTransferComponent },
           { path: 'lead-assigning', component: ProjectAssignmentComponent },
-          { path: 'report-emails', component: ReportEmailRecipientsComponent },
-          { path: 'add-project', component: ProjectRegistrationComponent },
           { path: '', redirectTo: 'add-activity', pathMatch: 'full' }
         ]
       },
@@ -118,12 +115,12 @@ const routes: Routes = [
       // CALL LOGS
       { path: 'call-logs', component: CallLogsComponent },
 
-      // AUDIT TRAIL (ADMIN only)
+      // AUDIT TRAIL (ADMIN, SALES_MGR)
       {
         path: 'audit-trail',
         component: AuditTrailComponent,
         canActivate: [RoleGuard],
-        data: { allowedRoles: ['ADMIN'] }
+        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] }
       },
 
       // REPORTS (ADMIN, SALES_MGR)
