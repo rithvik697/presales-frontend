@@ -41,6 +41,27 @@
   margin-top: 15px;
 }
 
+.pw-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  margin-top: -8px;
+}
+
+.pw-ok {
+  color: #16a34a;
+}
+
+.pw-fail {
+  color: #dc2626;
+}
+
+.pw-checklist .pi {
+  font-size: 12px;
+  margin-right: 5px;
+}
+
 .force-change-banner {
   background: #fff3cd;
   border: 1px solid #ffc107;

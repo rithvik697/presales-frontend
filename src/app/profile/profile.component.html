@@ -110,8 +110,27 @@
                 />
               </div>
 
-              <small class="p-error" *ngIf="newPassword">
-                Password must be 8-64 chars and include uppercase, lowercase, number, and special character.
+              <!-- Password strength checklist -->
+              <div *ngIf="newPassword" class="pw-checklist">
+                <div [class.pw-ok]="pwChecks.length"   [class.pw-fail]="!pwChecks.length">
+                  <i class="pi" [class.pi-check-circle]="pwChecks.length" [class.pi-times-circle]="!pwChecks.length"></i> At least 8 characters
+                </div>
+                <div [class.pw-ok]="pwChecks.upper"    [class.pw-fail]="!pwChecks.upper">
+                  <i class="pi" [class.pi-check-circle]="pwChecks.upper" [class.pi-times-circle]="!pwChecks.upper"></i> One uppercase letter
+                </div>
+                <div [class.pw-ok]="pwChecks.lower"    [class.pw-fail]="!pwChecks.lower">
+                  <i class="pi" [class.pi-check-circle]="pwChecks.lower" [class.pi-times-circle]="!pwChecks.lower"></i> One lowercase letter
+                </div>
+                <div [class.pw-ok]="pwChecks.number"   [class.pw-fail]="!pwChecks.number">
+                  <i class="pi" [class.pi-check-circle]="pwChecks.number" [class.pi-times-circle]="!pwChecks.number"></i> One number
+                </div>
+                <div [class.pw-ok]="pwChecks.special"  [class.pw-fail]="!pwChecks.special">
+                  <i class="pi" [class.pi-check-circle]="pwChecks.special" [class.pi-times-circle]="!pwChecks.special"></i> One special character (@$!%*?&amp;#)
+                </div>
+              </div>
+
+              <small class="p-error" *ngIf="confirmPassword && newPassword !== confirmPassword">
+                Passwords do not match.
               </small>
 
               <button

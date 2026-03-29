@@ -72,8 +72,6 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     'Not Answered'
   ]);
 
-  private readonly phoneCountryCodes = ['+91', '+1', '+44', '+61', '+86'];
-
   constructor(
     private leadsService: LeadsService,
     private router: Router,
@@ -369,31 +367,6 @@ export class LeadsListComponent implements OnInit, OnDestroy {
   private isPendingLead(lead: Lead): boolean {
     const status = (lead.status || '').trim();
     return this.pendingStatuses.has(status);
-  }
-
-  formatPhone(value: string | null | undefined): string {
-    if (!value) return '-';
-    let raw = String(value).trim();
-
-    // Auto-normalize legacy Indian numbers starting with '91' without '+'
-    if (!raw.startsWith('+') && raw.startsWith('91') && raw.length === 12) {
-      raw = '+' + raw;
-    }
-
-    const matchedCode = [...this.phoneCountryCodes]
-      .sort((a, b) => b.length - a.length)
-      .find((code) => raw.startsWith(code));
-
-    if (!matchedCode) return raw;
-
-    const localNumber = raw.slice(matchedCode.length).trim();
-    if (!localNumber) return matchedCode;
-
-    // Symmetric alignment: hide +91 for India numbers in tables
-    if (matchedCode === '+91') {
-      return localNumber;
-    }
-    return `${matchedCode} ${localNumber}`;
   }
 
   private isSameDay(dateValue: string | undefined, referenceDate: Date): boolean {
