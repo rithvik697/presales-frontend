@@ -95,19 +95,6 @@ export interface BulkUploadHistoryItem {
   uploaded_on: string;
 }
 
-export interface ReportEmailRecipient {
-  id: number;
-  recipient_name: string;
-  email: string;
-  weekly_report: boolean;
-  monthly_report: boolean;
-  quarterly_report: boolean;
-  annual_report: boolean;
-  is_active: boolean;
-  created_by: string;
-  created_on: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -214,29 +201,5 @@ export class ConfigureService {
 
   getBulkUploadHistory(): Observable<BulkUploadHistoryItem[]> {
     return this.http.get<BulkUploadHistoryItem[]>(`${this.apiBase}/config/bulk-leads/history`);
-  }
-
-  // Report Email Recipients
-  getReportEmailRecipients(): Observable<ReportEmailRecipient[]> {
-    return this.http.get<ReportEmailRecipient[]>(`${this.apiBase}/config/report-emails`);
-  }
-
-  addReportEmailRecipient(payload: {
-    recipient_name: string;
-    email: string;
-    weekly_report: boolean;
-    monthly_report: boolean;
-    quarterly_report: boolean;
-    annual_report: boolean;
-  }): Observable<any> {
-    return this.http.post(`${this.apiBase}/config/report-emails`, payload);
-  }
-
-  updateReportEmailRecipient(id: number, payload: Record<string, boolean>): Observable<any> {
-    return this.http.put(`${this.apiBase}/config/report-emails/${id}`, payload);
-  }
-
-  deleteReportEmailRecipient(id: number): Observable<any> {
-    return this.http.delete(`${this.apiBase}/config/report-emails/${id}`);
   }
 }

@@ -14,11 +14,6 @@ export class ProjectListComponent implements OnInit {
   projects: any[] = [];
   loading = true;
   canManageProjects = false;
-  isAdmin = false;
-
-  // Delete confirmation
-  showDeleteConfirm = false;
-  projectToDelete: any = null;
 
   // 👉 Breadcrumbs
   breadcrumbItems: MenuItem[] = [];
@@ -31,9 +26,7 @@ export class ProjectListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const role = localStorage.getItem('role') || '';
-    this.canManageProjects = ['ADMIN', 'SALES_MGR'].includes(role);
-    this.isAdmin = role === 'ADMIN';
+    this.canManageProjects = ['ADMIN', 'SALES_MGR'].includes(localStorage.getItem('role') || '');
     this.setupBreadcrumbs();
     this.loadProjects();
   }
@@ -59,7 +52,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   goToRegister() {
-    this.router.navigate(['/configure/add-project']);
+    this.router.navigate(['/projects/register']);
   }
 
   getStatusSeverity(status: string): string {
@@ -84,27 +77,6 @@ export class ProjectListComponent implements OnInit {
   }
 
   formatStatus(status: string): string {
-    return status.replace('_', ' ');
-  }
-
-  confirmDelete(project: any): void {
-    this.projectToDelete = project;
-    this.showDeleteConfirm = true;
-  }
-
-  deleteProject(): void {
-    if (!this.projectToDelete) return;
-    this.projectService.deleteProject(this.projectToDelete.project_id).subscribe({
-      next: () => {
-        this.toastr.success('Project deleted successfully');
-        this.showDeleteConfirm = false;
-        this.projectToDelete = null;
-        this.loadProjects();
-      },
-      error: (err) => {
-        this.toastr.error(err?.error?.error || 'Failed to delete project');
-        this.showDeleteConfirm = false;
-      }
-    });
-  }
+  return status.replace('_', ' ');
+ }
 }
