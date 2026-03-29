@@ -39,11 +39,11 @@ export class ForgotPasswordComponent implements OnInit {
 
     this.authService.forgotPassword(email).subscribe({
       next: (res: any) => {
-        this.message = res.message || 'Reset link sent to your email.';
+        this.message = res.message || 'Reset email has been sent.';
         this.isLoading = false;
       },
-      error: () => {
-        this.errorMessage = 'Something went wrong. Please try again.';
+      error: (err) => {
+        this.errorMessage = err?.error?.error || 'Something went wrong. Please try again.';
         this.isLoading = false;
       }
     });

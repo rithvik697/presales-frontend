@@ -94,6 +94,7 @@ import { AddSourceComponent } from './configure/add-source/add-source.component'
 import { ProjectAssignmentComponent } from './configure/project-assignment/project-assignment.component';
 import { LeadTransferComponent } from './configure/lead-transfer/lead-transfer.component';
 import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-upload.component';
+import { ReportEmailRecipientsComponent } from './configure/report-emails/report-emails.component';
 
 @NgModule({
   declarations: [
@@ -112,6 +113,7 @@ import { BulkLeadUploadComponent } from './configure/bulk-lead-upload/bulk-lead-
     BulkLeadUploadComponent,
     LeadTransferComponent,
     ProjectAssignmentComponent,
+    ReportEmailRecipientsComponent,
     DatabackupsComponent,
 
     LeadsListComponent,

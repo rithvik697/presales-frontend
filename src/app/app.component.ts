@@ -54,7 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: 'Users', icon: 'people', route: '/users', roles: ['ADMIN', 'SALES_MGR'] },
     { label: 'Project', icon: 'assignment', route: '/projects', roles: [] },
     { label: 'Call Logs', icon: 'call', route: '/call-logs', roles: [] },
-    { label: 'Audit Trail', icon: 'history', route: '/audit-trail', roles: ['ADMIN', 'SALES_MGR'] },
+    { label: 'Audit Trail', icon: 'history', route: '/audit-trail', roles: ['ADMIN'] },
 
     {
       label: 'Configure',
@@ -65,7 +65,9 @@ export class AppComponent implements OnInit, OnDestroy {
         { label: 'Add Source', route: '/configure/add-source' },
         { label: 'Bulk Lead Upload', route: '/configure/bulk-lead-upload' },
         { label: 'Lead Transfer', route: '/configure/lead-transfer' },
-        { label: 'Lead Assigning', route: '/configure/lead-assigning' }
+        { label: 'Lead Assigning', route: '/configure/lead-assigning' },
+        { label: 'Report Emails', route: '/configure/report-emails' },
+        { label: 'Add Project', route: '/configure/add-project' }
       ]
     },
 
@@ -231,6 +233,20 @@ export class AppComponent implements OnInit, OnDestroy {
       this.breadcrumbs = [
         { label: 'Configure', routerLink: '/configure' },
         { label: 'Lead Transfer' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/report-emails')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Report Emails' }
+      ];
+    }
+
+    else if (url.startsWith('/configure/add-project')) {
+      this.breadcrumbs = [
+        { label: 'Configure', routerLink: '/configure' },
+        { label: 'Add Project' }
       ];
     }
 
