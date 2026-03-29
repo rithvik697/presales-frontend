@@ -19,6 +19,7 @@ interface LeadCallHistoryEntry {
     callTime: string;
     madeBy: string;
     remarks: string;
+    recordingUrl?: string;
 }
 
 @Component({
@@ -61,6 +62,12 @@ export class LeadDetailsComponent implements OnInit {
     scheduledActivityRemarks: string = '';
     newCommentText: string = '';
     editRemarks: string = '';
+
+    // Recording playback
+    playingCallId: number | null = null;
+    playingElapsed: string = '0:00';
+    private audioPlayer: HTMLAudioElement | null = null;
+    private elapsedTimer: any = null;
 
     // Auth
     isAdmin: boolean = false;
@@ -326,6 +333,43 @@ export class LeadDetailsComponent implements OnInit {
                 this.toastr.error(err?.error?.error || 'Failed to initiate call');
             }
         });
+    }
+
+    // ─── Recording Playback ───
+
+    toggleRecording(call: LeadCallHistoryEntry): void {
+        if (this.playingCallId === call.callId) {
+            this.stopPlayback();
+            return;
+        }
+
+        this.stopPlayback();
+
+        this.audioPlayer = new Audio(call.recordingUrl);
+        this.playingCallId = call.callId;
+        this.playingElapsed = '0:00';
+        this.audioPlayer.play().catch(() => {
+            this.toastr.error('Unable to play recording');
+            this.stopPlayback();
+        });
+        this.elapsedTimer = setInterval(() => {
+            if (this.audioPlayer) {
+                const s = Math.floor(this.audioPlayer.currentTime);
+                this.playingElapsed = `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
+            }
+        }, 500);
+        this.audioPlayer.onended = () => this.stopPlayback();
+    }
+
+    private stopPlayback(): void {
+        this.audioPlayer?.pause();
+        this.audioPlayer = null;
+        this.playingCallId = null;
+        this.playingElapsed = '0:00';
+        if (this.elapsedTimer) {
+            clearInterval(this.elapsedTimer);
+            this.elapsedTimer = null;
+        }
     }
 
     // ─── Add Status Change ───

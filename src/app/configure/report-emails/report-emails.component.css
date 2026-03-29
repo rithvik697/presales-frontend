@@ -1,0 +1,347 @@
+.report-emails-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.95fr);
+  gap: 20px;
+  align-items: start;
+  min-height: 540px;
+  width: 100%;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.form-card,
+.list-card {
+  align-self: start;
+}
+
+.list-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 220px);
+  overflow: hidden;
+}
+
+.page-header {
+  margin-bottom: 16px;
+}
+
+.page-header h2,
+.summary-header h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.summary-header {
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  background: #f9fafb;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.summary-row span,
+.summary-row strong {
+  font-size: 14px;
+  color: #111827;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row label {
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-row input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #ffffff;
+}
+
+.form-row input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Report toggles */
+.report-toggles {
+  margin-top: 18px;
+}
+
+.toggle-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.toggle-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+/* Messages */
+.message {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.message.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 4px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.form-actions button:hover {
+  background: #1d4ed8;
+}
+
+/* Recipients list */
+.recipients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.recipient-item {
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f9fafb;
+  transition: opacity 0.2s;
+}
+
+.recipient-item.inactive {
+  opacity: 0.5;
+}
+
+.recipient-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.recipient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.recipient-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.recipient-email {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.recipient-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-active-btn {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
+}
+
+.toggle-active-btn.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.toggle-active-btn:not(.active) {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.delete-btn {
+  border: none;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.delete-btn:hover {
+  background: #fecaca;
+}
+
+/* Report chips */
+.report-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  background: #f3f4f6;
+  color: #9ca3af;
+  border: 1px solid #e5e7eb;
+}
+
+.chip.on {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+}
+
+/* States */
+.loading-state {
+  padding: 24px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.empty-state {
+  padding: 18px;
+  border-radius: 4px;
+  background: #f9fafb;
+  color: #6b7280;
+  text-align: center;
+  border: 1px dashed #d1d5db;
+  font-size: 13px;
+}
+
+@media (max-width: 1100px) {
+  .report-emails-page {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .list-card {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .recipients-list {
+    max-height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 18px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toggle-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
