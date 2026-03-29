@@ -332,6 +332,7 @@
                                 <th>Status</th>
                                 <th>Made By</th>
                                 <th>Remarks</th>
+                                <th>Recording</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -347,6 +348,30 @@
                                 </td>
                                 <td>{{ call.madeBy || '-' }}</td>
                                 <td>{{ call.remarks || '-' }}</td>
+                                <td>
+                                    <!-- Idle state -->
+                                    <button *ngIf="call.recordingUrl && playingCallId !== call.callId"
+                                        class="rec-btn rec-btn-idle"
+                                        (click)="toggleRecording(call)" title="Play recording">
+                                        <i class="pi pi-play"></i>
+                                        <span>Play</span>
+                                    </button>
+
+                                    <!-- Playing state -->
+                                    <div *ngIf="call.recordingUrl && playingCallId === call.callId"
+                                        class="rec-player">
+                                        <button class="rec-btn rec-btn-active" (click)="toggleRecording(call)" title="Stop">
+                                            <i class="pi pi-stop"></i>
+                                        </button>
+                                        <div class="rec-wave">
+                                            <span class="rec-bar"></span><span class="rec-bar"></span><span class="rec-bar"></span>
+                                            <span class="rec-bar"></span><span class="rec-bar"></span>
+                                        </div>
+                                        <span class="rec-time">{{ playingElapsed }}</span>
+                                    </div>
+
+                                    <span *ngIf="!call.recordingUrl" class="rec-none">--</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

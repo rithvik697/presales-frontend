@@ -1,0 +1,108 @@
+<div class="report-emails-page">
+
+  <!-- LEFT: Add Form -->
+  <div class="card form-card">
+    <div class="page-header">
+      <h2>Report Email Recipients</h2>
+      <p class="subtitle">Configure who receives scheduled reports (weekly, monthly, quarterly, annual)</p>
+    </div>
+
+    <form #recipientForm="ngForm" (ngSubmit)="saveRecipient(recipientForm)">
+      <div class="section">
+        <div class="grid">
+          <div class="form-row">
+            <label for="recipientName">Recipient Name *</label>
+            <input id="recipientName" type="text" [(ngModel)]="recipientName" name="recipientName"
+              placeholder="e.g. John Doe" required />
+          </div>
+          <div class="form-row">
+            <label for="recipientEmail">Email Address *</label>
+            <input id="recipientEmail" type="email" [(ngModel)]="recipientEmail" name="recipientEmail"
+              placeholder="e.g. john@company.com" required />
+          </div>
+        </div>
+
+        <div class="report-toggles">
+          <label class="toggle-label">Reports to receive:</label>
+          <div class="toggle-row">
+            <label class="checkbox-item">
+              <input type="checkbox" [(ngModel)]="weeklyReport" name="weeklyReport" />
+              <span>Weekly</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" [(ngModel)]="monthlyReport" name="monthlyReport" />
+              <span>Monthly</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" [(ngModel)]="quarterlyReport" name="quarterlyReport" />
+              <span>Quarterly</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" [(ngModel)]="annualReport" name="annualReport" />
+              <span>Annual</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <div class="form-actions">
+        <button type="submit">Add Recipient</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- RIGHT: Recipients List -->
+  <div class="card list-card">
+    <div class="summary-header">
+      <h3>Current Recipients</h3>
+    </div>
+
+    <div class="summary-row">
+      <span>Total recipients</span>
+      <strong>{{ recipients.length }}</strong>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">Loading...</div>
+
+    <div class="recipients-list" *ngIf="!loading && recipients.length > 0">
+      <div class="recipient-item" *ngFor="let r of recipients" [class.inactive]="!r.is_active">
+        <div class="recipient-header">
+          <div class="recipient-info">
+            <span class="recipient-name">{{ r.recipient_name }}</span>
+            <span class="recipient-email">{{ r.email }}</span>
+          </div>
+          <div class="recipient-actions">
+            <button class="toggle-active-btn" [class.active]="r.is_active"
+              (click)="toggleField(r, 'is_active')" [title]="r.is_active ? 'Disable' : 'Enable'">
+              {{ r.is_active ? 'Active' : 'Inactive' }}
+            </button>
+            <button class="delete-btn" (click)="deleteRecipient(r.id)" title="Remove">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="report-chips">
+          <span class="chip" [class.on]="r.weekly_report" (click)="toggleField(r, 'weekly_report')">
+            Weekly
+          </span>
+          <span class="chip" [class.on]="r.monthly_report" (click)="toggleField(r, 'monthly_report')">
+            Monthly
+          </span>
+          <span class="chip" [class.on]="r.quarterly_report" (click)="toggleField(r, 'quarterly_report')">
+            Quarterly
+          </span>
+          <span class="chip" [class.on]="r.annual_report" (click)="toggleField(r, 'annual_report')">
+            Annual
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && recipients.length === 0">
+      No recipients configured yet. Reports will be sent to all admin users by default.
+    </div>
+  </div>
+
+</div>
