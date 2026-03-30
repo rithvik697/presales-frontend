@@ -8,6 +8,7 @@ import {
   ProjectOption,
   SalesExecutiveOption
 } from '../../services/configure.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-lead-transfer',
@@ -59,8 +60,15 @@ export class LeadTransferComponent implements OnInit {
       error: () => this.toastr.error('Failed to load source employees')
     });
 
-    this.configureService.getSalesExecutives(true).subscribe({
-      next: (users) => this.toEmployees = users,
+    forkJoin({
+      salesExecutives: this.configureService.getSalesExecutives(true),
+      admins: this.configureService.getAdmins(true)
+    }).subscribe({
+      next: ({ salesExecutives, admins }) => {
+        this.toEmployees = [...salesExecutives, ...admins].sort((a, b) =>
+          a.full_name.localeCompare(b.full_name)
+        );
+      },
       error: () => this.toastr.error('Failed to load target employees')
     });
 

@@ -3,7 +3,7 @@
     <div class="page-header">
       <h2>Lead Transfer</h2>
       <p class="subtitle">
-        Transfer active leads from one sales executive to another when ownership needs to change.
+        Transfer active leads from one sales executive to another executive or park them under admin when ownership needs to change.
       </p>
     </div>
 
@@ -76,11 +76,11 @@
         <h3>To Employee</h3>
         <div class="grid">
           <div class="form-row">
-            <label for="toEmployee">Sales Executive *</label>
+            <label for="toEmployee">Target User *</label>
             <select id="toEmployee" [(ngModel)]="toEmpId" name="toEmployee">
               <option value="">Select Employee</option>
               <option *ngFor="let user of toEmployees" [value]="user.emp_id">
-                {{ user.full_name }}
+                {{ user.full_name }}{{ user.role_id ? (user.role_id === 'ADMIN' ? ' (Admin)' : ' (Sales Executive)') : '' }}
               </option>
             </select>
           </div>

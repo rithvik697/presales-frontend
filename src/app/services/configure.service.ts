@@ -17,6 +17,7 @@ export interface SalesExecutiveOption {
   emp_id: string;
   full_name: string;
   emp_status?: string;
+  role_id?: string;
 }
 
 export interface ProjectOption {
@@ -156,6 +157,16 @@ export class ConfigureService {
 
   getActiveSalesExecutives(): Observable<SalesExecutiveOption[]> {
     return this.getSalesExecutives(true);
+  }
+
+  getAdmins(activeOnly: boolean = true): Observable<SalesExecutiveOption[]> {
+    return this.http.get<SalesExecutiveOption[]>(
+      `${this.apiBase}/leads/employees?role=ADMIN&active_only=${activeOnly}`
+    ).pipe(
+      map((users) =>
+        users.sort((a, b) => a.full_name.localeCompare(b.full_name))
+      )
+    );
   }
 
   getProjectAssignments(): Observable<ProjectAssignment[]> {

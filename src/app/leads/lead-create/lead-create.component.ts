@@ -248,8 +248,6 @@ export class LeadCreateComponent implements OnInit {
     const submissionModel: any = { ...this.model };
     submissionModel.phone = `${this.selectedCountryCode.code}${this.model.phone}`;
 
-    submissionModel.phone = this.model.phone;
-
     if (this.isEditMode && this.leadId) {
       this.leadsService.update(this.leadId, submissionModel).subscribe({
         next: () => {
