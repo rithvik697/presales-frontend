@@ -1,156 +1,136 @@
 <div class="profile-page">
+  <div *ngIf="forceChange" class="force-change-banner">
+    <i class="pi pi-exclamation-triangle"></i>
+    You are using a temporary password. Please change your password before continuing.
+  </div>
 
-  <div class="p-grid">
-
-    <!-- LEFT USER CARD -->
-    <div class="p-col-12 p-md-4">
-
-      <p-card class="user-card">
-
-        <div class="user-avatar">
-          <i class="pi pi-user"></i>
-        </div>
-
-        <h3>{{ fullName || username }}</h3>
-        <p class="role">{{ role }}</p>
-
-        <div class="user-meta">
-          <div class="meta-item">
-            <i class="pi pi-envelope"></i>
-            {{ email || 'Not available' }}
-          </div>
-
-          <div class="meta-item">
-            <i class="pi pi-id-card"></i>
-            {{ username }}
-          </div>
-        </div>
-
-      </p-card>
-
-    </div>
-
-    <!-- RIGHT SETTINGS -->
-    <div class="p-col-12 p-md-8">
-
-      <div *ngIf="forceChange" class="force-change-banner">
-        <i class="pi pi-exclamation-triangle"></i>
-        You are using a temporary password. Please change your password before continuing.
+  <div class="profile-header-card">
+    <div class="profile-cover"></div>
+    <div class="profile-header-body">
+      <div class="profile-avatar">
+        {{ (fullName || username || '?').charAt(0).toUpperCase() }}
       </div>
+      <div class="profile-header-info">
+        <h2>{{ fullName || username }}</h2>
+        <span class="role-badge">{{ role }}</span>
+      </div>
+      <div class="profile-header-meta">
+        <div class="header-meta-item">
+          <i class="pi pi-envelope"></i>
+          <span>{{ email || 'Not available' }}</span>
+        </div>
+        <div class="header-meta-item">
+          <i class="pi pi-id-card"></i>
+          <span>{{ username }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <p-tabView [(activeIndex)]="activeTabIndex">
-
-        <!-- ACCOUNT TAB -->
-        <p-tabPanel header="Account Information">
-
-          <p-card>
-
-            <div class="form-grid">
-
-              <div class="field">
-                <label>Full Name</label>
-                <input pInputText [value]="fullName" disabled />
-              </div>
-
-              <div class="field">
-                <label>Username</label>
-                <input pInputText [value]="username" disabled />
-              </div>
-
-              <div class="field">
-                <label>Role</label>
-                <input pInputText [value]="role" disabled />
-              </div>
-
-            </div>
-
-          </p-card>
-
-        </p-tabPanel>
-
-        <!-- SECURITY TAB -->
-        <p-tabPanel header="Security">
-
-          <p-card>
-
-            <h3>Change Password</h3>
-
-            <form (ngSubmit)="changePassword()" class="password-form">
-
-              <div class="field">
-                <label>Current Password</label>
-                <input
-                  pPassword
-                  [(ngModel)]="oldPassword"
-                  name="oldPassword"
-                  toggleMask="true"
-                  required
-                />
-              </div>
-
-              <div class="field">
-                <label>New Password</label>
-                <input
-                  pPassword
-                  [(ngModel)]="newPassword"
-                  name="newPassword"
-                  toggleMask="true"
-                  required
-                />
-              </div>
-
-              <div class="field">
-                <label>Confirm Password</label>
-                <input
-                  pPassword
-                  [(ngModel)]="confirmPassword"
-                  name="confirmPassword"
-                  toggleMask="true"
-                  required
-                />
-              </div>
-
-              <!-- Password strength checklist -->
-              <div *ngIf="newPassword" class="pw-checklist">
-                <div [class.pw-ok]="pwChecks.length"   [class.pw-fail]="!pwChecks.length">
-                  <i class="pi" [class.pi-check-circle]="pwChecks.length" [class.pi-times-circle]="!pwChecks.length"></i> At least 8 characters
-                </div>
-                <div [class.pw-ok]="pwChecks.upper"    [class.pw-fail]="!pwChecks.upper">
-                  <i class="pi" [class.pi-check-circle]="pwChecks.upper" [class.pi-times-circle]="!pwChecks.upper"></i> One uppercase letter
-                </div>
-                <div [class.pw-ok]="pwChecks.lower"    [class.pw-fail]="!pwChecks.lower">
-                  <i class="pi" [class.pi-check-circle]="pwChecks.lower" [class.pi-times-circle]="!pwChecks.lower"></i> One lowercase letter
-                </div>
-                <div [class.pw-ok]="pwChecks.number"   [class.pw-fail]="!pwChecks.number">
-                  <i class="pi" [class.pi-check-circle]="pwChecks.number" [class.pi-times-circle]="!pwChecks.number"></i> One number
-                </div>
-                <div [class.pw-ok]="pwChecks.special"  [class.pw-fail]="!pwChecks.special">
-                  <i class="pi" [class.pi-check-circle]="pwChecks.special" [class.pi-times-circle]="!pwChecks.special"></i> One special character (@$!%*?&amp;#)
-                </div>
-              </div>
-
-              <small class="p-error" *ngIf="confirmPassword && newPassword !== confirmPassword">
-                Passwords do not match.
-              </small>
-
-              <button
-                pButton
-                type="submit"
-                label="Update Password"
-                icon="pi pi-check"
-                class="p-button-primary"
-              ></button>
-
-            </form>
-
-          </p-card>
-
-        </p-tabPanel>
-
-      </p-tabView>
-
+  <div class="profile-content">
+    <div class="info-card">
+      <div class="card-header">
+        <i class="pi pi-user"></i>
+        <span>Account Information</span>
+      </div>
+      <div class="card-body">
+        <div class="info-row">
+          <label>Full Name</label>
+          <span>{{ fullName || '—' }}</span>
+        </div>
+        <div class="info-row">
+          <label>Username</label>
+          <span>{{ username }}</span>
+        </div>
+        <div class="info-row">
+          <label>Email</label>
+          <span>{{ email || '—' }}</span>
+        </div>
+        <div class="info-row">
+          <label>Role</label>
+          <span><span class="role-badge">{{ role }}</span></span>
+        </div>
+      </div>
     </div>
 
+    <div class="info-card">
+      <div class="card-header">
+        <i class="pi pi-lock"></i>
+        <span>Change Password</span>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="changePassword()" class="password-form">
+          <div class="pw-field">
+            <label>Current Password</label>
+            <input
+              pPassword
+              [(ngModel)]="oldPassword"
+              name="oldPassword"
+              toggleMask="true"
+              [feedback]="false"
+              placeholder="Enter current password"
+              required
+            />
+          </div>
+
+          <div class="pw-field">
+            <label>New Password</label>
+            <input
+              pPassword
+              [(ngModel)]="newPassword"
+              name="newPassword"
+              toggleMask="true"
+              [feedback]="false"
+              placeholder="Enter new password"
+              required
+            />
+          </div>
+
+          <div *ngIf="newPassword" class="pw-checklist">
+            <div [class.pw-ok]="pwChecks.length" [class.pw-fail]="!pwChecks.length">
+              <i class="pi" [class.pi-check-circle]="pwChecks.length" [class.pi-times-circle]="!pwChecks.length"></i> At least 8 characters
+            </div>
+            <div [class.pw-ok]="pwChecks.upper" [class.pw-fail]="!pwChecks.upper">
+              <i class="pi" [class.pi-check-circle]="pwChecks.upper" [class.pi-times-circle]="!pwChecks.upper"></i> One uppercase letter
+            </div>
+            <div [class.pw-ok]="pwChecks.lower" [class.pw-fail]="!pwChecks.lower">
+              <i class="pi" [class.pi-check-circle]="pwChecks.lower" [class.pi-times-circle]="!pwChecks.lower"></i> One lowercase letter
+            </div>
+            <div [class.pw-ok]="pwChecks.number" [class.pw-fail]="!pwChecks.number">
+              <i class="pi" [class.pi-check-circle]="pwChecks.number" [class.pi-times-circle]="!pwChecks.number"></i> One number
+            </div>
+            <div [class.pw-ok]="pwChecks.special" [class.pw-fail]="!pwChecks.special">
+              <i class="pi" [class.pi-check-circle]="pwChecks.special" [class.pi-times-circle]="!pwChecks.special"></i> One special character (@$!%*?&amp;#)
+            </div>
+          </div>
+
+          <div class="pw-field">
+            <label>Confirm Password</label>
+            <input
+              pPassword
+              [(ngModel)]="confirmPassword"
+              name="confirmPassword"
+              toggleMask="true"
+              [feedback]="false"
+              placeholder="Re-enter new password"
+              required
+            />
+            <small class="p-error" *ngIf="confirmPassword && newPassword !== confirmPassword">
+              Passwords do not match.
+            </small>
+          </div>
+
+          <button
+            pButton
+            type="submit"
+            label="Update Password"
+            icon="pi pi-check"
+            class="p-button-primary update-btn"
+            [loading]="loading"
+          ></button>
+        </form>
+      </div>
+    </div>
   </div>
 
 </div>

@@ -75,12 +75,12 @@ const routes: Routes = [
       // DATA BACKUPS
       { path: 'databackups', component: DatabackupsComponent },
 
-      // CONFIGURE MODULE (ADMIN, SALES_MGR)
+      // CONFIGURE MODULE (ADMIN only)
       {
         path: 'configure',
         component: ConfigureComponent,
         canActivate: [RoleGuard],
-        data: { allowedRoles: ['ADMIN', 'SALES_MGR'] },
+        data: { allowedRoles: ['ADMIN'] },
         children: [
           { path: 'add-activity', component: AddActivityComponent },
           { path: 'add-source', component: AddSourceComponent },

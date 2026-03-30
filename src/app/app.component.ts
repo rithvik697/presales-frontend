@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
     {
       label: 'Configure',
       icon: 'settings',
-      roles: ['ADMIN', 'SALES_MGR'],
+      roles: ['ADMIN'],
       children: [
         { label: 'Add Activity', route: '/configure/add-activity' },
         { label: 'Add Source', route: '/configure/add-source' },
