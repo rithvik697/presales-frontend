@@ -125,11 +125,39 @@
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
+.users-header-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
 .users-header h2 {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
   color: #111827;
+}
+
+.quick-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quick-filter label {
+  color: #4b5563;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.quick-filter select {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #111827;
+  font-size: 0.92rem;
+  min-width: 150px;
+  padding: 8px 12px;
 }
 
 /* ---------- ADD USER BUTTON ---------- */
@@ -176,6 +204,45 @@
   color: #ffffff;
 }
 
+.status-pill-disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+:host ::ng-deep .status-toggle-pill {
+  align-items: center;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 600;
+  gap: 8px;
+  min-width: 104px;
+  padding: 6px 12px;
+  justify-content: center;
+}
+
+:host ::ng-deep .status-toggle-pill .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+:host ::ng-deep .active-pill {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+:host ::ng-deep .inactive-pill {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+:host ::ng-deep .resigned-pill {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
 /* ---------- RESPONSIVE ---------- */
 @media screen and (max-width: 992px) {
   .users-list-container {
@@ -203,6 +270,17 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
+  }
+
+  .users-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .quick-filter {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .users-table th,

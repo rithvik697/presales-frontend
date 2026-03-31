@@ -183,6 +183,38 @@ export class UserRegistrationComponent implements OnInit {
     });
   }
 
+  confirmResign(): void {
+    if (this.user.emp_status === 'Resigned') {
+      this.toastr.info('User has already resigned');
+      return;
+    }
+
+    this.confirmationService.confirm({
+      header: 'Confirm Resignation',
+      message: 'Are you sure you want to mark this user as resigned? This is allowed only when no leads are assigned.',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Yes, Resign',
+      rejectLabel: 'Cancel',
+      acceptButtonStyleClass: 'p-button-warning',
+      accept: () => {
+        this.resignUser();
+      }
+    });
+  }
+
+  resignUser(): void {
+    this.regService.resignUser(this.employeeId).subscribe({
+      next: () => {
+        this.user.emp_status = 'Resigned';
+        this.toastr.success('User resigned successfully');
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.toastr.error(err?.error?.error || 'Failed to resign user');
+      }
+    });
+  }
+
   // ================= NAVIGATION =================
   cancel(): void {
     this.router.navigate(['/users']);

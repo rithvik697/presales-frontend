@@ -119,6 +119,7 @@
             <option value="">Select Status</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
+            <option *ngIf="user.emp_status === 'Resigned'" value="Resigned">Resigned</option>
           </select>
         </div>
 
@@ -164,15 +165,25 @@
       <!-- ================= ACTION BUTTONS ================= -->
       <div class="form-actions">
 
-        <!-- DELETE (EDIT MODE ONLY) -->
-        <button
-          *ngIf="isEditMode"
-          type="button"
-          class="danger-btn"
-          (click)="confirmDelete()"
-        >
-          Delete User
-        </button>
+        <div class="action-left">
+          <button
+            *ngIf="isEditMode"
+            type="button"
+            class="danger-btn"
+            (click)="confirmDelete()"
+          >
+            Delete User
+          </button>
+
+          <button
+            *ngIf="isEditMode && user.emp_status !== 'Resigned'"
+            type="button"
+            class="warning-btn"
+            (click)="confirmResign()"
+          >
+            Resign User
+          </button>
+        </div>
 
         <!-- RIGHT SIDE BUTTON GROUP -->
         <div class="action-right">

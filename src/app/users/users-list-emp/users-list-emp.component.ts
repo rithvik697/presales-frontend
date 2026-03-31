@@ -14,6 +14,7 @@ export class UsersListEmpComponent implements OnInit {
 
   users: any[] = [];
   loading = true;
+  selectedStatusFilter = '';
 
   constructor(
     private regService: RegistrationService,
@@ -47,7 +48,10 @@ export class UsersListEmpComponent implements OnInit {
                 }
 
                 if (status) {
+                  this.selectedStatusFilter = status;
                   this.table.filter(status, 'emp_status', 'equals');
+                } else {
+                  this.selectedStatusFilter = '';
                 }
 
                 if (role) {
@@ -80,8 +84,24 @@ export class UsersListEmpComponent implements OnInit {
     });
   }
 
+  applyStatusFilter(): void {
+    if (!this.table) {
+      return;
+    }
+
+    if (this.selectedStatusFilter) {
+      this.table.filter(this.selectedStatusFilter, 'emp_status', 'equals');
+      return;
+    }
+
+    this.table.filter('', 'emp_status', 'equals');
+  }
+
   /* ================= STATUS TOGGLE ================= */
   onStatusToggle(user: any) {
+    if (user.emp_status === 'Resigned') {
+      return;
+    }
 
     const oldStatus = user.emp_status;
     const newStatus = oldStatus === 'Active' ? 'Inactive' : 'Active';
@@ -113,6 +133,18 @@ export class UsersListEmpComponent implements OnInit {
     ]
     .filter(name => name && name.trim() !== '')
     .join(' ');
+  }
+
+  getStatusClass(status: string): string {
+    if (status === 'Active') {
+      return 'active-pill';
+    }
+
+    if (status === 'Resigned') {
+      return 'resigned-pill';
+    }
+
+    return 'inactive-pill';
   }
 
 }

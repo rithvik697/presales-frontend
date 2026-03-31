@@ -56,6 +56,11 @@ export class RegistrationService {
     );
   }
 
+  resignUser(empId: string): Observable<any> {
+
+    return this.http.put(`${this.apiUrl}/${empId}/resign`, {});
+  }
+
   /* ================= DELETE USER ================= */
   deleteUser(empId: string): Observable<any> {
 

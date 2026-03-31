@@ -177,6 +177,11 @@
   color: #f87171;
 }
 
+.user-details-page .status-resigned {
+  background: rgba(255, 152, 0, 0.18);
+  color: #fb923c;
+}
+
 .user-details-page .details-body {
   background: #fff;
   border-radius: 0 0 12px 12px;

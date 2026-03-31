@@ -27,7 +27,7 @@
           <span class="age-number">{{ leadAgeReference }}</span>
           <span class="age-label">since created</span>
         </div>
-        <span class="status-badge" [ngClass]="user.emp_status === 'Active' ? 'status-active' : 'status-inactive'">
+        <span class="status-badge" [ngClass]="getUserStatusClass(user.emp_status)">
           {{ user.emp_status }}
         </span>
       </div>

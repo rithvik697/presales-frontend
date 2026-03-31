@@ -158,6 +158,20 @@ export class UserDetailsComponent implements OnInit {
     return 'status-active';
   }
 
+  getUserStatusClass(status?: string): string {
+    const normalizedStatus = (status || '').trim();
+
+    if (normalizedStatus === 'Active') {
+      return 'status-active';
+    }
+
+    if (normalizedStatus === 'Resigned') {
+      return 'status-resigned';
+    }
+
+    return 'status-inactive';
+  }
+
   private buildLeadSummary(): void {
     this.leadSummary = {
       total: this.assignedLeads.length,

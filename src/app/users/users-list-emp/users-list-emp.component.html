@@ -2,7 +2,22 @@
 
   <!-- Header -->
   <div class="users-header">
-    <h2>Employees List</h2>
+    <div class="users-header-left">
+      <h2>Employees List</h2>
+      <div class="quick-filter">
+        <label for="statusFilter">Show Status</label>
+        <select
+          id="statusFilter"
+          [(ngModel)]="selectedStatusFilter"
+          (ngModelChange)="applyStatusFilter()"
+        >
+          <option value="">All Users</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+          <option value="Resigned">Resigned</option>
+        </select>
+      </div>
+    </div>
     <button pButton label="Add User" class="add-user-btn" (click)="addUser()"></button>
   </div>
 
@@ -122,7 +137,8 @@
 
           <!-- STATUS PILL TOGGLE -->
           <td>
-            <div class="status-toggle-pill" [ngClass]="user.emp_status === 'Active' ? 'active-pill' : 'inactive-pill'"
+            <div class="status-toggle-pill" [ngClass]="getStatusClass(user.emp_status)"
+              [class.status-pill-disabled]="user.emp_status === 'Resigned'"
               (click)="onStatusToggle(user)">
               <span class="dot"></span>
               {{ user.emp_status }}
