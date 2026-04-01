@@ -116,10 +116,10 @@
     <!-- Row 5 (STATUS FIXED HERE) -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Status</mat-label>
+        <mat-label>Activity Status</mat-label>
         <mat-select name="status" [(ngModel)]="model.status">
 
-          <mat-option value="">Select Status</mat-option>
+          <mat-option value="">Select Activity Status</mat-option>
 
           <mat-option *ngFor="let st of statuses" [value]="st.status_id">
             {{ st.status_name }}

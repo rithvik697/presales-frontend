@@ -1,20 +1,20 @@
 <div class="activity-page">
   <div class="card activity-card">
     <div class="page-header">
-      <h2>Add Activity</h2>
+      <h2>Add Activity Status</h2>
       <p class="subtitle">
-        Add a new activity status for lead status updates.
+        Add a new activity status for lead updates.
       </p>
     </div>
 
     <div class="summary-row">
-      <span>Existing Activities</span>
+      <span>Existing Activity Statuses</span>
       <strong>{{ activityStatuses.length }}</strong>
     </div>
 
     <form (ngSubmit)="saveActivity(activityForm)" #activityForm="ngForm">
       <div class="section">
-        <h3>Activity Details</h3>
+        <h3>Activity Status Details</h3>
 
         <div class="grid">
           <div class="form-row">

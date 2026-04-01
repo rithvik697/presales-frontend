@@ -244,7 +244,7 @@ export class LeadDetailsComponent implements OnInit {
 
     getEventHeading(entry: LeadStatusHistory): string {
         if (this.isScheduledActivityEvent(entry)) {
-            return `${entry.scheduled_status_name || 'Activity'} Scheduled`;
+            return `${entry.scheduled_status_name || 'Activity Status'} Scheduled`;
         }
         if (this.isCommentEvent(entry)) return 'Comment Added';
         if (this.isAssignmentEvent(entry)) return 'Lead Reassigned';
@@ -400,7 +400,7 @@ export class LeadDetailsComponent implements OnInit {
             remarks: this.scheduledActivityRemarks
         }).subscribe({
             next: () => {
-                this.toastr.success('Activity scheduled successfully');
+                this.toastr.success('Activity status scheduled successfully');
                 this.showScheduleActivityDialog = false;
                 this.loadLead();
                 this.loadHistory();
@@ -438,7 +438,7 @@ export class LeadDetailsComponent implements OnInit {
             remarks: this.newRemarks
         }).subscribe({
             next: () => {
-                this.toastr.success('Status updated successfully');
+                this.toastr.success('Activity status updated successfully');
                 this.showAddDialog = false;
                 this.loadLead();    // Refresh lead to show new current status
                 this.loadHistory(); // Refresh timeline

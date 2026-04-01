@@ -42,9 +42,9 @@
           </div>
 
           <div class="form-row">
-            <label for="fromStatus">Status</label>
+            <label for="fromStatus">Activity Status</label>
             <select id="fromStatus" [(ngModel)]="fromStatusId" name="fromStatus">
-              <option value="">All Statuses</option>
+              <option value="">All Activity Statuses</option>
               <option *ngFor="let status of statuses" [value]="status.status_id">
                 {{ status.status_name }}
               </option>
@@ -117,9 +117,9 @@
           </div>
 
           <div class="form-row">
-            <label for="toStatus">Status Name</label>
+            <label for="toStatus">Activity Status Name</label>
             <select id="toStatus" [(ngModel)]="toStatusId" name="toStatus">
-              <option value="">Keep Existing Status</option>
+              <option value="">Keep Existing Activity Status</option>
               <option *ngFor="let status of statuses" [value]="status.status_id">
                 {{ status.status_name }}
               </option>
@@ -170,8 +170,8 @@
             <td>{{ item.to_employee_name || item.to_emp_id }}</td>
             <td>{{ item.lead_count }}</td>
             <td>
-              <div>From: {{ item.from_project_name || 'All Projects' }} / {{ item.from_source_name || 'All Sources' }} / {{ item.from_status_name || 'All Statuses' }}</div>
-              <div>To: {{ item.to_project_name || 'Keep Project' }} / {{ item.to_source_name || 'Keep Source' }} / {{ item.to_status_name || 'Keep Status' }}</div>
+              <div>From: {{ item.from_project_name || 'All Projects' }} / {{ item.from_source_name || 'All Sources' }} / {{ item.from_status_name || 'All Activity Statuses' }}</div>
+              <div>To: {{ item.to_project_name || 'Keep Project' }} / {{ item.to_source_name || 'Keep Source' }} / {{ item.to_status_name || 'Keep Activity Status' }}</div>
               <div>{{ item.date_type === 'modified_on' ? 'Modified Date' : 'Created Date' }}:
                 {{ item.from_date || 'Any' }} to {{ item.to_date || 'Any' }}</div>
             </td>

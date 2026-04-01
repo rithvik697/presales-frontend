@@ -602,7 +602,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
     
     if (!data || data.length === 0) return;
     
-    const headers = ['Lead ID', 'Lead Name', 'Employee', 'Project', `${label} On`, 'Current Status', 'Remarks'];
+    const headers = ['Lead ID', 'Lead Name', 'Employee', 'Project', `${label} On`, 'Current Activity Status', 'Remarks'];
     
     if (format === 'csv') {
       const csvContent = [
@@ -631,7 +631,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
         row.current_status || '',
       ]);
       autoTable(doc, {
-        head: [['Lead ID', 'Lead Name', 'Employee', 'Project', `${label} On`, 'Current Status']],
+        head: [['Lead ID', 'Lead Name', 'Employee', 'Project', `${label} On`, 'Current Activity Status']],
         body,
         startY: 20
       });
@@ -798,7 +798,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
 
   downloadDailyLogCsv() {
     if (!this.dailyLog || this.dailyLog.length === 0) return;
-    const headers = ['Lead ID', 'Lead Name', 'Created On', 'Assigned User', 'Project', 'Status'];
+    const headers = ['Lead ID', 'Lead Name', 'Created On', 'Assigned User', 'Project', 'Activity Status'];
     const csvContent = [
       headers.join(','),
       ...this.dailyLog.map(row => 
@@ -832,7 +832,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
     ]);
 
     autoTable(doc, {
-      head: [['Lead ID', 'Lead Name', 'Created On', 'Assigned User', 'Project', 'Status']],
+      head: [['Lead ID', 'Lead Name', 'Created On', 'Assigned User', 'Project', 'Activity Status']],
       body: body,
       startY: 20
     });
@@ -920,7 +920,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
             doc.setFontSize(10);
             doc.text(`EMP ID: ${empId || 'N/A'} | User Name: ${userName}`, 14, 22);
             
-            const columns = ["Lead ID", "Lead Name", "Activity Status", "Description", "Project", "Created On", "Current Status"];
+            const columns = ["Lead ID", "Lead Name", "Activity Status", "Description", "Project", "Created On", "Current Activity Status"];
             const body = res.data.map((row: any) => [
               row.lead_id,
               row.lead_name,

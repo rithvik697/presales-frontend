@@ -61,7 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
       icon: 'settings',
       roles: ['ADMIN'],
       children: [
-        { label: 'Add Activity', route: '/configure/add-activity' },
+        { label: 'Add Activity Status', route: '/configure/add-activity' },
         { label: 'Add Source', route: '/configure/add-source' },
         { label: 'Bulk Lead Upload', route: '/configure/bulk-lead-upload' },
         { label: 'Lead Transfer', route: '/configure/lead-transfer' },
@@ -204,7 +204,7 @@ export class AppComponent implements OnInit, OnDestroy {
     else if (url.startsWith('/configure/add-activity')) {
       this.breadcrumbs = [
         { label: 'Configure', routerLink: '/configure' },
-        { label: 'Add Activity' }
+        { label: 'Add Activity Status' }
       ];
     }
 

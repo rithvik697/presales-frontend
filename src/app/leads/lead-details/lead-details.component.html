@@ -116,7 +116,7 @@
                         <span class="info-value source-value">{{ lead.source || '—' }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Current Status</span>
+                        <span class="info-label">Current Activity Status</span>
                         <span class="info-value">
                             <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">
                                 {{ lead.status || 'New' }}
@@ -190,10 +190,10 @@
                 </span>
                 <div class="activity-toolbar-actions">
                     <button class="add-activity-btn" (click)="openAddDialog()">
-                        <i class="pi pi-plus"></i> Change Status
+                        <i class="pi pi-plus"></i> Change Activity Status
                     </button>
                     <button class="add-activity-btn" (click)="openScheduleActivityDialog()">
-                        <i class="pi pi-calendar"></i> Schedule Activity
+                        <i class="pi pi-calendar"></i> Schedule Activity Status
                     </button>
                 </div>
             </div>
@@ -202,7 +202,7 @@
             <div class="empty-state" *ngIf="!loadingHistory && statusHistory.length === 0">
                 <i class="pi pi-inbox"></i>
                 <p>No history recorded yet</p>
-                <button class="add-first-btn" (click)="openAddDialog()">Log First Status Change</button>
+                <button class="add-first-btn" (click)="openAddDialog()">Log First Activity Status Change</button>
             </div>
 
             <!-- Loading -->
@@ -258,7 +258,7 @@
                                         <span class="detail-value">{{ entry.remarks }}</span>
                                     </div>
                                     <div class="timeline-detail" *ngIf="isCommentEvent(entry)">
-                                        <span class="detail-label">Current Status:</span>
+                                        <span class="detail-label">Current Activity Status:</span>
                                         <span class="detail-value">
                                             <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">
                                                 {{ lead.status || 'N/A' }}
@@ -331,7 +331,7 @@
                                 <th>Start</th>
                                 <th>End</th>
                                 <th>Duration</th>
-                                <th>Status</th>
+                                <th>Activity Status</th>
                                 <th>Made By</th>
                                 <th>Remarks</th>
                                 <th>Recording</th>
@@ -384,11 +384,11 @@
 </div>
 
 <!-- ═══════ CHANGE STATUS DIALOG ═══════ -->
-<p-dialog header="Change Lead Status" [(visible)]="showAddDialog" [modal]="true" [style]="{width: '480px'}"
+<p-dialog header="Change Lead Activity Status" [(visible)]="showAddDialog" [modal]="true" [style]="{width: '480px'}"
     appendTo="body" styleClass="edit-activity-dialog">
     <div class="dialog-form">
         <div class="form-field mb-3">
-            <label>New Status *</label>
+            <label>New Activity Status *</label>
             <p-dropdown [options]="statusOptions" [(ngModel)]="newStatusId" optionLabel="status_name"
                 optionValue="status_id" styleClass="w-full" appendTo="body" [filter]="true"
                 placeholder="Select status to move to"></p-dropdown>
@@ -403,7 +403,7 @@
             <div class="summary-grid">
                 <div class="summary-item"><label>Name</label><span>{{ lead.name }}</span></div>
                 <div class="summary-item"><label>Phone</label><span>{{ lead.phone | phoneDisplay }}</span></div>
-                <div class="summary-item"><label>Current Status</label>
+                <div class="summary-item"><label>Current Activity Status</label>
                     <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A'
                         }}</span>
                 </div>
@@ -414,17 +414,17 @@
         <div class="form-actions mt-4">
             <button pButton label="Cancel" icon="pi pi-times" (click)="showAddDialog=false"
                 class="p-button-text p-button-secondary"></button>
-            <button pButton label="Update Status" icon="pi pi-check" (click)="saveNewStatus()"
+            <button pButton label="Update Activity Status" icon="pi pi-check" (click)="saveNewStatus()"
                 class="p-button-success"></button>
         </div>
     </div>
 </p-dialog>
 
-<p-dialog header="Schedule Activity" [(visible)]="showScheduleActivityDialog" [modal]="true" [style]="{width: '480px'}"
+<p-dialog header="Schedule Activity Status" [(visible)]="showScheduleActivityDialog" [modal]="true" [style]="{width: '480px'}"
     appendTo="body" styleClass="edit-activity-dialog">
     <div class="dialog-form">
         <div class="form-field mb-3">
-            <label>Status *</label>
+            <label>Activity Status *</label>
             <p-dropdown [options]="statusOptions" [(ngModel)]="scheduledStatusId" optionLabel="status_name"
                 optionValue="status_id" styleClass="w-full" appendTo="body" [filter]="true"
                 placeholder="Select activity/status"></p-dropdown>
@@ -447,7 +447,7 @@
             <div class="summary-grid">
                 <div class="summary-item"><label>Name</label><span>{{ lead.name }}</span></div>
                 <div class="summary-item"><label>Phone</label><span>{{ lead.phone | phoneDisplay }}</span></div>
-                <div class="summary-item"><label>Current Status</label>
+                <div class="summary-item"><label>Current Activity Status</label>
                     <span class="status-badge-sm" [ngClass]="getStatusClass(lead.status)">{{ lead.status || 'N/A'
                         }}</span>
                 </div>

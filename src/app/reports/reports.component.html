@@ -27,7 +27,7 @@
           optionLabel="source_name" optionValue="source_id" [showClear]="true" placeholder="All Sources"
           styleClass="p-dropdown-sm"></p-dropdown>
 
-        <label>Status:</label>
+        <label>Activity Status:</label>
         <p-dropdown [options]="statusesList" [(ngModel)]="selectedStatus" (onChange)="applyFilters()"
           optionLabel="status_name" optionValue="status_id" [showClear]="true" placeholder="All Statuses"
           styleClass="p-dropdown-sm"></p-dropdown>
@@ -86,7 +86,7 @@
           optionValue="source_id" [showClear]="true" placeholder="All" styleClass="p-dropdown-sm"></p-dropdown>
       </div>
       <div class="filter-item">
-        <label style="margin-right: 4px; font-weight: 500;">Status:</label>
+        <label style="margin-right: 4px; font-weight: 500;">Activity Status:</label>
         <p-dropdown [options]="statusesList" [(ngModel)]="perfSelectedStatus" optionLabel="status_name"
           optionValue="status_id" [showClear]="true" placeholder="All" styleClass="p-dropdown-sm"></p-dropdown>
       </div>
@@ -101,9 +101,9 @@
           style="padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
       </div>
       <div class="filter-item">
-        <label style="margin-right: 4px; font-weight: 500;">Status View:</label>
+        <label style="margin-right: 4px; font-weight: 500;">Activity Status View:</label>
         <p-multiSelect [options]="perfDynamicStatuses" [(ngModel)]="selectedPerfStatuses" optionLabel="displayName"
-          optionValue="status_name" placeholder="Select Statuses" styleClass="p-multiselect-sm"
+          optionValue="status_name" placeholder="Select Activity Statuses" styleClass="p-multiselect-sm"
           display="chip"></p-multiSelect>
       </div>
       <div class="filter-actions" style="display:flex; gap: 8px;">
@@ -307,7 +307,7 @@
             <th>Created On</th>
             <th>Assigned User</th>
             <th>Project</th>
-            <th>Status</th>
+            <th>Activity Status</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-log>
@@ -366,7 +366,7 @@
             <th>Project Name</th>
             <th>Source</th>
             <th>Employee Name</th>
-            <th>Status</th>
+            <th>Activity Status</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-log>
@@ -436,7 +436,7 @@
               <th>Project Name</th>
               <th>Source</th>
               <th>Employee Name</th>
-              <th>Status</th>
+              <th>Activity Status</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-log>
@@ -469,7 +469,7 @@
   </p-panel>
 
   <!-- ═══ PERMANENT STATUS RECORDS ═══ -->
-  <p-panel header="Permanent Status Records" [toggleable]="true" toggler="header" [collapsed]="true" styleClass="mb-4"
+  <p-panel header="Permanent Activity Status Records" [toggleable]="true" toggler="header" [collapsed]="true" styleClass="mb-4"
     [style]="{'margin-bottom':'1.5rem'}" expandIcon="pi pi-chevron-down" collapseIcon="pi pi-chevron-up"
     (onExpand)="loadPermanentRecord()">
     <ng-template pTemplate="icons">
@@ -484,7 +484,7 @@
     <div class="perf-filters-container mb-3"
       style="background: #fcfcfc; border: 1px solid #eee; padding: 12px; border-radius: 4px; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.85rem;">
       <div class="filter-item">
-        <label style="margin-right: 4px; font-weight: 500;">Status:</label>
+        <label style="margin-right: 4px; font-weight: 500;">Activity Status:</label>
         <p-dropdown [options]="permanentRecordOptions" [(ngModel)]="selectedPermanentRecordType"
           (onChange)="onPermanentRecordTypeChange()" styleClass="p-dropdown-sm"></p-dropdown>
       </div>
@@ -509,7 +509,7 @@
     <div class="table-container">
       <p style="font-size:0.85rem; color:#555; margin-bottom:0.75rem;">
         This report is permanent. Even if a lead's status changes later, its historical milestone
-        is always preserved here. "Current Status" shows where the lead stands <em>today</em>.
+        is always preserved here. "Current Activity Status" shows where the lead stands <em>today</em>.
       </p>
       <div *ngIf="loadingPermanentRecord" style="display:flex; justify-content:center; padding:2rem;">
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color:#1976d2;"></i>
@@ -524,7 +524,7 @@
             <th>Assigned To</th>
             <th>Project</th>
             <th>{{ selectedPermanentRecordType === 'site_visit' ? 'Site Visit Done On' : 'Deal Closed On' }}</th>
-            <th>Current Status</th>
+            <th>Current Activity Status</th>
             <th>Remarks</th>
           </tr>
         </ng-template>
@@ -590,7 +590,7 @@
     <!-- Pie Chart -->
     <div class="chart-container chart-pie">
       <div class="chart-header">
-        <h3>Leads by Status</h3>
+        <h3>Leads by Activity Status</h3>
       </div>
       <div class="canvas-wrapper" style="position: relative;">
         <div *ngIf="loadingPieChart"
@@ -617,8 +617,8 @@
         <th>Description</th>
         <th>Project</th>
         <th>Assigned User</th>
-        <th>Status</th>
-        <th *ngIf="summaryDialogType === 'Closed'">Current Status</th>
+        <th>Activity Status</th>
+        <th *ngIf="summaryDialogType === 'Closed'">Current Activity Status</th>
         <th>Created On</th>
       </tr>
     </ng-template>

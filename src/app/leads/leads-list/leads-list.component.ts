@@ -99,7 +99,7 @@ export class LeadsListComponent implements OnInit, OnDestroy {
     // Initialize Optional Columns
     this.allOptionalCols = [
       { field: 'assignedTo', header: 'Assigned To' },
-      { field: 'status', header: 'Status' },
+      { field: 'status', header: 'Activity Status' },
       { field: 'createdAt', header: 'Created On' },
       { field: 'modifiedAt', header: 'Modified On' },
       { field: 'actions', header: 'Actions' }
