@@ -516,7 +516,7 @@ export class DashboardComponent implements OnInit {
     this.adminLeadSummaryCards = [
       { label: 'TOTAL ALL-USER LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead)).length },
       { label: 'PIPELINE LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isActiveLead(lead)).length },
-      { label: 'PENDING FOLLOW-UPS', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isPendingLead(lead)).length },
+      { label: 'PENDING LEADS', value: leads.filter((lead) => this.hasAssignedOwner(lead) && this.isPendingLead(lead)).length },
       { label: 'DEALS CLOSED', value: leads.filter((lead) => this.hasAssignedOwner(lead) && (lead.status || '').trim() === 'Deal Closed').length },
       { label: 'LEADS CREATED TODAY', value: leadsCreatedToday, isClickable: false },
       { label: "TODAY'S EXPECTED SITE VISIT", value: expectedSiteVisitToday, isClickable: false },
